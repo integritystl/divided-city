@@ -1,0 +1,1684 @@
+@font-face {
+  font-family: Tiempos Headline Regular;
+  src: url("../fonts/TiemposHeadlineWeb-Regular.woff") format("woff");
+  font-weight: 100;
+  font-style: normal;
+}
+@font-face {
+  font-family: Tiempos Headline Italic;
+  src: url("../fonts/TiemposHeadlineWeb-RegularItalic.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: FoundersGrotesk;
+  src: url("../fonts/FoundersGroteskTextWeb-Medium.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: FoundersGroteskSemiCond;
+  src: url("../fonts/FoundersGroteskCondensedWeb-Semibold.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+/*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
+/**
+ * 1. Set default font family to sans-serif.
+ * 2. Prevent iOS and IE text size adjust after device orientation change,
+ *    without disabling user zoom.
+ */
+/* line 9, ../scss/_normalize.scss */
+html {
+  font-family: sans-serif;
+  /* 1 */
+  -ms-text-size-adjust: 100%;
+  /* 2 */
+  -webkit-text-size-adjust: 100%;
+  /* 2 */
+}
+
+/**
+ * Remove default margin.
+ */
+/* line 19, ../scss/_normalize.scss */
+body {
+  margin: 0;
+}
+
+/* HTML5 display definitions
+   ========================================================================== */
+/**
+ * Correct `block` display not defined for any HTML5 element in IE 8/9.
+ * Correct `block` display not defined for `details` or `summary` in IE 10/11
+ * and Firefox.
+ * Correct `block` display not defined for `main` in IE 11.
+ */
+/* line 33, ../scss/_normalize.scss */
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+main,
+menu,
+nav,
+section,
+summary {
+  display: block;
+}
+
+/**
+ * 1. Correct `inline-block` display not defined in IE 8/9.
+ * 2. Normalize vertical alignment of `progress` in Chrome, Firefox, and Opera.
+ */
+/* line 54, ../scss/_normalize.scss */
+audio,
+canvas,
+progress,
+video {
+  display: inline-block;
+  /* 1 */
+  vertical-align: baseline;
+  /* 2 */
+}
+
+/**
+ * Prevent modern browsers from displaying `audio` without controls.
+ * Remove excess height in iOS 5 devices.
+ */
+/* line 67, ../scss/_normalize.scss */
+audio:not([controls]) {
+  display: none;
+  height: 0;
+}
+
+/**
+ * Address `[hidden]` styling not present in IE 8/9/10.
+ * Hide the `template` element in IE 8/9/10/11, Safari, and Firefox < 22.
+ */
+/* line 77, ../scss/_normalize.scss */
+[hidden],
+template {
+  display: none;
+}
+
+/* Links
+   ========================================================================== */
+/**
+ * Remove the gray background color from active links in IE 10.
+ */
+/* line 89, ../scss/_normalize.scss */
+a {
+  background-color: transparent;
+}
+
+/**
+ * Improve readability of focused elements when they are also in an
+ * active/hover state.
+ */
+/* line 98, ../scss/_normalize.scss */
+a:active,
+a:hover {
+  outline: 0;
+}
+
+/* Text-level semantics
+   ========================================================================== */
+/**
+ * Address styling not present in IE 8/9/10/11, Safari, and Chrome.
+ */
+/* line 110, ../scss/_normalize.scss */
+abbr[title] {
+  border-bottom: 1px dotted;
+}
+
+/**
+ * Address style set to `bolder` in Firefox 4+, Safari, and Chrome.
+ */
+/* line 118, ../scss/_normalize.scss */
+b,
+strong {
+  font-weight: bold;
+}
+
+/**
+ * Address styling not present in Safari and Chrome.
+ */
+/* line 127, ../scss/_normalize.scss */
+dfn {
+  font-style: italic;
+}
+
+/**
+ * Address variable `h1` font-size and margin within `section` and `article`
+ * contexts in Firefox 4+, Safari, and Chrome.
+ */
+/* line 136, ../scss/_normalize.scss */
+h1 {
+  font-size: 2em;
+  margin: 0.67em 0;
+}
+
+/**
+ * Address styling not present in IE 8/9.
+ */
+/* line 145, ../scss/_normalize.scss */
+mark {
+  background: #ff0;
+  color: #000;
+}
+
+/**
+ * Address inconsistent and variable font size in all browsers.
+ */
+/* line 154, ../scss/_normalize.scss */
+small {
+  font-size: 80%;
+}
+
+/**
+ * Prevent `sub` and `sup` affecting `line-height` in all browsers.
+ */
+/* line 162, ../scss/_normalize.scss */
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+/* line 170, ../scss/_normalize.scss */
+sup {
+  top: -0.5em;
+}
+
+/* line 174, ../scss/_normalize.scss */
+sub {
+  bottom: -0.25em;
+}
+
+/* Embedded content
+   ========================================================================== */
+/**
+ * Remove border when inside `a` element in IE 8/9/10.
+ */
+/* line 185, ../scss/_normalize.scss */
+img {
+  border: 0;
+}
+
+/**
+ * Correct overflow not hidden in IE 9/10/11.
+ */
+/* line 193, ../scss/_normalize.scss */
+svg:not(:root) {
+  overflow: hidden;
+}
+
+/* Grouping content
+   ========================================================================== */
+/**
+ * Address margin not present in IE 8/9 and Safari.
+ */
+/* line 204, ../scss/_normalize.scss */
+figure {
+  margin: 1em 40px;
+}
+
+/**
+ * Address differences between Firefox and other browsers.
+ */
+/* line 212, ../scss/_normalize.scss */
+hr {
+  box-sizing: content-box;
+  height: 0;
+}
+
+/**
+ * Contain overflow in all browsers.
+ */
+/* line 221, ../scss/_normalize.scss */
+pre {
+  overflow: auto;
+}
+
+/**
+ * Address odd `em`-unit font size rendering in all browsers.
+ */
+/* line 229, ../scss/_normalize.scss */
+code,
+kbd,
+pre,
+samp {
+  font-family: monospace, monospace;
+  font-size: 1em;
+}
+
+/* Forms
+   ========================================================================== */
+/**
+ * Known limitation: by default, Chrome and Safari on OS X allow very limited
+ * styling of `select`, unless a `border` property is set.
+ */
+/**
+ * 1. Correct color not being inherited.
+ *    Known issue: affects color of disabled elements.
+ * 2. Correct font properties not being inherited.
+ * 3. Address margins set differently in Firefox 4+, Safari, and Chrome.
+ */
+/* line 252, ../scss/_normalize.scss */
+button,
+input,
+optgroup,
+select,
+textarea {
+  color: inherit;
+  /* 1 */
+  font: inherit;
+  /* 2 */
+  margin: 0;
+  /* 3 */
+}
+
+/**
+ * Address `overflow` set to `hidden` in IE 8/9/10/11.
+ */
+/* line 266, ../scss/_normalize.scss */
+button {
+  overflow: visible;
+}
+
+/**
+ * Address inconsistent `text-transform` inheritance for `button` and `select`.
+ * All other form control elements do not inherit `text-transform` values.
+ * Correct `button` style inheritance in Firefox, IE 8/9/10/11, and Opera.
+ * Correct `select` style inheritance in Firefox.
+ */
+/* line 277, ../scss/_normalize.scss */
+button,
+select {
+  text-transform: none;
+}
+
+/**
+ * 1. Avoid the WebKit bug in Android 4.0.* where (2) destroys native `audio`
+ *    and `video` controls.
+ * 2. Correct inability to style clickable `input` types in iOS.
+ * 3. Improve usability and consistency of cursor style between image-type
+ *    `input` and others.
+ */
+/* line 290, ../scss/_normalize.scss */
+button,
+html input[type="button"],
+input[type="reset"],
+input[type="submit"] {
+  -webkit-appearance: button;
+  /* 2 */
+  cursor: pointer;
+  /* 3 */
+}
+
+/**
+ * Re-set default cursor for disabled elements.
+ */
+/* line 302, ../scss/_normalize.scss */
+button[disabled],
+html input[disabled] {
+  cursor: default;
+}
+
+/**
+ * Remove inner padding and border in Firefox 4+.
+ */
+/* line 311, ../scss/_normalize.scss */
+button::-moz-focus-inner,
+input::-moz-focus-inner {
+  border: 0;
+  padding: 0;
+}
+
+/**
+ * Address Firefox 4+ setting `line-height` on `input` using `!important` in
+ * the UA stylesheet.
+ */
+/* line 322, ../scss/_normalize.scss */
+input {
+  line-height: normal;
+}
+
+/**
+ * It's recommended that you don't attempt to style these elements.
+ * Firefox's implementation doesn't respect box-sizing, padding, or width.
+ *
+ * 1. Address box sizing set to `content-box` in IE 8/9/10.
+ * 2. Remove excess padding in IE 8/9/10.
+ */
+/* line 334, ../scss/_normalize.scss */
+input[type="checkbox"],
+input[type="radio"] {
+  box-sizing: border-box;
+  /* 1 */
+  padding: 0;
+  /* 2 */
+}
+
+/**
+ * Fix the cursor style for Chrome's increment/decrement buttons. For certain
+ * `font-size` values of the `input`, it causes the cursor style of the
+ * decrement button to change from `default` to `text`.
+ */
+/* line 346, ../scss/_normalize.scss */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  height: auto;
+}
+
+/**
+ * 1. Address `appearance` set to `searchfield` in Safari and Chrome.
+ * 2. Address `box-sizing` set to `border-box` in Safari and Chrome.
+ */
+/* line 356, ../scss/_normalize.scss */
+input[type="search"] {
+  -webkit-appearance: textfield;
+  /* 1 */
+  box-sizing: content-box;
+  /* 2 */
+}
+
+/**
+ * Remove inner padding and search cancel button in Safari and Chrome on OS X.
+ * Safari (but not Chrome) clips the cancel button when the search input has
+ * padding (and `textfield` appearance).
+ */
+/* line 367, ../scss/_normalize.scss */
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+
+/**
+ * Define consistent border, margin, and padding.
+ */
+/* line 376, ../scss/_normalize.scss */
+fieldset {
+  border: 1px solid #c0c0c0;
+  margin: 0 2px;
+  padding: 0.35em 0.625em 0.75em;
+}
+
+/**
+ * 1. Correct `color` not being inherited in IE 8/9/10/11.
+ * 2. Remove padding so people aren't caught out if they zero out fieldsets.
+ */
+/* line 387, ../scss/_normalize.scss */
+legend {
+  border: 0;
+  /* 1 */
+  padding: 0;
+  /* 2 */
+}
+
+/**
+ * Remove default vertical scrollbar in IE 8/9/10/11.
+ */
+/* line 396, ../scss/_normalize.scss */
+textarea {
+  overflow: auto;
+}
+
+/**
+ * Don't inherit the `font-weight` (applied by a rule above).
+ * NOTE: the default cannot safely be changed in Chrome and Safari on OS X.
+ */
+/* line 405, ../scss/_normalize.scss */
+optgroup {
+  font-weight: bold;
+}
+
+/* Tables
+   ========================================================================== */
+/**
+ * Remove most spacing between table cells.
+ */
+/* line 416, ../scss/_normalize.scss */
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* line 421, ../scss/_normalize.scss */
+td,
+th {
+  padding: 0;
+}
+
+/* line 1, ../scss/_base.scss */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* line 1, ../scss/_type.scss */
+html {
+  font-family: "FoundersGrotesk", Helvetica, Arial, sans-serif;
+  color: #222;
+  font-size: 14px;
+  line-height: 135%;
+  letter-spacing: -.025em;
+}
+@media (min-width: 768px) {
+  /* line 1, ../scss/_type.scss */
+  html {
+    font-size: 21px;
+  }
+}
+
+/* line 13, ../scss/_type.scss */
+h1, h2, h3, h4, h5, h6 {
+  -webkit-font-smoothing: antialiased;
+}
+
+/* line 17, ../scss/_type.scss */
+h1, h5, h6 {
+  font-family: "Tiempos Headline Regular", Times, serif;
+  font-style: normal;
+}
+
+/* line 22, ../scss/_type.scss */
+h2, h3 {
+  font-family: "FoundersGrotesk", Helvetica Arial sans-serif;
+}
+
+/* line 26, ../scss/_type.scss */
+h4 {
+  font-family: "FoundersGroteskSemiCond", Helvetica Arial sans-serif;
+}
+
+/* line 30, ../scss/_type.scss */
+h1 {
+  font-size: 2em;
+  line-height: 1.1em;
+}
+
+/* line 35, ../scss/_type.scss */
+h2 {
+  font-size: 1.2em;
+  line-height: 1.2em;
+  font-style: normal;
+}
+
+/* line 41, ../scss/_type.scss */
+h3 {
+  font-size: 36px;
+  font-style: italic;
+  line-height: 115%;
+  letter-spacing: -.025em;
+}
+
+/* line 48, ../scss/_type.scss */
+h4 {
+  font-size: 18px;
+  font-style: normal;
+  letter-spacing: 1px;
+}
+
+/* line 54, ../scss/_type.scss */
+h5 {
+  font-size: 24px;
+  text-transform: uppercase;
+}
+
+/* line 59, ../scss/_type.scss */
+h6 {
+  font-size: 24px;
+  text-transform: uppercase;
+}
+
+/* line 1, ../scss/_layout.scss */
+html,
+body {
+  height: 100%;
+}
+
+/* line 6, ../scss/_layout.scss */
+body {
+  margin: 0;
+  overflow: hidden;
+  overflow-y: auto;
+}
+
+/* line 12, ../scss/_layout.scss */
+#fixed-layout {
+  position: fixed;
+  height: calc(100%);
+  width: calc(100%);
+  box-sizing: border-box;
+}
+
+/* line 19, ../scss/_layout.scss */
+#fixed-layout-header-area {
+  position: absolute;
+  width: 100%;
+  height: 40px;
+  z-index: 1;
+  padding: 10px 0;
+  box-sizing: border-box;
+}
+
+/* line 28, ../scss/_layout.scss */
+#fixed-layout-content-area {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  padding: 60px 0 0 0;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+/* line 38, ../scss/_layout.scss */
+#fixed-layout-content-area .scrollable {
+  overflow-y: auto;
+  height: 100%;
+}
+
+@media (min-width: 480px) {
+  /* line 45, ../scss/_layout.scss */
+  #fixed-layout-header-area {
+    height: 50px;
+  }
+}
+@media (min-width: 640px) {
+  /* line 46, ../scss/_layout.scss */
+  #fixed-layout-header-area {
+    height: 60px;
+  }
+}
+@media (min-width: 800px) {
+  /* line 47, ../scss/_layout.scss */
+  #fixed-layout-header-area {
+    height: 70px;
+  }
+}
+@media (min-width: 960px) {
+  /* line 48, ../scss/_layout.scss */
+  #fixed-layout-header-area {
+    height: 80px;
+  }
+}
+@media (min-width: 480px) {
+  /* line 50, ../scss/_layout.scss */
+  #fixed-layout-content-area {
+    padding-top: 70px;
+  }
+}
+@media (min-width: 640px) {
+  /* line 51, ../scss/_layout.scss */
+  #fixed-layout-content-area {
+    padding-top: 80px;
+  }
+}
+@media (min-width: 800px) {
+  /* line 52, ../scss/_layout.scss */
+  #fixed-layout-content-area {
+    padding-top: 90px;
+  }
+}
+@media (min-width: 960px) {
+  /* line 53, ../scss/_layout.scss */
+  #fixed-layout-content-area {
+    padding-top: 100px;
+  }
+}
+/* line 2, ../scss/_header.scss */
+#fixed-layout-header-area {
+  font-size: 13pt;
+}
+/* line 5, ../scss/_header.scss */
+#fixed-layout-header-area > * {
+  height: 1em;
+  display: inline-block;
+  background-color: #fff;
+  padding: 0.5em;
+  vertical-align: top;
+}
+/* line 12, ../scss/_header.scss */
+#fixed-layout-header-area > * img {
+  display: block;
+}
+
+@media (min-width: 480px) {
+  /* line 19, ../scss/_header.scss */
+  #fixed-layout-header-area {
+    font-size: 18pt;
+  }
+}
+@media (min-width: 640px) {
+  /* line 20, ../scss/_header.scss */
+  #fixed-layout-header-area {
+    font-size: 20pt;
+  }
+}
+@media (min-width: 800px) {
+  /* line 21, ../scss/_header.scss */
+  #fixed-layout-header-area {
+    font-size: 22pt;
+  }
+}
+@media (min-width: 960px) {
+  /* line 22, ../scss/_header.scss */
+  #fixed-layout-header-area {
+    font-size: 25pt;
+  }
+}
+/* line 25, ../scss/_header.scss */
+#hamburger {
+  cursor: pointer;
+  padding: 0.5em 1em;
+}
+/* line 28, ../scss/_header.scss */
+#hamburger img {
+  position: relative;
+  top: 20%;
+  height: 60%;
+}
+
+/* line 36, ../scss/_header.scss */
+#logo {
+  font-family: "Tiempos Headline Regular", Times, serif;
+}
+/* line 39, ../scss/_header.scss */
+#logo img {
+  height: 100%;
+}
+
+/* line 45, ../scss/_header.scss */
+#tagline {
+  position: absolute;
+  right: 10px;
+}
+/* line 49, ../scss/_header.scss */
+#tagline span {
+  letter-spacing: 0.01em;
+  font-size: 0.72em;
+  position: relative;
+  top: 0.2em;
+  font-family: "FoundersGroteskSemiCond", Helvetica, sans-serif;
+}
+
+@media (max-width: 800px) {
+  /* line 58, ../scss/_header.scss */
+  #tagline {
+    display: none;
+  }
+}
+/* line 1, ../scss/_menu.scss */
+#flyout-menu {
+  background-color: #000;
+  color: #fff;
+  position: absolute;
+  z-index: 9999;
+  width: 100%;
+  height: 100%;
+  max-width: 360px;
+  box-sizing: border-box;
+  padding: 40px 0 40px 40px;
+  font-size: 18px;
+  text-transform: uppercase;
+  -webkit-font-smoothing: antialiased;
+  -moz-transform: translateX(-100%);
+  -ms-transform: translateX(-100%);
+  -webkit-transform: translateX(-100%);
+  transform: translateX(-100%);
+  -moz-transition: -moz-transform 0.2s;
+  -o-transition: -o-transform 0.2s;
+  -webkit-transition: -webkit-transform 0.2s;
+  transition: transform 0.2s;
+}
+@media (min-width: 768px) {
+  /* line 1, ../scss/_menu.scss */
+  #flyout-menu {
+    font-size: 24px;
+  }
+}
+/* line 20, ../scss/_menu.scss */
+#flyout-menu.open {
+  -moz-transform: translateX(0);
+  -ms-transform: translateX(0);
+  -webkit-transform: translateX(0);
+  transform: translateX(0);
+}
+/* line 24, ../scss/_menu.scss */
+#flyout-menu .close-button {
+  cursor: pointer;
+  display: inline-block;
+  width: 1.2em;
+}
+/* line 30, ../scss/_menu.scss */
+#flyout-menu ul {
+  padding: 0;
+  margin: 1.5rem 0 0 0;
+}
+/* line 35, ../scss/_menu.scss */
+#flyout-menu li {
+  display: block;
+  margin: 0;
+}
+/* line 40, ../scss/_menu.scss */
+#flyout-menu a {
+  color: #fff;
+  text-decoration: none;
+}
+/* line 46, ../scss/_menu.scss */
+#flyout-menu .page-menu a {
+  margin-bottom: 10pt;
+  position: relative;
+  padding-bottom: 5px;
+  background-repeat: repeat-x;
+  white-space: nowrap;
+  background-position: left 100px;
+  text-decoration: none;
+}
+/* line 55, ../scss/_menu.scss */
+#flyout-menu .page-menu a:hover {
+  background-position: left bottom;
+}
+/* line 59, ../scss/_menu.scss */
+#flyout-menu .page-menu a.underline-1 {
+  background-image: url(../images/underlines/001_w.png);
+}
+/* line 60, ../scss/_menu.scss */
+#flyout-menu .page-menu a.underline-2 {
+  background-image: url(../images/underlines/002_w.png);
+}
+/* line 61, ../scss/_menu.scss */
+#flyout-menu .page-menu a.underline-3 {
+  background-image: url(../images/underlines/003_w.png);
+}
+/* line 62, ../scss/_menu.scss */
+#flyout-menu .page-menu a.underline-4 {
+  background-image: url(../images/underlines/004_w.png);
+}
+/* line 63, ../scss/_menu.scss */
+#flyout-menu .page-menu a.underline-5 {
+  background-image: url(../images/underlines/005_w.png);
+}
+/* line 64, ../scss/_menu.scss */
+#flyout-menu .page-menu a.underline-6 {
+  background-image: url(../images/underlines/006_w.png);
+}
+/* line 65, ../scss/_menu.scss */
+#flyout-menu .page-menu a.underline-7 {
+  background-image: url(../images/underlines/007_w.png);
+}
+/* line 66, ../scss/_menu.scss */
+#flyout-menu .page-menu a.underline-8 {
+  background-image: url(../images/underlines/008_w.png);
+}
+/* line 67, ../scss/_menu.scss */
+#flyout-menu .page-menu a.underline-9 {
+  background-image: url(../images/underlines/009_w.png);
+}
+/* line 68, ../scss/_menu.scss */
+#flyout-menu .page-menu a.underline-10 {
+  background-image: url(../images/underlines/010_w.png);
+}
+/* line 69, ../scss/_menu.scss */
+#flyout-menu .page-menu a.underline-11 {
+  background-image: url(../images/underlines/011_w.png);
+}
+/* line 70, ../scss/_menu.scss */
+#flyout-menu .page-menu a.underline-12 {
+  background-image: url(../images/underlines/012_w.png);
+}
+/* line 71, ../scss/_menu.scss */
+#flyout-menu .page-menu a.underline-13 {
+  background-image: url(../images/underlines/013_w.png);
+}
+/* line 72, ../scss/_menu.scss */
+#flyout-menu .page-menu a.underline-14 {
+  background-image: url(../images/underlines/014_w.png);
+}
+/* line 73, ../scss/_menu.scss */
+#flyout-menu .page-menu a.underline-15 {
+  background-image: url(../images/underlines/015_w.png);
+}
+/* line 74, ../scss/_menu.scss */
+#flyout-menu .page-menu a.underline-16 {
+  background-image: url(../images/underlines/016_w.png);
+}
+/* line 75, ../scss/_menu.scss */
+#flyout-menu .page-menu a.underline-17 {
+  background-image: url(../images/underlines/017_w.png);
+}
+/* line 76, ../scss/_menu.scss */
+#flyout-menu .page-menu a.underline-18 {
+  background-image: url(../images/underlines/018_w.png);
+}
+/* line 80, ../scss/_menu.scss */
+#flyout-menu .dialogue-menu ul {
+  text-transform: capitalize;
+  font-size: 18px;
+  padding-left: 2rem;
+}
+/* line 85, ../scss/_menu.scss */
+#flyout-menu .dialogue-menu ul li {
+  display: inline-block;
+  margin-right: 0.5em;
+}
+/* line 93, ../scss/_menu.scss */
+#flyout-menu .page-menu a,
+#flyout-menu .dialogue-menu li a {
+  padding-bottom: 10px;
+  display: inline-block;
+  cursor: pointer;
+  line-height: 1;
+  margin-bottom: 5pt;
+}
+/* line 104, ../scss/_menu.scss */
+#flyout-menu .scrollable {
+  overflow-y: auto;
+  height: 100%;
+  padding-right: 40px;
+}
+/* line 110, ../scss/_menu.scss */
+#flyout-menu .logo {
+  margin-top: 2em;
+}
+
+/* line 110, ../scss/_menu.scss */
+#flyout-menu .logo {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 40px;
+}
+
+
+/* line 127, ../scss/_menu.scss */
+#flyout-menu .dialogue-menu {
+  display: none;
+}
+
+
+@media (min-width: 1030px) {
+  /* line 4, ../scss/_content.scss */
+  #fixed-layout-content-area #scrollleft {
+    position: absolute;
+    top: 10%;
+    left: 0;
+    z-index: 5000;
+    height: 100%;
+    width: 5%;
+    cursor: url(../images/prev.png), auto;
+    cursor: -webkit-image-set(url(../images/prev.png) 1x), auto;
+  }
+  /* line 15, ../scss/_content.scss */
+  #fixed-layout-content-area #scrollright {
+    position: absolute;
+    top: 10%;
+    right: 0;
+    z-index: 5000;
+    height: 100%;
+    width: 5%;
+    cursor: url(../images/next.png), auto;
+    cursor: -webkit-image-set(url(../images/next.png) 1x), auto;
+  }
+}
+/* line 27, ../scss/_content.scss */
+#fixed-layout-content-area article {
+  padding: 20px 20px 4rem 20px;
+}
+/* line 30, ../scss/_content.scss */
+#fixed-layout-content-area article > h1:first-child, #fixed-layout-content-area article > .inner > h1:first-child {
+  margin-top: 0;
+}
+/* line 36, ../scss/_content.scss */
+#fixed-layout-content-area a {
+  text-decoration: none;
+  color: #00459E;
+  -moz-transition: color 0.2s;
+  -o-transition: color 0.2s;
+  -webkit-transition: color 0.2s;
+  transition: color 0.2s;
+}
+/* line 41, ../scss/_content.scss */
+#fixed-layout-content-area a:hover {
+  color: #196AD2;
+}
+/* line 48, ../scss/_content.scss */
+#fixed-layout-content-area .hentry a {
+  color: #000;
+  position: relative;
+  padding-bottom: 5px;
+  background-repeat: repeat-x;
+  background-position: left 100px;
+  text-decoration: none;
+}
+/* line 56, ../scss/_content.scss */
+#fixed-layout-content-area .hentry a:hover {
+  background-position: left bottom;
+}
+/* line 60, ../scss/_content.scss */
+#fixed-layout-content-area .hentry a.underline-1 {
+  background-image: url(../images/underlines/001.png);
+}
+/* line 61, ../scss/_content.scss */
+#fixed-layout-content-area .hentry a.underline-2 {
+  background-image: url(../images/underlines/002.png);
+}
+/* line 62, ../scss/_content.scss */
+#fixed-layout-content-area .hentry a.underline-3 {
+  background-image: url(../images/underlines/003.png);
+}
+/* line 63, ../scss/_content.scss */
+#fixed-layout-content-area .hentry a.underline-4 {
+  background-image: url(../images/underlines/004.png);
+}
+/* line 64, ../scss/_content.scss */
+#fixed-layout-content-area .hentry a.underline-5 {
+  background-image: url(../images/underlines/005.png);
+}
+/* line 65, ../scss/_content.scss */
+#fixed-layout-content-area .hentry a.underline-6 {
+  background-image: url(../images/underlines/006.png);
+}
+/* line 66, ../scss/_content.scss */
+#fixed-layout-content-area .hentry a.underline-7 {
+  background-image: url(../images/underlines/007.png);
+}
+/* line 67, ../scss/_content.scss */
+#fixed-layout-content-area .hentry a.underline-8 {
+  background-image: url(../images/underlines/008.png);
+}
+/* line 68, ../scss/_content.scss */
+#fixed-layout-content-area .hentry a.underline-9 {
+  background-image: url(../images/underlines/009.png);
+}
+/* line 69, ../scss/_content.scss */
+#fixed-layout-content-area .hentry a.underline-10 {
+  background-image: url(../images/underlines/010.png);
+}
+/* line 70, ../scss/_content.scss */
+#fixed-layout-content-area .hentry a.underline-11 {
+  background-image: url(../images/underlines/011.png);
+}
+/* line 71, ../scss/_content.scss */
+#fixed-layout-content-area .hentry a.underline-12 {
+  background-image: url(../images/underlines/012.png);
+}
+/* line 72, ../scss/_content.scss */
+#fixed-layout-content-area .hentry a.underline-13 {
+  background-image: url(../images/underlines/013.png);
+}
+/* line 73, ../scss/_content.scss */
+#fixed-layout-content-area .hentry a.underline-14 {
+  background-image: url(../images/underlines/014.png);
+}
+/* line 74, ../scss/_content.scss */
+#fixed-layout-content-area .hentry a.underline-15 {
+  background-image: url(../images/underlines/015.png);
+}
+/* line 75, ../scss/_content.scss */
+#fixed-layout-content-area .hentry a.underline-16 {
+  background-image: url(../images/underlines/016.png);
+}
+/* line 76, ../scss/_content.scss */
+#fixed-layout-content-area .hentry a.underline-17 {
+  background-image: url(../images/underlines/017.png);
+}
+/* line 77, ../scss/_content.scss */
+#fixed-layout-content-area .hentry a.underline-18 {
+  background-image: url(../images/underlines/018.png);
+}
+/* line 82, ../scss/_content.scss */
+#fixed-layout-content-area .h2 a {
+  color: #000;
+  position: relative;
+  padding-bottom: 5px;
+  background-repeat: repeat-x;
+  background-position: left 100px;
+  text-decoration: none;
+}
+/* line 90, ../scss/_content.scss */
+#fixed-layout-content-area .h2 a.active {
+  background-position: left bottom;
+}
+/* line 94, ../scss/_content.scss */
+#fixed-layout-content-area .h2 a.underline-1 {
+  background-image: url(../images/underlines/001.png);
+}
+/* line 95, ../scss/_content.scss */
+#fixed-layout-content-area .h2 a.underline-2 {
+  background-image: url(../images/underlines/002.png);
+}
+/* line 96, ../scss/_content.scss */
+#fixed-layout-content-area .h2 a.underline-3 {
+  background-image: url(../images/underlines/003.png);
+}
+/* line 97, ../scss/_content.scss */
+#fixed-layout-content-area .h2 a.underline-4 {
+  background-image: url(../images/underlines/004.png);
+}
+/* line 98, ../scss/_content.scss */
+#fixed-layout-content-area .h2 a.underline-5 {
+  background-image: url(../images/underlines/005.png);
+}
+/* line 99, ../scss/_content.scss */
+#fixed-layout-content-area .h2 a.underline-6 {
+  background-image: url(../images/underlines/006.png);
+}
+/* line 100, ../scss/_content.scss */
+#fixed-layout-content-area .h2 a.underline-7 {
+  background-image: url(../images/underlines/007.png);
+}
+/* line 101, ../scss/_content.scss */
+#fixed-layout-content-area .h2 a.underline-8 {
+  background-image: url(../images/underlines/008.png);
+}
+/* line 102, ../scss/_content.scss */
+#fixed-layout-content-area .h2 a.underline-9 {
+  background-image: url(../images/underlines/009.png);
+}
+/* line 103, ../scss/_content.scss */
+#fixed-layout-content-area .h2 a.underline-10 {
+  background-image: url(../images/underlines/010.png);
+}
+/* line 104, ../scss/_content.scss */
+#fixed-layout-content-area .h2 a.underline-11 {
+  background-image: url(../images/underlines/011.png);
+}
+/* line 105, ../scss/_content.scss */
+#fixed-layout-content-area .h2 a.underline-12 {
+  background-image: url(../images/underlines/012.png);
+}
+/* line 106, ../scss/_content.scss */
+#fixed-layout-content-area .h2 a.underline-13 {
+  background-image: url(../images/underlines/013.png);
+}
+/* line 107, ../scss/_content.scss */
+#fixed-layout-content-area .h2 a.underline-14 {
+  background-image: url(../images/underlines/014.png);
+}
+/* line 108, ../scss/_content.scss */
+#fixed-layout-content-area .h2 a.underline-15 {
+  background-image: url(../images/underlines/015.png);
+}
+/* line 109, ../scss/_content.scss */
+#fixed-layout-content-area .h2 a.underline-16 {
+  background-image: url(../images/underlines/016.png);
+}
+/* line 110, ../scss/_content.scss */
+#fixed-layout-content-area .h2 a.underline-17 {
+  background-image: url(../images/underlines/017.png);
+}
+/* line 111, ../scss/_content.scss */
+#fixed-layout-content-area .h2 a.underline-18 {
+  background-image: url(../images/underlines/018.png);
+}
+
+/* line 116, ../scss/_content.scss */
+.home #fixed-layout-content-area {
+  padding: 20px;
+}
+/* line 119, ../scss/_content.scss */
+.home #fixed-layout-content-area article {
+  height: 100%;
+}
+/* line 121, ../scss/_content.scss */
+.home #fixed-layout-content-area article video {
+  margin: auto;
+  height: 100%;
+  max-width: 100%;
+  display: block;
+}
+
+/* line 131, ../scss/_content.scss */
+.page-template-page-content #fixed-layout-content-area article {
+  max-width: 30em;
+  margin: auto;
+}
+/* line 135, ../scss/_content.scss */
+.page-template-page-content #fixed-layout-content-area article h1 {
+  font-size: 3em;
+}
+/* line 138, ../scss/_content.scss */
+.page-template-page-content #fixed-layout-content-area article h2 {
+  font-size: 1em;
+  text-align: right;
+  font-style: italic;
+}
+@media (min-width: 380px) {
+  /* line 131, ../scss/_content.scss */
+  .page-template-page-content #fixed-layout-content-area article {
+    font-size: 1.4rem;
+    line-height: 1.3;
+  }
+  /* line 148, ../scss/_content.scss */
+  .page-template-page-content #fixed-layout-content-area article h1 {
+    font-size: 2em;
+  }
+}
+
+/* line 156, ../scss/_content.scss */
+.single #fixed-layout-content-area article {
+  padding-left: 10%;
+  padding-right: 10%;
+  max-width: 50rem;
+  margin: auto;
+}
+/* line 162, ../scss/_content.scss */
+.single #fixed-layout-content-area article h1 {
+  font-weight: normal;
+  margin: 0;
+}
+/* line 167, ../scss/_content.scss */
+.single #fixed-layout-content-area article h2 {
+  margin-top: 0;
+  text-align: right;
+  font-size: 1.6em;
+  font-family: "FoundersGroteskSemiCond", Helvetica Arial sans-serif;
+}
+@media (min-width: 768px) {
+  /* line 174, ../scss/_content.scss */
+  .single #fixed-layout-content-area article h1 {
+    font-size: 3rem;
+  }
+  /* line 177, ../scss/_content.scss */
+  .single #fixed-layout-content-area article h2 {
+    font-size: 2.5rem;
+  }
+}
+/* line 182, ../scss/_content.scss */
+.single #fixed-layout-content-area article .wp-caption {
+  position: relative;
+  margin: 2rem auto;
+  max-width: 34rem;
+  width: 100% !important;
+}
+/* line 188, ../scss/_content.scss */
+.single #fixed-layout-content-area article .wp-caption img {
+  display: block;
+}
+/* line 192, ../scss/_content.scss */
+.single #fixed-layout-content-area article .wp-caption .wp-caption-text {
+  font-size: 12px;
+  line-height: 1.4;
+  font-family: "Tiempos Headline Italic", Times, serif;
+  font-style: italic;
+  letter-spacing: 0;
+  max-width: 100%;
+  margin-top: 10px;
+}
+@media (min-width: 70rem) {
+  /* line 205, ../scss/_content.scss */
+  .single #fixed-layout-content-area article .wp-caption .wp-caption-text {
+    position: absolute;
+    top: 0;
+    left: 35rem;
+    width: 7rem;
+    font-size: 14px;
+    margin-top: 0;
+  }
+}
+/* line 215, ../scss/_content.scss */
+.single #fixed-layout-content-area article p {
+  max-width: 30rem;
+  margin: 1rem auto;
+}
+/* line 219, ../scss/_content.scss */
+.single #fixed-layout-content-area article blockquote {
+  text-align: center;
+  font-family: "Tiempos Headline Italic", Times, serif;
+  font-size: 1.4rem;
+  line-height: 1.2;
+  margin: 2rem auto 3rem auto;
+  max-width: 40rem;
+}
+/* line 227, ../scss/_content.scss */
+.single #fixed-layout-content-area article blockquote p {
+  max-width: 40rem;
+  margin: 0;
+}
+/* line 232, ../scss/_content.scss */
+.single #fixed-layout-content-area article blockquote cite {
+  font-family: "Tiempos Headline Regular", Times, serif;
+  display: block;
+  font-style: normal;
+  font-size: 1rem;
+  margin-top: 1rem;
+}
+/* line 239, ../scss/_content.scss */
+.single #fixed-layout-content-area article blockquote cite:before {
+  content: "\2014";
+}
+@media (min-width: 768px) {
+  /* line 219, ../scss/_content.scss */
+  .single #fixed-layout-content-area article blockquote {
+    font-size: 2.4rem;
+  }
+  /* line 247, ../scss/_content.scss */
+  .single #fixed-layout-content-area article blockquote cite {
+    font-size: 1.5rem;
+  }
+}
+
+/* line 1, ../scss/_projects.scss */
+.blog {
+  height: 500%;
+}
+/* line 5, ../scss/_projects.scss */
+.blog .synopses {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  white-space: nowrap;
+  padding: 60px 0 0 0;
+  box-sizing: border-box;
+  overflow: hidden;
+  overflow-x: auto;
+  font-size: 0;
+}
+@media (min-width: 480px) {
+  /* line 18, ../scss/_projects.scss */
+  .blog .synopses {
+    padding-top: 70px;
+  }
+}
+@media (min-width: 640px) {
+  /* line 19, ../scss/_projects.scss */
+  .blog .synopses {
+    padding-top: 80px;
+  }
+}
+@media (min-width: 800px) {
+  /* line 20, ../scss/_projects.scss */
+  .blog .synopses {
+    padding-top: 90px;
+  }
+}
+@media (min-width: 960px) {
+  /* line 21, ../scss/_projects.scss */
+  .blog .synopses {
+    padding-top: 100px;
+  }
+}
+/* line 23, ../scss/_projects.scss */
+.blog article {
+  font-size: 1rem;
+  white-space: normal;
+  display: inline-block;
+  width: 80%;
+  height: 100%;
+  overflow: hidden;
+  overflow-y: auto;
+  overflow: hidden;
+  margin: 0 10px;
+  background-color: #fff;
+  box-sizing: border-box;
+}
+@media (min-width: 640px) {
+  /* line 38, ../scss/_projects.scss */
+  .blog article {
+    width: 42%;
+    /*min-width: 400px;*/
+  }
+}
+@media (min-width: 1120px) {
+  /* line 45, ../scss/_projects.scss */
+  .blog article {
+    width: 30%;
+  }
+}
+/* line 54, ../scss/_projects.scss */
+.blog article > .inner:after {
+  content: "";
+  display: table;
+  height: 20px;
+  clear: both;
+}
+/* line 61, ../scss/_projects.scss */
+.blog article:first-child {
+  margin-left: 20px;
+}
+/* line 65, ../scss/_projects.scss */
+.blog article:last-child {
+  margin-right: 20px;
+}
+/* line 69, ../scss/_projects.scss */
+.blog article h1 {
+  font-size: 1.7rem;
+}
+/* line 73, ../scss/_projects.scss */
+.blog article h2 {
+  text-align: right;
+  margin-bottom: 3em;
+}
+/* line 78, ../scss/_projects.scss */
+.blog .post-image {
+  display: none;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-attachment: fixed;
+  background-position: center center;
+  background-repeat: no-repeat;
+  -moz-transition: opacity 0.5s;
+  -o-transition: opacity 0.5s;
+  -webkit-transition: opacity 0.5s;
+  transition: opacity 0.5s;
+}
+
+/* line 4, ../scss/_post-navigation.scss */
+.post-navigation > div {
+  position: absolute;
+  top: 50%;
+  -moz-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  -webkit-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+/* line 10, ../scss/_post-navigation.scss */
+.post-navigation a {
+  display: block;
+  width: 1.4rem;
+  text-indent: -9999px;
+  background-size: contain;
+  background-position: center center;
+  background-repeat: no-repeat;
+}
+/* line 20, ../scss/_post-navigation.scss */
+.post-navigation a:before {
+  content: "";
+  display: block;
+  padding-bottom: 160%;
+}
+/* line 27, ../scss/_post-navigation.scss */
+.post-navigation .previous-post-link {
+  left: 5px;
+}
+/* line 28, ../scss/_post-navigation.scss */
+.post-navigation .next-post-link {
+  right: 25px;
+}
+/* line 29, ../scss/_post-navigation.scss */
+.post-navigation .previous-post-link a {
+  background-image: url(../images/arrow-previous.png);
+}
+/* line 30, ../scss/_post-navigation.scss */
+.post-navigation .next-post-link a {
+  background-image: url(../images/arrow-next.png);
+}
+@media (min-width: 76rem) {
+  /* line 33, ../scss/_post-navigation.scss */
+  .post-navigation .previous-post-link {
+    left: 25px;
+  }
+  /* line 34, ../scss/_post-navigation.scss */
+  .post-navigation .next-post-link {
+    right: 45px;
+  }
+}
+
+/* line 1, ../scss/_dialogue.scss */
+.dialogue-menu li a,
+.dialogue {
+  position: relative;
+  padding-bottom: 5px;
+  background-repeat: repeat-x;
+  white-space: nowrap;
+  background-position: left 100px;
+  text-decoration: none;
+}
+/* line 10, ../scss/_dialogue.scss */
+.dialogue-menu li a.active,
+.dialogue.active {
+  background-position: left bottom;
+}
+@media (min-width: 1025px) {
+  /* line 15, ../scss/_dialogue.scss */
+  .dialogue-menu li a.hover,
+  .dialogue.hover {
+    background-position: left bottom;
+  }
+}
+
+/* line 23, ../scss/_dialogue.scss */
+.dialogue.underline-1 {
+  background-image: url(../images/underlines/001.png);
+}
+/* line 24, ../scss/_dialogue.scss */
+.dialogue.underline-2 {
+  background-image: url(../images/underlines/002.png);
+}
+/* line 25, ../scss/_dialogue.scss */
+.dialogue.underline-3 {
+  background-image: url(../images/underlines/003.png);
+}
+/* line 26, ../scss/_dialogue.scss */
+.dialogue.underline-4 {
+  background-image: url(../images/underlines/004.png);
+}
+/* line 27, ../scss/_dialogue.scss */
+.dialogue.underline-5 {
+  background-image: url(../images/underlines/005.png);
+}
+/* line 28, ../scss/_dialogue.scss */
+.dialogue.underline-6 {
+  background-image: url(../images/underlines/006.png);
+}
+/* line 29, ../scss/_dialogue.scss */
+.dialogue.underline-7 {
+  background-image: url(../images/underlines/007.png);
+}
+/* line 30, ../scss/_dialogue.scss */
+.dialogue.underline-8 {
+  background-image: url(../images/underlines/008.png);
+}
+/* line 31, ../scss/_dialogue.scss */
+.dialogue.underline-9 {
+  background-image: url(../images/underlines/009.png);
+}
+/* line 32, ../scss/_dialogue.scss */
+.dialogue.underline-10 {
+  background-image: url(../images/underlines/010.png);
+}
+/* line 33, ../scss/_dialogue.scss */
+.dialogue.underline-11 {
+  background-image: url(../images/underlines/011.png);
+}
+/* line 34, ../scss/_dialogue.scss */
+.dialogue.underline-12 {
+  background-image: url(../images/underlines/012.png);
+}
+/* line 35, ../scss/_dialogue.scss */
+.dialogue.underline-13 {
+  background-image: url(../images/underlines/013.png);
+}
+/* line 36, ../scss/_dialogue.scss */
+.dialogue.underline-14 {
+  background-image: url(../images/underlines/014.png);
+}
+/* line 37, ../scss/_dialogue.scss */
+.dialogue.underline-15 {
+  background-image: url(../images/underlines/015.png);
+}
+/* line 38, ../scss/_dialogue.scss */
+.dialogue.underline-16 {
+  background-image: url(../images/underlines/016.png);
+}
+/* line 39, ../scss/_dialogue.scss */
+.dialogue.underline-17 {
+  background-image: url(../images/underlines/017.png);
+}
+/* line 40, ../scss/_dialogue.scss */
+.dialogue.underline-18 {
+  background-image: url(../images/underlines/018.png);
+}
+
+/* line 44, ../scss/_dialogue.scss */
+.dialogue-menu li a.underline-1 {
+  background-image: url(../images/underlines/001_w.png);
+}
+/* line 45, ../scss/_dialogue.scss */
+.dialogue-menu li a.underline-2 {
+  background-image: url(../images/underlines/002_w.png);
+}
+/* line 46, ../scss/_dialogue.scss */
+.dialogue-menu li a.underline-3 {
+  background-image: url(../images/underlines/003_w.png);
+}
+/* line 47, ../scss/_dialogue.scss */
+.dialogue-menu li a.underline-4 {
+  background-image: url(../images/underlines/004_w.png);
+}
+/* line 48, ../scss/_dialogue.scss */
+.dialogue-menu li a.underline-5 {
+  background-image: url(../images/underlines/005_w.png);
+}
+/* line 49, ../scss/_dialogue.scss */
+.dialogue-menu li a.underline-6 {
+  background-image: url(../images/underlines/006_w.png);
+}
+/* line 50, ../scss/_dialogue.scss */
+.dialogue-menu li a.underline-7 {
+  background-image: url(../images/underlines/007_w.png);
+}
+/* line 51, ../scss/_dialogue.scss */
+.dialogue-menu li a.underline-8 {
+  background-image: url(../images/underlines/008_w.png);
+}
+/* line 52, ../scss/_dialogue.scss */
+.dialogue-menu li a.underline-9 {
+  background-image: url(../images/underlines/009_w.png);
+}
+/* line 53, ../scss/_dialogue.scss */
+.dialogue-menu li a.underline-10 {
+  background-image: url(../images/underlines/010_w.png);
+}
+/* line 54, ../scss/_dialogue.scss */
+.dialogue-menu li a.underline-11 {
+  background-image: url(../images/underlines/011_w.png);
+}
+/* line 55, ../scss/_dialogue.scss */
+.dialogue-menu li a.underline-12 {
+  background-image: url(../images/underlines/012_w.png);
+}
+/* line 56, ../scss/_dialogue.scss */
+.dialogue-menu li a.underline-13 {
+  background-image: url(../images/underlines/013_w.png);
+}
+/* line 57, ../scss/_dialogue.scss */
+.dialogue-menu li a.underline-14 {
+  background-image: url(../images/underlines/014_w.png);
+}
+/* line 58, ../scss/_dialogue.scss */
+.dialogue-menu li a.underline-15 {
+  background-image: url(../images/underlines/015_w.png);
+}
+/* line 59, ../scss/_dialogue.scss */
+.dialogue-menu li a.underline-16 {
+  background-image: url(../images/underlines/016_w.png);
+}
+/* line 60, ../scss/_dialogue.scss */
+.dialogue-menu li a.underline-17 {
+  background-image: url(../images/underlines/017_w.png);
+}
+/* line 61, ../scss/_dialogue.scss */
+.dialogue-menu li a.underline-18 {
+  background-image: url(../images/underlines/018_w.png);
+}
+
+/* line 8, ../scss/_temp.scss */
+.funky header {
+  position: absolute;
+  width: 100%;
+  z-index: 1;
+  box-sizing: border-box;
+}
+/* line 15, ../scss/_temp.scss */
+.funky h1 {
+  margin: 0.8rem 0 0 0;
+  font-size: 1.9rem;
+}
+@media (min-width: 480px) {
+  /* line 20, ../scss/_temp.scss */
+  .funky h1 {
+    margin: 0;
+    font-size: 2rem;
+  }
+}
+/* line 26, ../scss/_temp.scss */
+.funky main {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  white-space: nowrap;
+  padding: 120px 0 20px 0;
+  box-sizing: border-box;
+  overflow: hidden;
+  overflow-x: auto;
+  font-size: 0;
+}
+/* line 39, ../scss/_temp.scss */
+.funky article {
+  font-size: 1rem;
+  white-space: normal;
+  display: inline-block;
+  width: 80%;
+  height: 100%;
+  overflow: hidden;
+  overflow-y: auto;
+  overflow: hidden;
+  margin: 0 10px;
+  background-color: #fff;
+  box-sizing: border-box;
+}
+@media (min-width: 640px) {
+  /* line 54, ../scss/_temp.scss */
+  .funky article {
+    width: 42%;
+    /*min-width: 400px;*/
+  }
+}
+@media (min-width: 1120px) {
+  /* line 61, ../scss/_temp.scss */
+  .funky article {
+    width: 30%;
+  }
+}
+/* line 66, ../scss/_temp.scss */
+.funky article > .inner {
+  padding: 20px;
+}
+/* line 70, ../scss/_temp.scss */
+.funky article > .inner:after {
+  content: "";
+  display: table;
+  height: 20px;
+  clear: both;
+}
+/* line 77, ../scss/_temp.scss */
+.funky article:first-child {
+  margin-left: 0;
+}
+/* line 81, ../scss/_temp.scss */
+.funky article:last-child {
+  margin-right: 0;
+}
+/* line 85, ../scss/_temp.scss */
+.funky article h1 {
+  font-size: 1.7rem;
+}
+
+/*# sourceMappingURL=style.css.map */
