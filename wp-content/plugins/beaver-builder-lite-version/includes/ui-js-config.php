@@ -30,6 +30,7 @@ echo 'FLBuilderConfig              = ' . FLBuilderUtils::json_encode( apply_filt
 	'postStatus'                 => get_post_status(),
 	'postType'                   => get_post_type(),
 	'services'                   => FLBuilderServices::get_services_data(),
+	'safemode'                   => isset( $_GET['safemode'] ) ? true : false,
 	'simpleUi'                   => $simple_ui ? true : false,
 	'upgradeUrl'                 => FLBuilderModel::get_upgrade_url( array(
 		'utm_medium'   => ( true === FL_BUILDER_LITE ? 'bb-lite' : 'bb-demo' ),
@@ -87,8 +88,9 @@ echo 'FLBuilderConfig              = ' . FLBuilderUtils::json_encode( apply_filt
 	 * @see fl_media_modal_types
 	 */
 	'uploadTypes'                => apply_filters( 'fl_media_modal_types', array(
-		'image' => 'image',
-		'video' => 'video',
+		'image'      => 'image',
+		'video'      => 'video',
+		'videoTypes' => 'mp4,m4v,webm',
 	) ),
 	/**
 	 * @see fl_builder_recent_icons
@@ -113,6 +115,8 @@ echo 'FLBuilderConfig              = ' . FLBuilderUtils::json_encode( apply_filt
 		'ace_editor.css',
 	)),
 	'wooActive'                  => class_exists( 'WooCommerce' ) ? true : false,
+	'uploadPath'                 => ( get_option( 'upload_path' ) && get_option( 'upload_path' ) != 'wp-content/uploads' ) ? true : false,
+	'uploadUrl'                  => admin_url( 'options-media.php' ),
 	/**
 	 * @see fl_builder_default_image_select_size
 	 */

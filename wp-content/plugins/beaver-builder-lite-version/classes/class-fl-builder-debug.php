@@ -243,7 +243,7 @@ final class FL_Debug {
 				if ( ! empty( $modules ) ) {
 					$args = array(
 						'name' => 'Child Theme builder modules folder detected.',
-						'data' => implode( '<br>', $modules ),
+						'data' => implode( "\n", $modules ),
 					);
 					self::register( 'child_bb_modules', $args );
 				}
@@ -540,6 +540,25 @@ final class FL_Debug {
 			);
 			self::register( 'mysql_size', $args );
 		}
+
+		$collation = $wpdb->get_var( "SELECT TABLE_COLLATION FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = '{$wpdb->postmeta}';" );
+		$args      = array(
+			'name' => 'PostMeta DB Collation',
+			'data' => $collation,
+		);
+		self::register( 'collationdb', $args );
+
+		$args = array(
+			'name' => 'DB_CHARSET',
+			'data' => DB_CHARSET,
+		);
+		self::register( 'charset', $args );
+
+		$args = array(
+			'name' => 'DB_COLLATE',
+			'data' => DB_COLLATE,
+		);
+		self::register( 'collation', $args );
 
 		$args = array(
 			'name' => 'Server Info',

@@ -180,14 +180,12 @@
 }
 
 /* Full Height Rows */
-.fl-row-full-height .fl-row-content-wrap,
 .fl-row-custom-height .fl-row-content-wrap {
 	display: -webkit-box;
 	display: -webkit-flex;
 	display: -ms-flexbox;
 	display: flex;
 	min-height: 100vh;
-
 }
 .fl-row-overlap-top .fl-row-content-wrap {
 	display: -webkit-inline-box;
@@ -200,9 +198,7 @@
 .fl-row-custom-height .fl-row-content-wrap {
 	min-height: 0;
 }
-.fl-builder-edit .fl-row-full-height .fl-row-content-wrap {
-	min-height: calc( 100vh - 48px );
-}
+
 .fl-row-full-height .fl-row-content,
 .fl-row-custom-height .fl-row-content {
   -webkit-box-flex: 1 1 auto;
@@ -291,27 +287,6 @@
 	-webkit-justify-content: flex-start;
 }
 
-/* Full height iPad with portrait orientation. */
-@media all and (device-width: 768px) and (device-height: 1024px) and (orientation:portrait){
-  .fl-row-full-height .fl-row-content-wrap{
-    min-height: 1024px;
-  }
-}
-
-/* Full height iPad with landscape orientation. */
-@media all and (device-width: 1024px) and (device-height: 768px) and (orientation:landscape){
-  .fl-row-full-height .fl-row-content-wrap{
-    min-height: 768px;
-  }
-}
-
-/* Full height iPhone 5. You can also target devices with aspect ratio. */
-@media screen and (device-aspect-ratio: 40/71) {
-  .fl-row-full-height .fl-row-content-wrap {
-    min-height: 500px;
-  }
-}
-
 /* Column Groups
 ------------------------------------------------------ */
 
@@ -362,7 +337,15 @@
 	content: none;
 }
 
+/* Equal height align top */
+.fl-col-group-nested.fl-col-group-equal-height.fl-col-group-align-top .fl-col-content,
+.fl-col-group-equal-height.fl-col-group-align-top .fl-col-content {
+	justify-content: flex-start;
+	-webkit-justify-content: flex-start;	
+}
+
 /* Equal height align center */
+.fl-col-group-nested.fl-col-group-equal-height.fl-col-group-align-center .fl-col-content,
 .fl-col-group-equal-height.fl-col-group-align-center .fl-col-content {
 	align-items: center;
 	justify-content: center;
@@ -375,6 +358,7 @@
 }
 
 /* Equal height align bottom */
+.fl-col-group-nested.fl-col-group-equal-height.fl-col-group-align-bottom .fl-col-content,
 .fl-col-group-equal-height.fl-col-group-align-bottom .fl-col-content {
 	justify-content: flex-end;
 	-webkit-justify-content: flex-end;
@@ -583,7 +567,6 @@
 	line-height: 18px;
 	overflow: hidden;
 	text-overflow: ellipsis;
-	white-space: nowrap;
 }
 .fl-photo-caption-below {
 	padding-bottom: 20px;
@@ -835,7 +818,7 @@ img.mfp-img {
 	stroke-width: 0;
 	width:100%;
 }
-/*
+/**
 Fix ipad parallax issue on safari
 https://core.trac.wordpress.org/ticket/48802
 https://core.trac.wordpress.org/ticket/49285
