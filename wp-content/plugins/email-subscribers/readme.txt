@@ -4,9 +4,9 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Author URI: https://www.icegram.com/
 Tags: email marketing, subscription, autoresponder, post notification, welcome email
 Requires at least: 3.9
-Tested up to: 5.9.0
+Tested up to: 6.0
 Requires PHP: 5.6
-Stable tag: 5.3.2
+Stable tag: 5.4.1
 License: GPLv3
 License URI: http://www.gnu.org/licenses
 
@@ -310,19 +310,130 @@ Refer [here](https://www.icegram.com/documentation/es-faq/).
 
 == Upgrade Notice ==
 
-= 5.3.2 =
+= 5.4.1 =
 
-* New: Send emails using Sendinblue [PRO]
-* New: Send emails using Mailjet [PRO]
-* Fix: Secured Icegram from reflected XSS vulnerability [Thanks to WPScan team]
+* Update: Better spam score checking
+* Fix: Custom HTML block in drag and drop editor not working properly 
+* Fix: Workflow not running on some setup
+* Fix: Optional parameter warning in PHP 8.1
+* Fix: Issue while creating a new campaign on some setup 
 
 == Changelog ==
+
+**5.4.1 (29.06.2022)**
+
+* Update: Better spam score checking
+* Fix: Custom HTML block in drag and drop editor not working properly 
+* Fix: Workflow not running on some setup
+* Fix: Optional parameter warning in PHP 8.1
+* Fix: Issue while creating a new campaign on some setup
+
+**5.4.0 (23.06.2022)**
+
+* New: Added drag and drop editor for building forms
+* Update: Added status dropdown to add to list action
+* Update: Support to exclude some Broadcast emails in Broadcast archive shortcode
+
+**5.3.18 (17.06.2022)**
+
+* New: Added shortcode to display broadcast archive
+* Update: Improve spam score service
+
+**5.3.17 (08.06.2022)**
+* New: Added support for sending notifications on page publish
+
+**5.3.16 (02.06.2022)**
+* Enhancement: Improved dashboard stats
+* Fix: Warning message when using Gmail/Yahoo email addresses in From email setting
+* Fix: Email sending issue with Amazon SES when subject contains emojis[PRO]
+* Fix: Duplicate post digest notifications[PRO]
+* Fix: Unsubscribe message getting inserted after HTML tag
+* Fix: Caching issue when editing campaign when Redis cache enable
+* Fix: PHP warning when subscription form is deleted from backend and form widget is active on frontend
+* Fix: Incorrect link tracking stats for campaigns created using Drag-n-Drop editor[PR0]
+
+**5.3.15 (18.05.2022)**
+
+* New: Advanced audience filters[PRO]
+* Fix: Template already exists issue on some setup using Amazon SES[PRO]
+
+**5.3.14 (11.05.2022)**
+
+* New: Automatic email list cleanup service[PRO]
+* Fix: Issue with Created at date while importing
+* Fix: Unsubscribe link not working when WooCommerce styling is selected in workflow emails
+* Fix: Issue with Drag and Drop campaign editor on some setup
+* Fix: Unable to subscribe with a Hotmail email address[PRO]
+
+**5.3.13 (27.04.2022)**
+
+* New: Support for categories for custom post type[PRO]
+* New: Added preview for sequence emails[PRO]
+
+**5.3.12 (21.04.2022)**
+
+* Fix: Incorrect name when registering through Ultimate Member plugin
+* Fix: Broadcast send now not working on sites having timezone before UTC
+* Fix: Security related issues [Thanks to WP team]
+
+**5.3.11 (12.04.2022)**
+
+* New: Now ES forms can be added to remote sites/pages via HTML code
+* Fix: Workflows are not getting saved in some cases
+* Fix: Security related issues [Thanks to WP team]
+
+**5.3.10 (07.04.2022)**
+
+* Fix: Security related issues [Thanks to WP team]
+* Enhancement: Small UI improvements
+
+**5.3.9 (30.03.2022)**
+
+* New: Added WooCommerce email template support in workflows
+* Fix: Template gallery not working with WordPress v4.9 and lower
+
+**5.3.8 (24.03.2022)**
+
+* New: Added predefined workflows
+* New: Email template gallery improvements
+* Fix: Sequence were not getting sent on time in some cases
+* Fix: Styling was not properly getting applied to the post excerpt in campaigns
+
+**5.3.7 (16.03.2022)**
+
+* New: Added preview for workflow emails
+* Fix: Duplicate drafts were getting created for campaigns in some cases
+* Fix: Custom post type were not getting saved in post notification campaigns
+* Fix: Encoding issues with pepipost email sending
+
+**5.3.6 (09.03.2022)**
+
+* New: Added support for fallback value for NAME and FIRSTNAME keywords
+* Fix: PHP warning on custom post type page
+* Fix: Welcome email issue with Rainmaker integration
+
+**5.3.5 (02.03.2022)**
+
+* New: Added ajax option for submission of forms
+* Fix: HTML Tags getting escaped from the form description
+* Update: Added support for two new regions(AF South 1 and EU South 1) in Amazon SES [PRO]
+
+**5.3.4 (24.02.2022)**
+
+* New: Integration of WooCommerce coupon in workflows [PRO] 
+
+**5.3.3 (17.02.2022)**
+
+* New: Added template gallery for campaigns
+* New: Added {{POSTAUTHORAVATAR}} and {{POSTAUTHORAVATARLINK-ONLY}} keywords for Post Notification
+* New: Added option to send welcome/ confirmation email after importing of contacts
+* Fix: Improved security related to nonce validations [Thanks to WP team]
 
 **5.3.2 (09.02.2022)**
 
 * New: Send emails using Sendinblue [PRO]
 * New: Send emails using Mailjet [PRO]
-* Fix: Secured Icegram from reflected XSS vulnerability [Thanks to WPScan team]
+* Fix: Secured Email Subscribers from reflected XSS vulnerability [Thanks to WPScan team]
 
 **5.3.1 (01.02.2022)**
 

@@ -650,7 +650,7 @@ if ( ! class_exists( 'ES_Mailer' ) ) {
 			}
 
 			$total_recipients = count( $emails );
-			
+
 			$can_use_batch_api = $total_recipients > 1 && $this->mailer->support_batch_sending;
 			$can_use_batch_api = apply_filters( 'ig_es_can_use_batch_api_' . $this->mailer->slug, $can_use_batch_api, $total_recipients, $sender_data );
 
@@ -704,7 +704,12 @@ if ( ! class_exists( 'ES_Mailer' ) ) {
 					if ( $this->add_unsubscribe_link ) {
 						$unsubscribe_message = get_option( 'ig_es_unsubscribe_link_content', '' );
 						$unsubscribe_message = stripslashes( $unsubscribe_message );
-						$content            .= $unsubscribe_message;
+						if ( false === strpos( $content, '<html' ) ) {
+							$content = $content . $unsubscribe_message;
+						} else {
+							// If content is HTML then we need to place unsubscribe message and tracking image inside body tag.
+							$content = str_replace( '</body>', $unsubscribe_message . '</body>', $content );
+						}
 					}
 
 					$subject = $this->replace_global_tags( $subject );
@@ -718,7 +723,12 @@ if ( ! class_exists( 'ES_Mailer' ) ) {
 					if ( $this->can_track_open() ) {
 						$tracking_pixel_variable_name = $this->mailer->get_variable_prefix() . $this->mailer->get_variable_string( 'tracking_pixel_url' ) . $this->mailer->get_variable_suffix();
 						$tracking_image               = '<img src="' . $tracking_pixel_variable_name . '" width="1" height="1" alt=""/>';
-						$content                     .= $tracking_image;
+						if ( false === strpos( $content, '<html' ) ) {
+							$content = $content . $tracking_image;
+						} else {
+							// If content is HTML then we need to place unsubscribe message and tracking image inside body tag.
+							$content = str_replace( '</body>', $tracking_image . '</body>', $content );
+						}
 					}
 
 					if ( $this->unsubscribe_headers_enabled() && is_callable( array( $this->mailer, 'set_list_unsubscribe_header' ) ) ) {
@@ -747,7 +757,7 @@ if ( ! class_exists( 'ES_Mailer' ) ) {
 				$contact_id = ! empty( $this->email_id_map[ $email ] ) ? $this->email_id_map[ $email ] : 0;
 
 				$merge_tags['contact_id'] = $contact_id;
-				
+
 				$merge_tags = array_merge( $merge_tags, $this->get_contact_merge_tags( $contact_id ) );
 
 				$this->link_data = array(
@@ -968,7 +978,14 @@ if ( ! class_exists( 'ES_Mailer' ) ) {
 			// Can Track Email Open? Add pixel.
 			$email_tracking_image = $this->get_tracking_pixel();
 
-			$message->body = $message->body . $unsubscribe_message . $email_tracking_image;
+
+			if ( false === strpos( $message->body, '<html' ) ) {
+				$message->body = $message->body . $unsubscribe_message . $email_tracking_image;
+			} else {
+				// If content is HTML then we need to place unsubscribe message and tracking image inside body tag.
+				$message->body = str_replace( '</body>', $unsubscribe_message . $email_tracking_image . '</body>', $message->body );
+			}
+
 
 			if ( $nl2br ) {
 				$message->body = nl2br( $message->body );
@@ -1132,10 +1149,12 @@ if ( ! class_exists( 'ES_Mailer' ) ) {
 			$subscribe_link   = $this->get_subscribe_link( $link_data );
 			$unsubscribe_link = $this->get_unsubscribe_link( $link_data );
 
-			$content = str_replace( '{{NAME}}', $name, $content );
-			$content = str_replace( '{{FIRSTNAME}}', $first_name, $content );
-			$content = str_replace( '{{LASTNAME}}', $last_name, $content );
-			$content = str_replace( '{{EMAIL}}', $email, $content );
+			$content = ES_Common::replace_keywords_with_fallback( $content, array(
+				'FIRSTNAME' => $first_name,
+				'NAME'      => $name,
+				'LASTNAME'  => $last_name,
+				'EMAIL'     => $email
+			) );
 
 			// TODO: This is a quick workaround to handle <a href="{{LINK}}?utm_source=abc" >
 			// TODO: Implement some good solution
@@ -1250,7 +1269,7 @@ if ( ! class_exists( 'ES_Mailer' ) ) {
 				$link_data['action'] = 'click';
 
 				// get all links from the basecontent
-				preg_match_all( '# href=(\'|")?(https?[^\'"]+)(\'|")?#', $content, $links );
+				preg_match_all( '#<a\s+(?:[^>]*?\s+)?href=(\'|")?(https?[^\'"]+)(\'|")?#', $content, $links );
 
 				$links = $links[2];
 
@@ -1330,7 +1349,7 @@ if ( ! class_exists( 'ES_Mailer' ) ) {
 			if ( $this->can_track_clicks() ) {
 
 				// get all links from the basecontent
-				preg_match_all( '# href=(\'|")?(https?[^\'"]+)(\'|")?#', $content, $links );
+				preg_match_all( '#<a\s+(?:[^>]*?\s+)?href=(\'|")?(https?[^\'"]+)(\'|")?#', $content, $links );
 
 				$links = $links[2];
 
@@ -1548,7 +1567,7 @@ if ( ! class_exists( 'ES_Mailer' ) ) {
 		public function get_tracking_pixel( $link_data = array() ) {
 
 			$tracking_image = '';
-			
+
 			if ( $this->can_track_open() ) {
 
 				if ( empty( $link_data ) ) {
@@ -1663,17 +1682,9 @@ if ( ! class_exists( 'ES_Mailer' ) ) {
 		 * @since 4.3.5
 		 */
 		public function get_total_emails_send_now( $max_send = 100000 ) {
-
-			$current_date = ig_es_get_current_date();
-			$current_hour = ig_es_get_current_hour();
-
+			
 			// Get total emails sent in this hour
-			$email_sent_data = ES_Common::get_ig_option( 'email_sent_data', array() );
-
-			$total_emails_sent = 0;
-			if ( is_array( $email_sent_data ) && ! empty( $email_sent_data[ $current_date ] ) && ! empty( $email_sent_data[ $current_date ][ $current_hour ] ) ) {
-				$total_emails_sent = $email_sent_data[ $current_date ][ $current_hour ];
-			}
+			$total_emails_sent = ES_Common::count_sent_emails();
 
 			// Get hourly limit
 			$can_total_emails_send_in_hour = ES_Common::get_ig_option( 'hourly_email_send_limit', 300 );
@@ -1759,7 +1770,7 @@ if ( ! class_exists( 'ES_Mailer' ) ) {
 				$mail_to_subject   = sprintf( __( 'Unsubscribe %1$s from %2$s', 'email-subscribers' ), $email, get_bloginfo( 'name' ) );
 				$list_unsub_header = sprintf(
 					/* translators: 1. Unsubscribe link 2. Blog admin email */
-					'<%1$s>,<mailto:%2$s?subject=%3$s',
+					'<%1$s>,<mailto:%2$s?subject=%3$s>',
 					$unsubscribe_link,
 					get_bloginfo( 'admin_email' ),
 					$mail_to_subject

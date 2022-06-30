@@ -150,4 +150,22 @@ class IG_ES_DB_Unsubscribe_Feedback extends ES_DB {
 
 		return $existing_feedback_id;
 	}
+
+	public static function get_feedback_counts( $start_time ) {
+		global $wpdb;
+
+		if ( is_numeric( $start_time ) ) {
+			$start_time = gmdate( 'Y-m-d H:i:s', $start_time );
+		}
+		
+		$feedback_counts = $wpdb->get_results( 
+			$wpdb->prepare(
+			"SELECT feedback_slug, COUNT(feedback_slug) AS feedback_count FROM `{$wpdb->prefix}ig_unsubscribe_feedback` WHERE `updated_at` > %s GROUP BY `feedback_slug`"
+			, $start_time
+			),
+			ARRAY_A
+		);
+
+		return $feedback_counts;
+	}
 }

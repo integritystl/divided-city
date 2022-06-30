@@ -166,8 +166,15 @@ class ES_DB_Workflows extends ES_DB {
 		}
 
 		if ( isset( $query_args['type'] ) ) {
-			$query[] = ' type = %d ';
-			$args[]  = $query_args['type'];
+			if ( is_numeric( $query_args['type'] ) ) {
+				$query[] = ' type = %d ';
+				$args[]  = $query_args['type'];
+			} elseif ( is_array( $query_args['type'] ) && count( $query_args['type'] ) > 0 ) {
+				$type_count        = count( $query_args['type'] );
+				$type_placeholders = array_fill( 0, $type_count, '%d' );
+				$query[]           = ' type IN( ' . implode( ',', $type_placeholders ) . ' )';
+				$args              = array_merge( $args, $query_args['type'] );
+			}
 		}
 
 		$query = apply_filters( 'ig_es_workflow_list_where_caluse', $query );
@@ -311,6 +318,8 @@ class ES_DB_Workflows extends ES_DB {
 	 */
 	public function delete_workflows( $ids = array() ) {
 
+		global $wpbd;
+
 		if ( ! is_array( $ids ) ) {
 			$ids = array( absint( $ids ) );
 		}
@@ -318,14 +327,19 @@ class ES_DB_Workflows extends ES_DB {
 		if ( is_array( $ids ) && count( $ids ) > 0 ) {
 
 			foreach ( $ids as $id ) {
-				$this->delete( absint( $id ) );
+				$id    = absint( $id );
+				$where = $wpbd->prepare( "$this->primary_key = %d AND type != %d", $id, IG_ES_WORKFLOW_TYPE_SYSTEM );
 
-				/**
-				 * Take necessary cleanup steps using this hook
-				 *
-				 * @since 4.4.1
-				 */
-				do_action( 'ig_es_workflow_deleted', $id );
+				$workflow_deleted = $this->delete_by_condition( $where );
+
+				if ( $workflow_deleted ) {
+					/**
+					 * Take necessary cleanup steps using this hook
+					 *
+					 * @since 4.4.1
+					 */
+					do_action( 'ig_es_workflow_deleted', $id );
+				}
 			}
 
 			return true;
@@ -365,7 +379,7 @@ class ES_DB_Workflows extends ES_DB {
 			$updated = $wpbd->query( $wpbd->prepare( "UPDATE {$wpbd->prefix}ig_workflows SET status = %d WHERE id IN ($workflow_ids_str)", $status ) );
 		}
 
-		do_action( 'ig_es_workflow_status_changed', $workflow_ids );
+		do_action( 'ig_es_workflow_status_changed', $workflow_ids, $status );
 
 		return $updated;
 
@@ -587,6 +601,7 @@ class ES_DB_Workflows extends ES_DB {
 					),
 				),
 				'status' => ES()->mailer->can_send_welcome_email() ? 1 : 0,
+				'type'   => IG_ES_WORKFLOW_TYPE_SYSTEM,
 			),
 			array(
 				'trigger_name' => 'ig_es_user_unconfirmed',
@@ -600,6 +615,7 @@ class ES_DB_Workflows extends ES_DB {
 					)
 				),
 				'status' => 1,
+				'type'   => IG_ES_WORKFLOW_TYPE_SYSTEM,
 			),
 			array(
 				'trigger_name' => 'ig_es_user_subscribed',
@@ -613,6 +629,7 @@ class ES_DB_Workflows extends ES_DB {
 					),
 				),
 				'status' => ES()->mailer->can_send_add_new_contact_notification() ? 1 : 0,
+				'type'   => IG_ES_WORKFLOW_TYPE_SYSTEM,
 			),
 			array(
 				'trigger_name' => 'ig_es_campaign_sent',
@@ -626,6 +643,7 @@ class ES_DB_Workflows extends ES_DB {
 					),
 				),
 				'status' => ES()->mailer->can_send_cron_admin_email() ? 1 : 0,
+				'type'   => IG_ES_WORKFLOW_TYPE_SYSTEM,
 			),
 		);
 
@@ -726,13 +744,13 @@ class ES_DB_Workflows extends ES_DB {
 	 * @return int $campaign_id ID of campaign used for tracking workflow emails.
 	 */
 	public function get_workflow_parent_campaign_id( $workflow_id ) {
-		$campaign_id = 0;
-		$parent_id   = $workflow_id;
-		$campaigns   = ES()->campaigns_db->get_campaign_by_parent_id( $parent_id );
 
-		if ( ! empty( $campaigns ) ) {
-			$campaign    = array_shift( $campaigns );
-			$campaign_id = $campaign['id'];
+		$campaign_id   = 0;
+		$parent_id     = $workflow_id;
+		$campaigns_ids = ES()->campaigns_db->get_campaigns_by_parent_id( $parent_id );
+
+		if ( ! empty( $campaigns_ids ) ) {
+			$campaign_id = $campaigns_ids[0];
 		}
 
 		return $campaign_id;
@@ -747,10 +765,10 @@ class ES_DB_Workflows extends ES_DB {
 	 *
 	 * @return int $tracking_campaign_id Created tracking campaign ID.
 	 */
-	public function create_parent_workflow_campaign( $workflow_id, $workflow_title ) {
-		$campaign_name   = ! empty( $workflow_title ) ? $workflow_title : '';
+	public function create_parent_workflow_campaign( $workflow_id, $workflow_data ) {
+		$campaign_name   = ! empty( $workflow_data['title'] ) ? $workflow_data['title'] : '';
 		$campaign_slug   = ! empty( $campaign_name ) ? sanitize_title( $campaign_name ) : '';
-		$campaign_type   = 'workflow';
+		$campaign_type   = IG_CAMPAIGN_TYPE_WORKFLOW;
 		$campaign_status = 1;
 		$parent_id       = $workflow_id;
 		$parent_type     = 'workflow';
@@ -765,6 +783,36 @@ class ES_DB_Workflows extends ES_DB {
 		);
 
 		$campaign_id = ES()->campaigns_db->save_campaign( $campaing_data );
+
+		return $campaign_id;
+	}
+
+	/**
+	 * Create parent campaign for workflow
+	 *
+	 * @since 4.5.3
+	 *
+	 * @param string $workflow_title Wordkfow title
+	 *
+	 * @return int $tracking_campaign_id Created tracking campaign ID.
+	 */
+	public function update_parent_workflow_campaign( $parent_campaign_id, $workflow_data ) {
+		
+		if ( empty( $parent_campaign_id ) ) {
+			return;
+		}
+
+		$campaign_name   = ! empty( $workflow_data['title'] ) ? $workflow_data['title'] : '';
+		$campaign_slug   = ! empty( $campaign_name ) ? sanitize_title( $campaign_name ) : '';
+		$campaign_status = $workflow_data['status'];
+
+		$campaing_data = array(
+			'name'        => $campaign_name,
+			'slug'        => $campaign_slug,
+			'status'      => $campaign_status,
+		);
+
+		$campaign_id = ES()->campaigns_db->save_campaign( $campaing_data, $parent_campaign_id );
 
 		return $campaign_id;
 	}

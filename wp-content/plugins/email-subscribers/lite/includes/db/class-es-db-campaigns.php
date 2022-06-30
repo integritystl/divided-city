@@ -681,6 +681,7 @@ class ES_DB_Campaigns extends ES_DB {
 			}
 
 			$campaigns = $this->get_by_conditions( $where, ARRAY_A );
+			$campaigns = apply_filters( 'ig_es_campaigns_for_post', $campaigns, $post_id );
 		}
 
 		return $campaigns;
@@ -719,6 +720,10 @@ class ES_DB_Campaigns extends ES_DB {
 
 			// Changing status of child campaigns along with its parent campaign id
 			$wpbd->query( $wpbd->prepare( "UPDATE {$wpbd->prefix}ig_campaigns SET status = %d WHERE parent_id IN({$id_str})", $status ) );
+		}
+
+		if ( $updated ) {
+			do_action( 'ig_es_after_campaign_status_updated', $campaign_ids, $status );
 		}
 
 		return $updated;
