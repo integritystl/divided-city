@@ -56,29 +56,30 @@ class ES_DB_Contacts extends ES_DB {
 	 */
 	public function get_columns() {
 		$columns = array(
-			'id'             	=> '%d',
-			'wp_user_id'     	=> '%d',
-			'first_name'     	=> '%s',
-			'last_name'      	=> '%s',
-			'email'          	=> '%s',
-			'source'         	=> '%s',
-			'ip_address'	 	=> '%s',
-			'country_code'	 	=> '%s',
-			'form_id'        	=> '%d',
-			'status'         	=> '%s',
-			'unsubscribed'   	=> '%d',
-			'hash'           	=> '%s',
-			'engagement_score' 	=> '%f',
-			'created_at'     	=> '%s',
-			'updated_at'     	=> '%s',
-			'is_verified'    	=> '%d',
-			'is_disposable'  	=> '%d',
-			'is_rolebased'   	=> '%d',
-			'is_webmail'     	=> '%d',
-			'is_deliverable' 	=> '%d',
-			'is_sendsafely'  	=> '%d',
-			'timezone'  	    => '%s',
-			'meta'           	=> '%s',
+			'id'               => '%d',
+			'wp_user_id'       => '%d',
+			'first_name'       => '%s',
+			'last_name'        => '%s',
+			'email'            => '%s',
+			'source'           => '%s',
+			'ip_address'       => '%s',
+			'country_code'     => '%s',
+			'form_id'          => '%d',
+			'status'           => '%s',
+			'reference_site'   => '%s',
+			'unsubscribed'     => '%d',
+			'hash'             => '%s',
+			'engagement_score' => '%f',
+			'created_at'       => '%s',
+			'updated_at'       => '%s',
+			'is_verified'      => '%d',
+			'is_disposable'    => '%d',
+			'is_rolebased'     => '%d',
+			'is_webmail'       => '%d',
+			'is_deliverable'   => '%d',
+			'is_sendsafely'    => '%d',
+			'timezone'         => '%s',
+			'meta'             => '%s',
 		);
 
 		$custom_field_data = ES()->custom_fields_db->get_custom_fields();
@@ -113,6 +114,7 @@ class ES_DB_Contacts extends ES_DB {
 			'country_code'	 	=> '',
 			'form_id'        	=> 0,
 			'status'         	=> 'verified',
+			'reference_site'    => '',
 			'unsubscribed'   	=> 0,
 			'hash'           	=> '',
 			'engagement_score' 	=> 4,
@@ -124,6 +126,7 @@ class ES_DB_Contacts extends ES_DB {
 			'is_webmail'     	=> 0,
 			'is_deliverable' 	=> 1,
 			'is_sendsafely'  	=> 1,
+			'timezone'			=> '',
 			'meta'           	=> '',
 		);
 
@@ -1059,14 +1062,13 @@ class ES_DB_Contacts extends ES_DB {
 
 	}
 
-
 	/**
 	 * Insert IP along with subscriber data
 	 *
 	 * @param $data
 	 * @param string $type
 	 *
-	 * @return array
+	 * @return int
 	 *
 	 * @since 4.6.3
 	 */
@@ -1086,6 +1088,14 @@ class ES_DB_Contacts extends ES_DB {
 				$data = apply_filters( 'ig_es_get_country_based_on_ip', $data );
 			}
 		}
-		return parent::insert( $data, $type );
+		$contact_id = parent::insert( $data, $type );
+		do_action( 'ig_es_new_contact_inserted', $contact_id );
+		return $contact_id;
+	}
+
+	public function get_last_contact_id() {
+		global $wpdb;
+		$last_contact_id = $wpdb->get_var( "SELECT id FROM {$wpdb->prefix}ig_contacts ORDER BY id DESC LIMIT 0, 1" );
+		return $last_contact_id;
 	}
 }

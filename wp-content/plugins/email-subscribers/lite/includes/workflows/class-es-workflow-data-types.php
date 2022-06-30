@@ -71,6 +71,6 @@ class ES_Workflow_Data_Types extends ES_Workflow_Registry {
 	 * @return array
 	 */
 	public static function get_non_stored_data_types() {
-		return array( 'shop' );
+		return array( 'shop', 'coupon' );
 	}
 }

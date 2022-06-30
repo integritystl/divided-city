@@ -484,7 +484,7 @@ if ( ! class_exists( 'IG_ES_Campaign_Rules' ) ) {
 		 *
 		 * @return string $operator Field operator
 		 */
-		private function get_field_operator( $operator ) {
+		public function get_field_operator( $operator ) {
 			$operator = esc_sql( stripslashes( $operator ) );
 
 			switch ( $operator ) {
@@ -673,7 +673,7 @@ if ( ! class_exists( 'IG_ES_Campaign_Rules' ) ) {
 		 *
 		 * @return array List of comparison operators
 		 */
-		private function get_operators() {
+		public function get_operators() {
 			return array(
 				'is'               => esc_html__( 'is', 'email-subscribers' ),
 				'is_not'           => esc_html__( 'is not', 'email-subscribers' ),
@@ -696,7 +696,7 @@ if ( ! class_exists( 'IG_ES_Campaign_Rules' ) ) {
 		 *
 		 * @return array Simple operators
 		 */
-		private function get_simple_operators() {
+		public function get_simple_operators() {
 			return array(
 				'is'               => esc_html__( 'is', 'email-subscribers' ),
 				'is_not'           => esc_html__( 'is not', 'email-subscribers' ),
@@ -713,7 +713,7 @@ if ( ! class_exists( 'IG_ES_Campaign_Rules' ) ) {
 		 *
 		 * @return array String operators
 		 */
-		private function get_string_operators() {
+		public function get_string_operators() {
 			return array(
 				'is'           => esc_html__( 'is', 'email-subscribers' ),
 				'is_not'       => esc_html__( 'is not', 'email-subscribers' ),
@@ -732,7 +732,7 @@ if ( ! class_exists( 'IG_ES_Campaign_Rules' ) ) {
 		 *
 		 * @return array Boolean operator
 		 */
-		private function get_bool_operators() {
+		public function get_bool_operators() {
 			return array(
 				'is'     => esc_html__( 'is', 'email-subscribers' ),
 				'is_not' => esc_html__( 'is not', 'email-subscribers' ),

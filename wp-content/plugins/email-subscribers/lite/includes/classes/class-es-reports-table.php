@@ -73,6 +73,42 @@ class ES_Reports_Table extends ES_List_Table {
 							</div>
 						</div>
 					</header>
+					<?php
+					$show_campaign_notice = $emails_to_be_sent > 0 && ES()->is_starter();
+					if ( $show_campaign_notice ) {
+						?>
+						<style>
+							#ig-es-edit-campaign-notice p {
+								margin: 0.2em 0;
+							}
+						</style>
+						<div id="ig-es-edit-campaign-notice" class="px-5 py-2 notice notice-info">
+							<p>
+								<?php
+									/* translators: 1. Pause icon HTML 2. Resume icon HTML */
+									echo sprintf( esc_html__( 'While the campaign is still sending, you can pause %1$s it anytime and update the campaign. Once you are done, resume %2$s the campaign.', 'email-subscribers' ), '<svg fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" stroke="currentColor" viewBox="0 0 24 24" class="h-6 w-6 text-gray-500 ml-1 inline">
+									<path d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+								</svg>',
+									'<svg fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" stroke="currentColor" viewBox="0 0 24 24" class="h-6 w-6 text-blue-500 inline">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+								</svg>' );
+								?>
+							</p>
+							<p>
+								<strong>
+									<?php
+										echo esc_html__( 'Note: ', 'email-subscribers' );
+									?>
+								</strong>
+								<?php
+									echo esc_html__( 'Changes will reflect from the next sending batch.', 'email-subscribers' );
+								?>
+							</p>
+						</div>
+						<?php
+					}
+					?>
 					<div>
 						<hr class="wp-header-end">
 					</div>

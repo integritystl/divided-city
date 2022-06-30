@@ -54,10 +54,6 @@ class ES_Campaigns_Table extends ES_List_Table {
 		$this->init();
 	}
 
-	public function init() {
-		add_action( 'admin_footer', array( $this, 'add_editor_choice_popup' ) );
-	}
-
 	/**
 	 * Get class instance.
 	 *
@@ -130,9 +126,9 @@ class ES_Campaigns_Table extends ES_List_Table {
 			</div>
 			<div class="mt-1">
 			<!-- Start-IG-Code -->
-			<a href="admin.php?page=es_notifications&action=new" class="ig-es-create-campaign ig-es-title-button ml-2 align-middle"><?php esc_html_e( 'Create Post Notification', 'email-subscribers' ); ?></a>
+			<a href="admin.php?page=es_gallery&campaign-type=<?php echo esc_attr( IG_CAMPAIGN_TYPE_POST_NOTIFICATION ); ?>" class="ig-es-title-button ml-2 align-middle"><?php esc_html_e( 'Create Post Notification', 'email-subscribers' ); ?></a>
 			<!-- End-IG-Code -->
-			<a href="admin.php?page=es_newsletters" class="ig-es-create-campaign ig-es-title-button ml-2 align-middle"><?php esc_html_e( 'Send Broadcast', 'email-subscribers' ); ?></a>
+			<a href="admin.php?page=es_gallery&campaign-type=<?php echo esc_attr( IG_CAMPAIGN_TYPE_NEWSLETTER ); ?>" class="ig-es-title-button ml-2 align-middle"><?php esc_html_e( 'Send Broadcast', 'email-subscribers' ); ?></a>
 			
 				<?php
 				do_action( 'ig_es_after_campaign_type_buttons' );
@@ -152,7 +148,6 @@ class ES_Campaigns_Table extends ES_List_Table {
 				?>
 
 				<a href="edit.php?post_type=es_template" class="ig-es-imp-button px-3 py-1 ml-2 align-middle"><?php esc_html_e( 'Manage Templates', 'email-subscribers' ); ?></a>
-				<a href="admin.php?page=es_drag_and_drop" class="ig-es-link-button px-3 py-1 ml-2 align-middle"><?php esc_html_e( 'Try New Editor', 'email-subscribers' ); ?></a>
 
 
 			</div>
@@ -784,68 +779,6 @@ class ES_Campaigns_Table extends ES_List_Table {
 				ES_Common::show_message( $message, 'error' );
 			}
 		}
-	}
-
-	/*
-	* Display the preview of the email content
-	*/
-	public function add_editor_choice_popup() {
-		?>
-		<div class="hidden" id="ig-es-campaign-editor-type-popup">
-			<div class="fixed top-0 left-0 z-50 flex items-center justify-center w-full h-full" style="background-color: rgba(0,0,0,.5);">
-				<div class="absolute h-auto p-4 ml-16 mr-4 text-left bg-white rounded shadow-xl z-80 md:max-w-5xl md:p-3 lg:p-4">
-					<div class="py-2 px-4">
-						<div class="flex border-b border-gray-200 pb-2">
-							<h3 class="text-2xl text-center w-11/12">
-								<?php echo esc_html__( 'Create Campaign', 'email-subscribers' ); ?>
-							</h3>
-							<button id="close-campaign-editor-type-popup" class="text-sm font-medium tracking-wide text-gray-700 select-none no-outline focus:outline-none focus:shadow-outline-red hover:border-red-400 active:shadow-lg">
-								<svg class="h-5 w-5 inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-								</svg>
-							</button>
-						</div>
-					</div>
-					<div class="mx-4 my-2 list-decimal">
-						<div class="mx-auto flex justify-center pt-2">
-							<label class="inline-flex items-center cursor-pointer mr-3 h-22 w-50">
-								<div class="px-3 py-1 border border-gray-200 rounded-lg shadow-md es-mailer-logo es-importer-logo h-18 bg-white">
-									<a href="#" class="campaign-editor-type-choice" data-editor-type="<?php echo esc_attr( IG_ES_DRAG_AND_DROP_EDITOR ); ?>">
-										<div class="border-0 es-logo-wrapper">
-											<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-											<path fill-rule="evenodd" d="M3 4a1 1 0 011-1h4a1 1 0 010 2H6.414l2.293 2.293a1 1 0 01-1.414 1.414L5 6.414V8a1 1 0 01-2 0V4zm9 1a1 1 0 110-2h4a1 1 0 011 1v4a1 1 0 11-2 0V6.414l-2.293 2.293a1 1 0 11-1.414-1.414L13.586 5H12zm-9 7a1 1 0 112 0v1.586l2.293-2.293a1 1 0 011.414 1.414L6.414 15H8a1 1 0 110 2H4a1 1 0 01-1-1v-4zm13-1a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 110-2h1.586l-2.293-2.293a1 1 0 011.414-1.414L15 13.586V12a1 1 0 011-1z" clip-rule="evenodd" />
-											</svg>
-										</div>
-										<p class="mb-2 text-sm inline-block font-medium text-gray-600">
-											<?php 
-												echo esc_html__( 'Create using new Drag & Drop Editor', 'email-subscribers');
-											?>
-										</p>
-									</a>
-								</div>
-							</label>
-							<label class="inline-flex items-center cursor-pointer mr-3 h-22 w-50">
-								<div class="px-3 py-1 border border-gray-200 rounded-lg shadow-md es-mailer-logo es-importer-logo h-18 bg-white">
-									<a href="#" class="campaign-editor-type-choice" data-editor-type="<?php echo esc_attr( IG_ES_CLASSIC_EDITOR ); ?>">
-										<div class="border-0 es-logo-wrapper">
-											<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-											</svg>
-										</div>
-										<p class="mb-2 text-sm inline-block font-medium text-gray-600">
-										<?php 
-											echo esc_html__( 'Create using Classic Editor', 'email-subscribers');
-										?>
-										</p>
-									</a>
-								</div>
-							</label>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<?php
 	}
 
 }

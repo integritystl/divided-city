@@ -20,8 +20,7 @@ class ES_Admin_Notices {
 	 * @var array
 	 */
 	private static $core_notices = array(
-		'update'        => 'update_notice',
-		'trial_consent' => 'show_trial_consent_notice',
+		'update' => 'update_notice',
 	);
 
 	/**
@@ -187,21 +186,6 @@ class ES_Admin_Notices {
 
 		} else {
 			include dirname( __FILE__ ) . '/views/html-notice-updated.php';
-		}
-	}
-
-	/**
-	 * Show trial optin notice.
-	 *
-	 * @since 4.6.1
-	 *
-	 * @modified 4.6.2 Added not is_premium condition to disable notice when the user activates premium plugin after using the lite version.
-	 */
-	public static function show_trial_consent_notice() {
-
-		// Show notice only when onboarding is complete and plan is not premium.
-		if ( IG_ES_Onboarding::is_onboarding_completed() && ! ES()->is_premium() ) {
-			include dirname( __FILE__ ) . '/views/trial-consent.php';
 		}
 	}
 

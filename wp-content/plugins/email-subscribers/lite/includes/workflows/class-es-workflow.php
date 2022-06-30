@@ -140,6 +140,22 @@ class ES_Workflow {
 	);
 
 	/**
+	 * Used to store some extra data at run-time
+	 *
+	 * @since 5.3.4
+	 * @var array
+	 */
+	public static $extra;
+
+	/**
+	 * Is the workflow in preview mode
+	 * @var bool
+	 *
+	 * @since 5.3.6
+	 */
+	public $preview_mode = false;
+
+	/**
 	 * Class constructor
 	 * 
 	 * @param $post mixed (object or post ID)

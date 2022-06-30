@@ -321,6 +321,8 @@ class ES_DB_Sending_Queue {
 			'lists'      => $list_ids,
 			'return_sql' => true, // This flag will return the required sql query
 			'orderby'    => array( 'id' ),
+			'status'	=> 'subscribed',
+			'subscriber_status' => array( 'verified' ),
 		);
 		
 		$schedule_base_time = current_time( 'mysql' );

@@ -1840,3 +1840,71 @@ function ig_es_update_510_db_version() {
 }
 
 /* --------------------- ES 5.1.0(End)--------------------------- */
+
+/* --------------------- ES 5.3.8(Start)--------------------------- */
+
+
+function ig_es_mark_system_workflows() {
+	$workflows = ES()->workflows_db->get_workflows();
+	if ( ! empty( $workflows ) ) {
+
+		$system_triggers = array(
+			'ig_es_user_subscribed',
+			'ig_es_user_unconfirmed',
+			'ig_es_campaign_sent',
+		);
+
+		foreach ( $workflows as $workflow ) {
+			$workflow_id       = $workflow['id'];
+			$trigger_name      = $workflow['trigger_name'];
+			$is_system_trigger = in_array( $trigger_name, $system_triggers, true );
+			if ( $is_system_trigger ) {
+				$data_to_update         = array();
+				$data_to_update['type'] = IG_ES_WORKFLOW_TYPE_SYSTEM;
+				ES()->workflows_db->update( $workflow_id, $data_to_update );
+			}
+		}
+	}
+}
+
+/**
+ * Update DB version
+ *
+ * @since 5.3.8
+ */
+function ig_es_update_538_db_version() {
+	ES_Install::update_db_version( '5.3.8' );
+}
+
+/* --------------------- ES 5.3.8(End)--------------------------- */
+
+/* --------------------- ES 5.4.0(Start)--------------------------- */
+
+/**
+ * Add reference_site column in contacts table
+ *
+ * @since 5.4.0
+ */
+function ig_es_update_540_alter_contacts_table() {
+	global $wpdb;
+
+	$cols = $wpdb->get_col( "SHOW COLUMNS FROM {$wpdb->prefix}ig_contacts" );
+
+	if ( ! in_array( 'reference_site', $cols, true ) ) {
+		$wpdb->query(
+			"ALTER TABLE {$wpdb->prefix}ig_contacts ADD `reference_site` VARCHAR(255) NULL DEFAULT NULL AFTER `ip_address`"
+		);
+
+	}
+}
+
+/**
+ * Update DB version
+ *
+ * @since 5.4.0
+ */
+function ig_es_update_540_db_version() {
+	ES_Install::update_db_version( '5.4.0' );
+}
+
+/* --------------------- ES 5.4.0(End)--------------------------- */

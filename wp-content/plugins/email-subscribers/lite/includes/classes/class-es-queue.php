@@ -300,20 +300,23 @@ if ( ! class_exists( 'ES_Queue' ) ) {
 					$query_args = array(
 						'select'        => array(
 							'lists_subscribers.contact_id AS contact_id',
-							"UNIX_TIMESTAMP ( lists_subscribers.subscribed_at + INTERVAL $offset ) AS timestamp",
+							// Since UNIX_TIMESTAMP expect date to be in session time zone and subscribed_at is already in UTC, we are first converting subscribed_at date from UTC time to session time and then passing it to .
+							"UNIX_TIMESTAMP ( CONVERT_TZ( lists_subscribers.subscribed_at + INTERVAL $offset, '+0:00', @@session.time_zone ) ) AS timestamp",
 						),
 						'sent__not_in'  => array( $campaign_id ),
 						'queue__not_in' => array( $campaign_id ),
 						'lists'         => $list_ids,
 						'conditions'    => $conditions,
-						'having'        => array( "timestamp <= UNIX_TIMESTAMP ( '$end_time' )" ),
+						'having'        => array( "timestamp <= UNIX_TIMESTAMP ( CONVERT_TZ( '$end_time', '+0:00', @@session.time_zone ) )" ),
 						'orderby'       => array( 'timestamp' ),
 						'groupby'       => 'lists_subscribers.contact_id',
+						'status'		=> 'subscribed',
+						'subscriber_status'		=> array( 'verified' ),
 					);
 
 					if ( $grace_period ) {
 						$start_time             = gmdate( 'Y-m-d H:i:s', $now - $grace_period );
-						$query_args['having'][] = "timestamp >= UNIX_TIMESTAMP ( '$start_time' )";
+						$query_args['having'][] = "timestamp >= UNIX_TIMESTAMP ( CONVERT_TZ( '$start_time', '+0:00', @@session.time_zone ) )";
 					}
 
 					$query   = new IG_ES_Subscribers_Query();
@@ -622,6 +625,9 @@ if ( ! class_exists( 'ES_Queue' ) ) {
 								if ( 'optin_confirmation' === $notification_type ) {
 									$merge_tags['contact_id'] = $contact_id;
 									ES()->mailer->send_double_optin_email( $email, $merge_tags );
+								} elseif ( 'optin_welcome_email' === $notification_type ) {
+									$merge_tags['contact_id'] = $contact_id;
+									ES()->mailer->send_welcome_email( $email, $merge_tags );
 								} else {
 									// Enable unsubscribe link and tracking pixel
 									ES()->mailer->add_unsubscribe_link = true;
@@ -1095,6 +1101,3 @@ if ( ! class_exists( 'ES_Queue' ) ) {
 		}
 	}
 }
-
-
-
