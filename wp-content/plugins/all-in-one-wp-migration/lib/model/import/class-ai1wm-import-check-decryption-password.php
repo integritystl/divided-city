@@ -26,40 +26,37 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	die( 'Kangaroos cannot jump here' );
 }
-?>
 
-<div class="ai1wm-container">
-	<div class="ai1wm-row">
-		<div class="ai1wm-left">
-			<div class="ai1wm-holder">
-				<h1>
-					<i class="ai1wm-icon-publish"></i>
-					<?php _e( 'Import Site', AI1WM_PLUGIN_NAME ); ?>
-				</h1>
+class Ai1wm_Import_Check_Decryption_Password {
 
-				<?php if ( is_readable( AI1WM_STORAGE_PATH ) && is_writable( AI1WM_STORAGE_PATH ) ) : ?>
+	public static function execute( $params ) {
+		// Read package.json file
+		$handle = ai1wm_open( ai1wm_package_path( $params ), 'r' );
 
-					<form action="" method="post" id="ai1wm-import-form" class="ai1wm-clear" enctype="multipart/form-data">
+		// Parse package.json file
+		$package = ai1wm_read( $handle, filesize( ai1wm_package_path( $params ) ) );
+		$package = json_decode( $package, true );
 
-						<?php do_action( 'ai1wm_import_left_options' ); ?>
+		// Close handle
+		ai1wm_close( $handle );
 
-						<?php include AI1WM_TEMPLATES_PATH . '/import/import-buttons.php'; ?>
+		if ( ! empty( $params['decryption_password'] ) ) {
+			if ( ai1wm_is_decryption_password_valid( $package['EncryptedSignature'], $params['decryption_password'] ) ) {
+				$params['is_decryption_password_valid'] = true;
 
-						<input type="hidden" name="ai1wm_manual_import" value="1" />
+				$archive = new Ai1wm_Extractor( ai1wm_archive_path( $params ), $params['decryption_password'] );
+				$archive->extract_by_files_array( ai1wm_storage_path( $params ), array( AI1WM_MULTISITE_NAME, AI1WM_DATABASE_NAME ), array(), array() );
 
-					</form>
+				Ai1wm_Status::info( __( 'Done validating the decryption password.', AI1WM_PLUGIN_NAME ) );
+				return $params;
+			}
 
-					<?php do_action( 'ai1wm_import_left_end' ); ?>
+			$decryption_password_error = __( 'The decryption password is not valid.', AI1WM_PLUGIN_NAME );
 
-				<?php else : ?>
+			Ai1wm_Status::backup_is_encrypted( $decryption_password_error );
+			exit;
+		}
 
-					<?php include AI1WM_TEMPLATES_PATH . '/import/import-permissions.php'; ?>
-
-				<?php endif; ?>
-			</div>
-		</div>
-
-		<?php include AI1WM_TEMPLATES_PATH . '/common/sidebar-right.php'; ?>
-
-	</div>
-</div>
+		return $params;
+	}
+}

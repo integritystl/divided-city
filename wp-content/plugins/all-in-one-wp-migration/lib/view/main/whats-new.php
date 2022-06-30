@@ -23,43 +23,9 @@
  * ╚══════╝╚══════╝╚═╝  ╚═╝  ╚═══╝  ╚═╝     ╚═╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝
  */
 
+
 if ( ! defined( 'ABSPATH' ) ) {
 	die( 'Kangaroos cannot jump here' );
 }
-?>
 
-<div class="ai1wm-container">
-	<div class="ai1wm-row">
-		<div class="ai1wm-left">
-			<div class="ai1wm-holder">
-				<h1>
-					<i class="ai1wm-icon-publish"></i>
-					<?php _e( 'Import Site', AI1WM_PLUGIN_NAME ); ?>
-				</h1>
-
-				<?php if ( is_readable( AI1WM_STORAGE_PATH ) && is_writable( AI1WM_STORAGE_PATH ) ) : ?>
-
-					<form action="" method="post" id="ai1wm-import-form" class="ai1wm-clear" enctype="multipart/form-data">
-
-						<?php do_action( 'ai1wm_import_left_options' ); ?>
-
-						<?php include AI1WM_TEMPLATES_PATH . '/import/import-buttons.php'; ?>
-
-						<input type="hidden" name="ai1wm_manual_import" value="1" />
-
-					</form>
-
-					<?php do_action( 'ai1wm_import_left_end' ); ?>
-
-				<?php else : ?>
-
-					<?php include AI1WM_TEMPLATES_PATH . '/import/import-permissions.php'; ?>
-
-				<?php endif; ?>
-			</div>
-		</div>
-
-		<?php include AI1WM_TEMPLATES_PATH . '/common/sidebar-right.php'; ?>
-
-	</div>
-</div>
+printf( ' <span class="ai1wm-icon-bullhorn" title="%s"></span>', __( 'Notification', AI1WM_PLUGIN_NAME ) );

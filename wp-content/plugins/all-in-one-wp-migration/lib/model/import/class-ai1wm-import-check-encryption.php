@@ -26,40 +26,34 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	die( 'Kangaroos cannot jump here' );
 }
-?>
 
-<div class="ai1wm-container">
-	<div class="ai1wm-row">
-		<div class="ai1wm-left">
-			<div class="ai1wm-holder">
-				<h1>
-					<i class="ai1wm-icon-publish"></i>
-					<?php _e( 'Import Site', AI1WM_PLUGIN_NAME ); ?>
-				</h1>
+class Ai1wm_Import_Check_Encryption {
 
-				<?php if ( is_readable( AI1WM_STORAGE_PATH ) && is_writable( AI1WM_STORAGE_PATH ) ) : ?>
+	public static function execute( $params ) {
+		// Read package.json file
+		$handle = ai1wm_open( ai1wm_package_path( $params ), 'r' );
 
-					<form action="" method="post" id="ai1wm-import-form" class="ai1wm-clear" enctype="multipart/form-data">
+		// Parse package.json file
+		$package = ai1wm_read( $handle, filesize( ai1wm_package_path( $params ) ) );
+		$package = json_decode( $package, true );
 
-						<?php do_action( 'ai1wm_import_left_options' ); ?>
+		// Close handle
+		ai1wm_close( $handle );
 
-						<?php include AI1WM_TEMPLATES_PATH . '/import/import-buttons.php'; ?>
+		if ( empty( $package['Encrypted'] ) || empty( $package['EncryptedSignature'] ) || ! empty( $params['is_decryption_password_valid'] ) ) {
+			return $params;
+		}
 
-						<input type="hidden" name="ai1wm_manual_import" value="1" />
+		if ( ! ai1wm_can_decrypt() ) {
+			Ai1wm_Status::server_cannot_decrypt( __( 'Importing an encrypted backup is not supported on this server. <a href="https://help.servmask.com/knowledgebase/unable-to-encrypt-and-decrypt-backups/" target="_blank">Technical details</a>', AI1WM_PLUGIN_NAME ) );
+			exit;
+		}
 
-					</form>
+		if ( defined( 'WP_CLI' ) ) {
+			//TODO: ask to provide password from command line
+		}
 
-					<?php do_action( 'ai1wm_import_left_end' ); ?>
-
-				<?php else : ?>
-
-					<?php include AI1WM_TEMPLATES_PATH . '/import/import-permissions.php'; ?>
-
-				<?php endif; ?>
-			</div>
-		</div>
-
-		<?php include AI1WM_TEMPLATES_PATH . '/common/sidebar-right.php'; ?>
-
-	</div>
-</div>
+		Ai1wm_Status::backup_is_encrypted( null );
+		exit;
+	}
+}

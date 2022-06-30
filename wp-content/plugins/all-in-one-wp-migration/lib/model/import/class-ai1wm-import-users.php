@@ -26,40 +26,42 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	die( 'Kangaroos cannot jump here' );
 }
-?>
 
-<div class="ai1wm-container">
-	<div class="ai1wm-row">
-		<div class="ai1wm-left">
-			<div class="ai1wm-holder">
-				<h1>
-					<i class="ai1wm-icon-publish"></i>
-					<?php _e( 'Import Site', AI1WM_PLUGIN_NAME ); ?>
-				</h1>
+class Ai1wm_Import_Users {
 
-				<?php if ( is_readable( AI1WM_STORAGE_PATH ) && is_writable( AI1WM_STORAGE_PATH ) ) : ?>
+	public static function execute( $params ) {
 
-					<form action="" method="post" id="ai1wm-import-form" class="ai1wm-clear" enctype="multipart/form-data">
+		// Check multisite.json file
+		if ( is_file( ai1wm_multisite_path( $params ) ) ) {
 
-						<?php do_action( 'ai1wm_import_left_options' ); ?>
+			// Set progress
+			Ai1wm_Status::info( __( 'Preparing users...', AI1WM_PLUGIN_NAME ) );
 
-						<?php include AI1WM_TEMPLATES_PATH . '/import/import-buttons.php'; ?>
+			// Read multisite.json file
+			$handle = ai1wm_open( ai1wm_multisite_path( $params ), 'r' );
 
-						<input type="hidden" name="ai1wm_manual_import" value="1" />
+			// Parse multisite.json file
+			$multisite = ai1wm_read( $handle, filesize( ai1wm_multisite_path( $params ) ) );
+			$multisite = json_decode( $multisite, true );
 
-					</form>
+			// Close handle
+			ai1wm_close( $handle );
 
-					<?php do_action( 'ai1wm_import_left_end' ); ?>
+			// Set WordPress super admins
+			if ( isset( $multisite['Admins'] ) && ( $admins = $multisite['Admins'] ) ) {
+				foreach ( $admins as $username ) {
+					if ( ( $user = get_user_by( 'login', $username ) ) ) {
+						if ( $user->exists() ) {
+							$user->set_role( 'administrator' );
+						}
+					}
+				}
+			}
 
-				<?php else : ?>
+			// Set progress
+			Ai1wm_Status::info( __( 'Done preparing users.', AI1WM_PLUGIN_NAME ) );
+		}
 
-					<?php include AI1WM_TEMPLATES_PATH . '/import/import-permissions.php'; ?>
-
-				<?php endif; ?>
-			</div>
-		</div>
-
-		<?php include AI1WM_TEMPLATES_PATH . '/common/sidebar-right.php'; ?>
-
-	</div>
-</div>
+		return $params;
+	}
+}
