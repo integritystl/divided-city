@@ -159,6 +159,11 @@ class ES_Cron {
 					wp_schedule_event( floor( time() / 300 ) * 300, 'ig_es_fifteen_minutes', 'ig_es_wc_products_on_sale_worker' );
 				}
 			}
+
+			$list_cleanup_cron_scheduled = wp_next_scheduled( 'ig_es_list_cleanup_worker' );
+			if ( ! $list_cleanup_cron_scheduled ) {
+				wp_schedule_event( floor( time() / 300 ) * 300, 'ig_es_monthly_interval', 'ig_es_list_cleanup_worker' );
+			}
 		}
 
 	}
@@ -281,7 +286,11 @@ class ES_Cron {
 			'ig_es_fifteen_minutes' => array(
 				'interval' => 15 * MINUTE_IN_SECONDS,
 				'display'  => __( 'Fifteen minutes', 'email-subscribers' ),
-			)
+			),
+			'ig_es_monthly_interval' => array(
+				'interval' => 30 * DAY_IN_SECONDS,
+				'display'  => __( 'Monthly', 'email-subscribers' ),
+			),
 		);
 
 		$schedules = array_merge( $schedules, $es_schedules );
@@ -580,7 +589,7 @@ class ES_Cron {
 		$es_request = ig_es_get_request_data( 'es' );
 
 		// It's not a cron request . Say Goodbye!
-		if ( 'get_info' !== $es_request ) {
+		if ('get_info' !== $es_request ) {
 			return;
 		}
 

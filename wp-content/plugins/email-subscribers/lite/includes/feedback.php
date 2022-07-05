@@ -146,7 +146,7 @@ if ( ! function_exists( 'ig_es_review_message_data' ) ) {
 
 		$review_url = 'https://wordpress.org/support/plugin/email-subscribers/reviews/';
 		$icon_url   = ES_PLUGIN_URL . 'lite/admin/images/icon-64.png';
-		$message    = __( "<span><p>We hope you're enjoying <b>Email Subscribers</b> plugin! Could you please do us a BIG favor and give us a 5-star rating on WordPress to help us spread the word and boost our motivation?</p>", 'temporary-login-without-password' );
+		$message    = __( "<span><p>We hope you're enjoying <b>Email Subscribers</b> plugin! Could you please do us a BIG favor and give us a 5-star rating on WordPress to help us spread the word and boost our motivation?</p>", 'email-subscribers' );
 
 		$review_data['review_url'] = $review_url;
 		$review_data['icon_url']   = $icon_url;

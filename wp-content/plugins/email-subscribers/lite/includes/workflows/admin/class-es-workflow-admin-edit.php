@@ -59,6 +59,78 @@ class ES_Workflow_Admin_Edit {
 		add_action( 'ig_es_workflow_inserted', array( __CLASS__, 'update_campaign_data_in_workflow' ), 10, 2 );
 		add_action( 'ig_es_workflow_updated', array( __CLASS__, 'update_campaign_data_in_workflow' ), 10, 2 );
 		add_action( 'ig_es_workflow_updated', array( __CLASS__, 'delete_unmapped_child_tracking_campaigns' ), 10, 2 );
+
+		add_action( 'ig_es_workflow_inserted', array( __CLASS__, 'update_optin_email_wp_option' ), 10, 2 );
+		add_action( 'ig_es_workflow_updated', array( __CLASS__, 'update_optin_email_wp_option' ), 10, 2 );
+
+		add_action( 'ig_es_after_campaign_status_updated', array( __CLASS__, 'update_campaign_workflow_status' ), 10, 2 );
+
+		add_action( 'wp_ajax_ig_es_get_workflow_email_preview', array( __CLASS__, 'get_workflow_email_preview' ) );
+		add_action( 'wp_ajax_ig_es_send_workflow_action_test_email', array( __CLASS__, 'send_workflow_action_test_email' ) );
+	}
+
+	/**
+	 * Handle send test email for send email action
+	 *
+	 * @since 5.3.6
+	 */
+	public static function send_workflow_action_test_email() {
+		check_ajax_referer( 'ig-es-admin-ajax-nonce', 'security' );
+
+		$email   = sanitize_email( ig_es_get_request_data( 'es_test_email' ) );
+		$subject = ig_es_get_request_data( 'subject', '' );
+		$content = ig_es_get_request_data( 'content', '', false );
+		$trigger = ig_es_get_request_data( 'trigger', '' );
+		$template = ig_es_get_request_data( 'template', '' );
+		$heading  = ig_es_get_request_data( 'heading', '' );
+
+		$content = ES_Workflow_Action_Preview::get_preview( $trigger, array(
+			'action_name'                => 'ig_es_send_email',
+			'ig-es-send-to'              => '',
+			'ig-es-email-subject'        => $subject,
+			'ig-es-email-template'       => $template,
+			'ig-es-email-heading'        => $heading,
+			'ig-es-email-content'        => $content,
+			'ig-es-tracking-campaign-id' => ''
+		) );
+
+		$response = ES()->mailer->send_test_email( $email, $subject, $content, array() );
+
+		if ( $response && 'SUCCESS' === $response['status'] ) {
+			$response['message'] = __( 'Email has been sent. Please check your inbox', 'email-subscribers' );
+		}
+		wp_send_json( array( 'status' => 'SUCCESS' ) );
+	}
+
+	/**
+	 * Get the workflow email preview
+	 *
+	 * @since 5.3.6
+	 */
+	public static function get_workflow_email_preview() {
+		check_ajax_referer( 'ig-es-admin-ajax-nonce', 'security' );
+
+		$response = array();
+		$trigger  = ig_es_get_request_data( 'trigger' );
+		$content  = ig_es_get_request_data( 'content', '', false );
+		$subject  = ig_es_get_request_data( 'subject', '' );
+		$template = ig_es_get_request_data( 'template', '' );
+		$heading  = ig_es_get_request_data( 'heading', '' );
+
+		$response['preview_html'] = ES_Workflow_Action_Preview::get_preview( $trigger, array(
+			'action_name'                => 'ig_es_send_email',
+			'ig-es-send-to'              => '',
+			'ig-es-email-subject'        => $subject,
+			'ig-es-email-template'       => $template,
+			'ig-es-email-heading'        => $heading,
+			'ig-es-email-content'        => $content,
+			'ig-es-tracking-campaign-id' => ''
+		) );
+		if ( ! empty( $response ) ) {
+			wp_send_json_success( $response );
+		} else {
+			wp_send_json_error();
+		}
 	}
 
 	/**
@@ -161,7 +233,7 @@ class ES_Workflow_Admin_Edit {
 		}
 		?>
 		<script>
-			jQuery(document).ready(function(){ 
+			jQuery(document).ready(function(){
 				postboxes.add_postbox_toggles(pagenow);
 			});
 		</script>
@@ -569,7 +641,7 @@ class ES_Workflow_Admin_Edit {
 	 * @param int $workflow_id
 	 * @param array $workflow_data
 	 * @return void
-	 * 
+	 *
 	 * @since 5.0.6
 	 */
 	public static function update_campaign_data_in_workflow( $workflow_id, $workflow_data = array() ) {
@@ -578,28 +650,35 @@ class ES_Workflow_Admin_Edit {
 			$workflow_actions     = maybe_unserialize( $workflow_data['actions'] );
 			$actions_data_updated = false;
 			if ( ! empty( $workflow_actions ) ) {
+				$parent_campaign_id           = ES()->workflows_db->get_workflow_parent_campaign_id( $workflow_id );
+				$has_parent_workflow_campaign = ! empty( $parent_campaign_id );
 				foreach ( $workflow_actions as $action_index => $action ) {
 					$action_name = $action['action_name'];
 					if ( 'ig_es_send_email' === $action_name ) {
-						$parent_campaign_id = ES()->workflows_db->get_workflow_parent_campaign_id( $workflow_id );
+
 						if ( empty( $parent_campaign_id ) ) {
-							$workflow_title     = $workflow_data['title'];
-							$parent_campaign_id = ES()->workflows_db->create_parent_workflow_campaign( $workflow_id, $workflow_title );
+							$parent_campaign_id = ES()->workflows_db->create_parent_workflow_campaign( $workflow_id, $workflow_data );
 						}
+
 						$tracking_campaign_id = ! empty ( $action['ig-es-tracking-campaign-id'] ) ? $action['ig-es-tracking-campaign-id'] : 0;
 						if ( ! empty( $tracking_campaign_id ) ) {
-							ES()->workflows_db->update_child_tracking_campaign( $tracking_campaign_id, $action ); 
+							ES()->workflows_db->update_child_tracking_campaign( $tracking_campaign_id, $action );
 						} else {
 							$tracking_campaign_id = ES()->workflows_db->create_child_tracking_campaign( $parent_campaign_id, $action );
-	
+
 							$workflow_actions[$action_index]['ig-es-tracking-campaign-id'] = $tracking_campaign_id;
 							$actions_data_updated = true;
 						}
 					}
 				}
+
+				if ( $has_parent_workflow_campaign ) {
+					ES()->workflows_db->update_parent_workflow_campaign( $parent_campaign_id, $workflow_data );
+				}
+
 				$workflow_data['actions'] = maybe_serialize( $workflow_actions );
 			}
-	
+
 			if ( $actions_data_updated ) {
 				ES()->workflows_db->update_workflow( $workflow_id, $workflow_data );
 			}
@@ -613,7 +692,7 @@ class ES_Workflow_Admin_Edit {
 	 * @param int $workflow_id
 	 * @param array $workflow_data
 	 * @return void
-	 * 
+	 *
 	 * @since 5.0.6
 	 */
 	public static function delete_unmapped_child_tracking_campaigns( $workflow_id, $workflow_data = array() ) {
@@ -630,13 +709,13 @@ class ES_Workflow_Admin_Edit {
 	 *
 	 * @param int $workflow_id
 	 * @return array $unmapped_child_tracking_campaigns_ids
-	 * 
+	 *
 	 * @since 5.0.6
 	 */
 	public static function get_unmapped_child_tracking_campaigns_ids( $workflow_id ) {
-		
+
 		$mapped_child_tracking_campaign_ids = self::get_mapped_child_tracking_campaign_ids( $workflow_id );
-		$all_child_tracking_campaign_ids    = ES()->workflows_db->get_all_child_tracking_campaign_ids( $workflow_id );  
+		$all_child_tracking_campaign_ids    = ES()->workflows_db->get_all_child_tracking_campaign_ids( $workflow_id );
 
 		$unmapped_child_tracking_campaigns_ids = array_diff( $all_child_tracking_campaign_ids, $mapped_child_tracking_campaign_ids );
 
@@ -648,11 +727,11 @@ class ES_Workflow_Admin_Edit {
 	 *
 	 * @param int $workflow_id
 	 * @return array $mapped_child_tracking_campaign_ids
-	 * 
+	 *
 	 * @since 5.0.6
 	 */
 	public static function get_mapped_child_tracking_campaign_ids( $workflow_id ) {
-		
+
 		$mapped_child_tracking_campaign_ids = array();
 
 		$workflow = new ES_Workflow( $workflow_id );
@@ -672,6 +751,90 @@ class ES_Workflow_Admin_Edit {
 		}
 
 		return $mapped_child_tracking_campaign_ids;
+	}
+
+	/**
+	 * Update optin email option in Options
+	 *
+	 * @param int $workflow_id
+	 * @param array $workflow_data
+	 * @return void
+	 *
+	 * @since 5.3.4
+	 */
+	public static function update_optin_email_wp_option( $workflow_id, $workflow_data = array() ) {
+
+		$trigger_name 		  = isset( $workflow_data['trigger_name'] ) ? $workflow_data['trigger_name'] : '';
+		$optin_email_triggers = array(
+			'ig_es_user_subscribed',
+			'ig_es_user_unconfirmed',
+		);
+
+		$is_optin_email_trigger = in_array( $trigger_name, $optin_email_triggers, true );
+
+		if ( $is_optin_email_trigger ) {
+			$workflow_has_actions = ! empty( $workflow_data['actions'] );
+			if ( $workflow_has_actions ) {
+				$workflow_actions = maybe_unserialize( $workflow_data['actions'] );
+				foreach ( $workflow_actions as $action_index => $action ) {
+					$action_name = ! empty( $action['action_name'] ) ? $action['action_name'] : '';
+					if ( 'ig_es_send_email' === $action_name ) {
+						$email_subject = ! empty( $action['ig-es-email-subject'] ) ? $action['ig-es-email-subject'] : '';
+						$email_content = ! empty( $action['ig-es-email-content'] ) ? $action['ig-es-email-content'] : '';
+						if ( 'ig_es_user_subscribed' === $trigger_name ) {
+							$email_subject_wp_option = 'ig_es_welcome_email_subject';
+							$email_content_wp_option = 'ig_es_welcome_email_content';
+						} else {
+							$email_subject_wp_option = 'ig_es_confirmation_mail_subject';
+							$email_content_wp_option = 'ig_es_confirmation_mail_content';
+						}
+						update_option( $email_subject_wp_option, $email_subject );
+						update_option( $email_content_wp_option, $email_content );
+					}
+				}
+			}
+
+		}
+	}
+
+	/**
+	 * Update workflow linked to campaign
+	 *
+	 * @param int $campaign_ids
+	 * @param array $new_status
+	 * @return void
+	 *
+	 * @since 5.3.4
+	 */
+	public static function update_campaign_workflow_status( $campaign_ids, $new_status = 0 ) {
+
+		if ( empty( $campaign_ids ) ) {
+			return;
+		}
+
+		$campaign_ids = is_array( $campaign_ids ) ? $campaign_ids : array( $campaign_ids );
+
+		$linked_workflow_ids = array();
+		foreach ( $campaign_ids as $campaign_id ) {
+			$campaign = ES()->campaigns_db->get( $campaign_id );
+			if ( ! empty( $campaign ) ) {
+				$campaign_type        = $campaign['type'];
+				$is_workflow_campaign = IG_CAMPAIGN_TYPE_WORKFLOW === $campaign_type;
+				if ( $is_workflow_campaign ) {
+					$workflow_id = $campaign['parent_id'];
+					if ( ! empty( $workflow_id ) ) {
+						$workflow = new ES_Workflow( $workflow_id );
+						if ( $workflow->exists ) {
+							$linked_workflow_ids[] = $workflow_id;
+						}
+					}
+				}
+			}
+		}
+
+		if ( ! empty( $linked_workflow_ids ) ) {
+			ES()->workflows_db->update_status( $linked_workflow_ids, $new_status );
+		}
 	}
 
 	/**
@@ -702,5 +865,28 @@ class ES_Workflow_Admin_Edit {
 	 */
 	public static function extract_array_option_value( $option, $posted, $default = array() ) {
 		return isset( $posted['workflow_options'][ $option ] ) ? ES_Clean::recursive( $posted['workflow_options'][ $option ] ) : $default;
+	}
+
+	/**
+	 * Method to get admin edit url of a workflow
+	 *
+	 * @param int $workflow_id
+	 * @return string  $edit_url Workflow edit URL
+	 * 
+	 * @since 5.3.8
+	 */
+	public static function get_admin_edit_url( $workflow_id ) {
+
+		$edit_url = admin_url( 'admin.php?page=es_workflows' );
+
+		$edit_url = add_query_arg(
+			array(
+				'id'     => $workflow_id,
+				'action' => 'edit',
+			),
+			$edit_url
+		);
+
+		return $edit_url;
 	}
 }

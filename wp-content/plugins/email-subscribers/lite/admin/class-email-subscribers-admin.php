@@ -76,6 +76,8 @@ class Email_Subscribers_Admin {
 		// Add spam score ajax action.
 		add_action( 'wp_ajax_es_get_spam_score', array( &$this, 'get_spam_score' ) );
 
+		add_action( 'wp_ajax_es_send_auth_test_email', array( &$this, 'send_authentication_header_test_email' ) );
+		add_action( 'wp_ajax_es_get_auth_headers', array( &$this, 'get_email_authentication_headers') );
 		// Add send cron data action.
 		add_action( 'admin_head', array( $this, 'send_cron_data' ) );
 		add_action( 'ig_es_after_settings_save', array( $this, 'send_cron_data' ) );
@@ -163,59 +165,65 @@ class Email_Subscribers_Admin {
 		wp_enqueue_script( $this->email_subscribers, plugin_dir_url( __FILE__ ) . 'js/email-subscribers-admin.js', array( 'jquery', 'jquery-ui-core', 'jquery-ui-tabs' ), $this->version, false );
 
 		$ig_es_js_data = array(
-			'security'  => wp_create_nonce( 'ig-es-admin-ajax-nonce' ),
-			'i18n_data' => array(
-				// Broadcast messages.
-				'ajax_error_message'              => __( 'An error has occured. Please try again later.', 'email-subscribers' ),
-				'broadcast_saved_message'         => __( 'Broadcast saved successfully.', 'email-subscribers' ),
-				'broadcast_error_message'         => __( 'An error has occured while saving the broadcast. Please try again later.', 'email-subscribers' ),
-				'broadcast_subject_empty_message' => __( 'Please add a broadcast subject before saving.', 'email-subscribers' ),
-				'campaign_saved_message'          => __( 'Campaign saved successfully.', 'email-subscribers' ),
-				'campaign_error_message'          => __( 'An error has occured while saving the campaign. Please try again later.', 'email-subscribers' ),
-				'campaign_subject_empty_message'  => __( 'Please add a campaign subject before saving.', 'email-subscribers' ),
-				'empty_template_message'          => __( 'Please add email body.', 'email-subscribers' ),
-				'remove_conditions_message'       => __( 'Do you really like to remove all conditions?', 'email-subscribers' ),
-				'add_conditions_message'          => __( 'Please add some recipients before proceeding.', 'email-subscribers' ),
+		'security'  => wp_create_nonce( 'ig-es-admin-ajax-nonce' ),
+		'i18n_data' => array(
+			// Broadcast messages.
+			'ajax_error_message'              => __( 'An error has occured. Please try again later.', 'email-subscribers' ),
+			'broadcast_saved_message'         => __( 'Broadcast saved successfully.', 'email-subscribers' ),
+			'broadcast_error_message'         => __( 'An error has occured while saving the broadcast. Please try again later.', 'email-subscribers' ),
+			'broadcast_subject_empty_message' => __( 'Please add a broadcast subject before saving.', 'email-subscribers' ),
+			'campaign_saved_message'          => __( 'Campaign saved successfully.', 'email-subscribers' ),
+			'campaign_error_message'          => __( 'An error has occured while saving the campaign. Please try again later.', 'email-subscribers' ),
+			'campaign_subject_empty_message'  => __( 'Please add a campaign subject before saving.', 'email-subscribers' ),
+			'empty_template_message'          => __( 'Please add email body.', 'email-subscribers' ),
+			'remove_conditions_message'       => __( 'Do you really like to remove all conditions?', 'email-subscribers' ),
+			'add_conditions_message'          => __( 'Please add some recipients before proceeding.', 'email-subscribers' ),
 
-				// Workflows messages.
-				'no_trigger_message'              => __( 'Please select a trigger before saving the workflow.', 'email-subscribers' ),
-				'no_actions_message'              => __( 'Please add some actions before saving the workflow.', 'email-subscribers' ),
-				'no_action_selected_message'      => __( 'Please select an action that this workflow should perform before saving the workflow.', 'email-subscribers' ),
-				'trigger_change_message'          => __( 'Changing the trigger will remove existing actions. Do you want to proceed anyway?.', 'email-subscribers' ),
-				'placeholder_copied_message'      => __( 'Copied!', 'email-subscribers' ),
-				'delete_confirmation_message'     => __( 'Are you sure?', 'email-subscribers' ),
+			// Workflows messages.
+			'no_trigger_message'              => __( 'Please select a trigger before saving the workflow.', 'email-subscribers' ),
+			'no_actions_message'              => __( 'Please add some actions before saving the workflow.', 'email-subscribers' ),
+			'no_action_selected_message'      => __( 'Please select an action that this workflow should perform before saving the workflow.', 'email-subscribers' ),
+			'trigger_change_message'          => __( 'Changing the trigger will remove existing actions. Do you want to proceed anyway?.', 'email-subscribers' ),
+			'placeholder_copied_message'      => __( 'Copied!', 'email-subscribers' ),
+			'keyword_field_is_required'       => __( '{{field_name}} field is required!', 'email-subscribers' ),
+			'required_field_is_empty'         => __( 'Required field is empty!', 'email-subscribers' ),
+			'delete_confirmation_message'     => __( 'Are you sure?', 'email-subscribers' ),
 
-				// Import subscribers messages.
-				'select_status'                   => esc_html__( 'Please select the status for the importing contacts!', 'email-subscribers' ),
-				'select_list'                     => esc_html__( 'Please select a list for importing contacts!', 'email-subscribers' ),
-				'select_email_column'             => esc_html__( 'Please select the email address column!', 'email-subscribers' ),
-				'prepare_data'                    => esc_html__( 'Preparing Data', 'email-subscribers' ),
-				/* translators: %s: Upload progress */
-				'uploading'                       => esc_html__( 'Uploading...%s', 'email-subscribers' ),
-				/* translators: %s: Import progress */
-				'import_contacts'                 => esc_html__( 'Importing contacts...%s', 'email-subscribers' ),
-				/* translators: %s: Import failed svg icon  */
-				'import_failed'                   => esc_html__( 'Import failed! %s', 'email-subscribers' ),
-				'no_windowclose'                  => esc_html__( 'Please do not close this window until it completes...', 'email-subscribers' ),
-				'prepare_import'                  => esc_html__( 'Preparing Import...', 'email-subscribers' ),
-				/* translators: 1. Imported contacts count 2. Total contacts count 3. Failed to import count 4. Memory usage */
-				'current_stats'                   => esc_html__( 'Currently %1$s of %2$s imported with %3$s errors. %4$s %5$s memory usage', 'email-subscribers' ),
-				/* translators: 1 Duplicate found email message */
-				'duplicate_emails_found_message'  => __( '%1$s duplicate emails found.', 'email-subscribers' ),
-				/* translators: %s: Time left in minutes */
-				'estimate_time'                   => esc_html__( 'Estimate time left: %s minutes', 'email-subscribers' ),
-				/* translators: %s: Next attempt delaly time */
-				'continues_in'                    => esc_html__( 'Continues in %s seconds', 'email-subscribers' ),
-				'error_importing'                 => esc_html__( 'There was a problem during importing contacts. Please check the error logs for more information!', 'email-subscribers' ),
-				'confirm_import'                  => esc_html__( 'Do you really like to import these contacts?', 'email-subscribers' ),
-				/* translators: %s: Process complete svg icon  */
-				'import_complete'                 => esc_html__( 'Import complete! %s', 'email-subscribers' ),
-				'onbeforeunloadimport'            => esc_html__( 'You are currently importing subscribers! If you leave the page all pending subscribers don\'t get imported!', 'email-subscribers' ),
-				'api_verification_success'        => esc_html__( 'API is valid. Fetching lists...', 'email-subscribers' ),
-				'mailchimp_notice_nowindow_close' => esc_html__( 'Fetching contacts from MailChimp...Please do not close this window', 'email-subscribers' ),
-			),
-			'is_pro'    => ES()->is_pro(),
+			// Import subscribers messages.
+			'select_status'                   => esc_html__( 'Please select the status for the importing contacts!', 'email-subscribers' ),
+			'select_list'                     => esc_html__( 'Please select a list for importing contacts!', 'email-subscribers' ),
+			'select_email_column'             => esc_html__( 'Please select the email address column!', 'email-subscribers' ),
+			'prepare_data'                    => esc_html__( 'Preparing Data', 'email-subscribers' ),
+			/* translators: %s: Upload progress */
+			'uploading'                       => esc_html__( 'Uploading...%s', 'email-subscribers' ),
+			/* translators: %s: Import progress */
+			'import_contacts'                 => esc_html__( 'Importing contacts...%s', 'email-subscribers' ),
+			/* translators: %s: Import failed svg icon  */
+			'import_failed'                   => esc_html__( 'Import failed! %s', 'email-subscribers' ),
+			'no_windowclose'                  => esc_html__( 'Please do not close this window until it completes...', 'email-subscribers' ),
+			'prepare_import'                  => esc_html__( 'Preparing Import...', 'email-subscribers' ),
+			/* translators: 1. Imported contacts count 2. Total contacts count 3. Failed to import count 4. Memory usage */
+			'current_stats'                   => esc_html__( 'Currently %1$s of %2$s imported with %3$s errors. %4$s %5$s memory usage', 'email-subscribers' ),
+			/* translators: 1 Duplicate found email message */
+			'duplicate_emails_found_message'  => __( '%1$s duplicate emails found.', 'email-subscribers' ),
+			/* translators: %s: Time left in minutes */
+			'estimate_time'                   => esc_html__( 'Estimate time left: %s minutes', 'email-subscribers' ),
+			/* translators: %s: Next attempt delaly time */
+			'continues_in'                    => esc_html__( 'Continues in %s seconds', 'email-subscribers' ),
+			'error_importing'                 => esc_html__( 'There was a problem during importing contacts. Please check the error logs for more information!', 'email-subscribers' ),
+			'confirm_import'                  => esc_html__( 'Do you really like to import these contacts?', 'email-subscribers' ),
+			/* translators: %s: Process complete svg icon  */
+			'import_complete'                 => esc_html__( 'Import complete! %s', 'email-subscribers' ),
+			'onbeforeunloadimport'            => esc_html__( 'You are currently importing subscribers! If you leave the page all pending subscribers don\'t get imported!', 'email-subscribers' ),
+			'api_verification_success'        => esc_html__( 'API is valid. Fetching lists...', 'email-subscribers' ),
+			'mailchimp_notice_nowindow_close' => esc_html__( 'Fetching contacts from MailChimp...Please do not close this window', 'email-subscribers' ),
+		),
+		'is_pro'    => ES()->is_pro() ? true : false,
 		);
+
+		if ( 'es_settings' === $get_page ) {
+			$ig_es_js_data['popular_domains'] = ES_Common::get_popular_domains();
+		}
 
 		wp_localize_script( $this->email_subscribers, 'ig_es_js_data', $ig_es_js_data );
 
@@ -254,7 +262,7 @@ class Email_Subscribers_Admin {
 		wp_enqueue_script( $this->email_subscribers . '-timepicker' );
 
 		if ( ! empty( $get_page ) && 'es_dashboard' === $get_page || 'es_reports' === $get_page ) {
-			wp_enqueue_script( 'frappe-js', 'https://unpkg.com/frappe-charts@1.5.2/dist/frappe-charts.min.iife.js', array( 'jquery' ), $this->version, false );
+			wp_enqueue_script( 'frappe-js', plugin_dir_url( __FILE__ ) . 'js/frappe-charts.min.iife.js', array( 'jquery' ), '1.5.2', false );
 		}
 
 	}
@@ -264,7 +272,7 @@ class Email_Subscribers_Admin {
 		?>
 		<script type="text/javascript">
 			jQuery(document).ready(function () {
-				var removeSubmenu = ['ig-es-broadcast', 'ig-es-lists', 'ig-es-post-notifications', 'ig-es-sequence', 'ig-es-custom-fields','ig-es-drag-and-drop'];
+				var removeSubmenu = ['ig-es-broadcast', 'ig-es-lists', 'ig-es-post-notifications', 'ig-es-sequence', 'ig-es-custom-fields','ig-es-drag-and-drop', 'ig-es-gallery-submenu'];
 				jQuery.each(removeSubmenu, function (key, id) {
 					jQuery("#" + id).parent('a').parent('li').hide();
 				});
@@ -322,8 +330,8 @@ class Email_Subscribers_Admin {
 
 		}
 
-		if ( in_array( 'drag_drop_editor', $accessible_sub_menus ) ) {
-			add_submenu_page( 'es_dashboard', __( 'Drag and Drop Editor', 'email-subscribers' ), '<span id="ig-es-drag-and-drop">' . __( 'Drag and Drop Editor', 'email-subscribers' ) . '</span>', 'edit_posts', 'es_drag_and_drop', array( $this, 'load_drag_and_drop' ) );
+		if ( in_array( 'gallery', $accessible_sub_menus ) ) {
+			add_submenu_page( 'es_dashboard', __( 'Gallery', 'email-subscribers' ), '<span id="ig-es-gallery-submenu">' . __( 'Gallery', 'email-subscribers' ) . '</span>', 'edit_posts', 'es_gallery', array( $this, 'load_gallery' ) );
 		}
 
 		if ( in_array( 'workflows', $accessible_sub_menus ) ) {
@@ -387,7 +395,7 @@ class Email_Subscribers_Admin {
 		}
 
 		$response = array(
-			'status' => 'error',
+		'status' => 'error',
 		);
 
 		$url = 'http://app.klawoo.com/subscribe';
@@ -410,8 +418,8 @@ class Email_Subscribers_Admin {
 		$qs     = http_build_query( $params );
 
 		$options = array(
-			'timeout' => 15,
-			'method'  => $method,
+		'timeout' => 15,
+		'method'  => $method,
 		);
 
 		if ( 'POST' == $method ) {
@@ -510,6 +518,11 @@ class Email_Subscribers_Admin {
 		$campaign_admin->render();
 	}
 
+	public function load_gallery() {
+		$gallery = ES_Gallery::get_instance();
+		$gallery->render();
+	}
+
 	/**
 	 * Render Newsletters
 	 *
@@ -578,22 +591,22 @@ class Email_Subscribers_Admin {
 		if ( ! empty( $es_menus ) ) {
 
 			$es_menu_order = array(
-				'es_dashboard',
-				'es_subscribers',
-				'es_lists',
-				'es_forms',
-				'es_campaigns',
-				'es_workflows',
-				'edit.php?post_type=es_template',
-				'es_notifications',
-				'es_newsletters',
-				'es_sequence',
-				'es_integrations',
-				'es_reports',
-				'es_tools',
-				'es_settings',
-				'es_general_information',
-				'es_pricing',
+			'es_dashboard',
+			'es_subscribers',
+			'es_lists',
+			'es_forms',
+			'es_campaigns',
+			'es_workflows',
+			'edit.php?post_type=es_template',
+			'es_notifications',
+			'es_newsletters',
+			'es_sequence',
+			'es_integrations',
+			'es_reports',
+			'es_tools',
+			'es_settings',
+			'es_general_information',
+			'es_pricing',
 			);
 
 			$order = array_flip( $es_menu_order );
@@ -667,10 +680,11 @@ class Email_Subscribers_Admin {
 		if ( ! empty( $conditions ) ) {
 			if ( 'yes' === $get_count ) {
 				$args                   = array(
-					'lists'        => $list_id,
-					'conditions'   => $conditions,
-					'status'       => $status,
-					'return_count' => true,
+				'lists'        => $list_id,
+				'conditions'   => $conditions,
+				'status'       => $status,
+				'subscriber_status' => array( 'verified' ),
+				'return_count' => true,
 				);
 				$query                  = new IG_ES_Subscribers_Query();
 				$response_data['total'] = $query->run( $args );
@@ -719,11 +733,11 @@ class Email_Subscribers_Admin {
 	public function get_admin_screen_options() {
 
 		$admin_screen_options = array(
-			'es_campaigns_per_page',
-			'es_contacts_per_page',
-			'es_lists_per_page',
-			'es_forms_per_page',
-			'es_workflows_per_page',
+		'es_campaigns_per_page',
+		'es_contacts_per_page',
+		'es_lists_per_page',
+		'es_forms_per_page',
+		'es_workflows_per_page',
 		);
 
 		return apply_filters( 'ig_es_admin_screen_options', $admin_screen_options );
@@ -786,19 +800,19 @@ class Email_Subscribers_Admin {
 
 			// Allow only Icegram Connection popup on Dashboard
 			$es_display_notices = array(
-				'connect_icegram_notification',
+			'connect_icegram_notification',
 			);
 
 		} else {
 
 			$es_display_notices = array(
-				'connect_icegram_notification',
-				'show_review_notice',
-				'custom_admin_notice',
-				'output_custom_notices',
-				'ig_es_fail_php_version_notice',
-				'show_reconnect_notification',
-				'show_tracker_notice',
+			'connect_icegram_notification',
+			'show_review_notice',
+			'custom_admin_notice',
+			'output_custom_notices',
+			'ig_es_fail_php_version_notice',
+			'show_reconnect_notification',
+			'show_tracker_notice',
 			);
 		}
 
@@ -935,8 +949,8 @@ class Email_Subscribers_Admin {
 		global $post;
 
 		$response = array(
-			'status'        => 'error',
-			'error_message' => __( 'Something went wrong', 'email-subscribers' ),
+		'status'        => 'error',
+		'error_message' => __( 'Something went wrong', 'email-subscribers' ),
 		);
 
 		$admin_email = get_option( 'admin_email' );
@@ -965,7 +979,7 @@ class Email_Subscribers_Admin {
 
 			// Add subject if set.
 			if ( ! empty( $subject ) ) {
-				$header .= 'Subject:' . $subject . "\n";
+				$header .= 'Subject: ' . $subject . "\n";
 			}
 
 			$header         .= 'Date: ' . gmdate( 'r' ) . "\n";
@@ -1021,9 +1035,9 @@ class Email_Subscribers_Admin {
 		$sender_name  = ! empty( $from_name ) ? $from_name : $site_title;
 
 		$headers = array(
-			"From: \"$sender_name\" <$sender_email>",
-			'Return-Path: <' . $sender_email . '>',
-			'Reply-To: "' . $sender_name . '" <' . $sender_email . '>',
+		"From: \"$sender_name\" <$sender_email>",
+		'Return-Path: <' . $sender_email . '>',
+		'Reply-To: "' . $sender_name . '" <' . $sender_email . '>',
 		);
 
 		if ( in_array( $get_email_type, array( 'php_html_mail', 'php_plaintext_mail' ) ) ) {
@@ -1144,9 +1158,9 @@ class Email_Subscribers_Admin {
 				if ( ! empty( $campaign ) ) {
 					$campaign_type            = $campaign['type'];
 					$supported_campaign_types = array(
-						IG_CAMPAIGN_TYPE_POST_NOTIFICATION,
-						IG_CAMPAIGN_TYPE_POST_DIGEST,
-						IG_CAMPAIGN_TYPE_NEWSLETTER
+					IG_CAMPAIGN_TYPE_POST_NOTIFICATION,
+					IG_CAMPAIGN_TYPE_POST_DIGEST,
+					IG_CAMPAIGN_TYPE_NEWSLETTER
 					);
 					if ( in_array( $campaign_type, $supported_campaign_types, true ) ) {
 						$campaign_meta   = maybe_unserialize( $campaign['meta'] );
@@ -1222,7 +1236,7 @@ class Email_Subscribers_Admin {
 	public function ig_es_send_additional_data_for_tracking() {
 
 		// Send data only if user had opted for trial or user is on a premium plan.
-		$is_plan_valid      = ES()->is_trial() || ES()->is_premium();
+		$is_plan_valid      = ES()->trial->is_trial() || ES()->is_premium();
 
 		// Check if the data is already sent once
 		$can_send_data      = get_option( 'ig_es_send_additional_data_for_tracking', 'yes' );
@@ -1272,10 +1286,10 @@ class Email_Subscribers_Admin {
 			$response['template_html'] = ES_Common::es_process_template_body( $email_body['body'] );
 			/*
 			if ( 'WP HTML MAIL' == $es_email_type || 'PHP HTML MAIL' == $es_email_type ) {
-				$response['template_html'] = ES_Common::es_process_template_body( $email_body['body'] );
+			$response['template_html'] = ES_Common::es_process_template_body( $email_body['body'] );
 			} else {
-				$response['template_html'] = str_replace( '<br />', "\r\n", $email_body['body'] );
-				$response['template_html'] = str_replace( '<br>', "\r\n", $email_body['body'] );
+			$response['template_html'] = str_replace( '<br />', "\r\n", $email_body['body'] );
+			$response['template_html'] = str_replace( '<br>', "\r\n", $email_body['body'] );
 			}
 			*/
 		}
@@ -1359,40 +1373,40 @@ class Email_Subscribers_Admin {
 				<div class="px-4">
 					<p class="text-base font-medium leading-6 text-gray-600">
 						<span class="rounded-md bg-gray-200 px-2 py-0.5">
-							<?php echo esc_html__( 'Last 30 days', 'email-subscribers' ); ?>
+						<?php echo esc_html__( 'Last 30 days', 'email-subscribers' ); ?>
 						</span>
 					</p>
 					<div class="flex">
 						<div class="w-1/4 px-4 border-r border-gray-100">
 							<span class="text-2xl font-bold leading-none text-indigo-600">
-								<?php echo esc_html( $total_contacts_subscribed ); ?>
+							<?php echo esc_html( $total_contacts_subscribed ); ?>
 							</span>
 							<p class="font-medium text-gray-500">
-								<?php echo esc_html__( 'Subscribed', 'email-subscribers' ); ?>
+							<?php echo esc_html__( 'Subscribed', 'email-subscribers' ); ?>
 							</p>
 						</div>
 						<div class="w-1/4 px-4 border-r border-gray-100">
 							<span class="text-2xl font-bold leading-none text-indigo-600">
-								<?php echo esc_html( $total_contact_lost ); ?>
+							<?php echo esc_html( $total_contact_lost ); ?>
 							</span>
 							<p class="font-medium text-gray-500">
-								<?php echo esc_html__( 'Unsubscribed', 'email-subscribers' ); ?>
+							<?php echo esc_html__( 'Unsubscribed', 'email-subscribers' ); ?>
 							</p>
 						</div>
 						<div class="w-1/4 px-4 border-r border-gray-100">
 							<span class="text-2xl font-bold leading-none text-indigo-600">
-								<?php echo esc_html( $avg_open_rate ); ?> %
+							<?php echo esc_html( $avg_open_rate ); ?> %
 							</span>
 							<p class="font-medium text-gray-500">
-								<?php echo esc_html__( 'Avg Open Rate', 'email-subscribers' ); ?>
+							<?php echo esc_html__( 'Avg Open Rate', 'email-subscribers' ); ?>
 							</p>
 						</div>
 						<div class="w-1/4 px-4">
 							<span class="text-2xl font-bold leading-none text-indigo-600">
-								<?php echo esc_html( $total_message_sent ); ?> 
+							<?php echo esc_html( $total_message_sent ); ?> 
 							</span>
 							<p class="font-medium text-gray-500">
-								<?php echo esc_html__( 'Messages Sent', 'email-subscribers' ); ?>
+							<?php echo esc_html__( 'Messages Sent', 'email-subscribers' ); ?>
 							</p>
 						</div>
 					</div>
@@ -1402,14 +1416,14 @@ class Email_Subscribers_Admin {
 			<div class="overflow-hidden">
 				<p class="px-4 text-base font-medium leading-6 text-gray-600">
 					<span class="rounded-md bg-gray-200 px-2 py-0.5">
-						<?php
-						echo esc_html__( 'Last Campaign', 'email-subscribers' );
-						?>
+					<?php
+					echo esc_html__( 'Last Campaign', 'email-subscribers' );
+					?>
 					</span>
 				</p>
-				<?php
-				if ( ! empty( $campaign_report ) ) {
-					?>
+					<?php
+					if ( ! empty( $campaign_report ) ) {
+						?>
 				<a href="<?php echo esc_url( $reports_url ); ?>" class="block px-2 hover:bg-gray-50 focus:outline-none focus:bg-gray-50 transition duration-150 ease-in-out" target="_blank">
 					<div class="flex px-4 pb-2">
 						<div class="w-3/5 min-w-0 pt-2 flex-1">
@@ -1429,7 +1443,7 @@ class Email_Subscribers_Admin {
 								</div>
 							</div>
 							<div class="text-sm mt-2 pr-4">
-								<?php echo esc_html( $campaign_report['title'] ); ?>
+									<?php echo esc_html( $campaign_report['title'] ); ?>
 							</div>
 						</div>
 						<div class="sm:grid sm:grid-cols-2 flex-1">
@@ -1463,23 +1477,23 @@ class Email_Subscribers_Admin {
 							</div>
 					</div>
 				</a>
-					<?php
-				} else {
-					echo '<p class="pl-4 font-medium text-gray-500">' . esc_html__( 'No campaigns sent yet', 'email-subscribers' ) . '<p>';
-				}
-				?>
+						<?php
+					} else {
+						echo '<p class="pl-4 font-medium text-gray-500">' . esc_html__( 'No campaigns sent yet', 'email-subscribers' ) . '<p>';
+					}
+					?>
 			</div>
 			<div class="border-t border-gray-200">
 				<p class="px-4 text-base font-medium leading-6 text-gray-600">
 					<span class="rounded-md bg-gray-200 px-2 py-0.5">
-						<?php
-						echo esc_html__( 'Latest Blog Posts from Icegram', 'email-subscribers' );
-						?>
+					<?php
+					echo esc_html__( 'Latest Blog Posts from Icegram', 'email-subscribers' );
+					?>
 					</span>
 				</p>
 				<div class="overflow-hidden pb-2">
 					<ul class="pl-8 pr-3">
-						<?php foreach ( $topics_indexes as $index ) { ?>
+					<?php foreach ( $topics_indexes as $index ) { ?>
 							<li class="mb-0 hover:underline text-gray-500" style="list-style-type: square !important">
 								<a href="<?php echo esc_url( $topics[ $index ]['link'] ); ?>" class="hover:underline font-medium block pr-3 transition duration-150 ease-in-out focus:outline-none focus:bg-gray-50" target="_blank">
 									<div class="flex items-center px-2 py-1 md:justify-between">
@@ -1499,7 +1513,7 @@ class Email_Subscribers_Admin {
 				</div>
 			</div>
 		</div>
-		<?php
+			<?php
 	}
 
 	/**
@@ -1544,9 +1558,9 @@ class Email_Subscribers_Admin {
 
 			if ( 'post_notification' === $es_template_type ) {
 				$args         = array(
-					'numberposts' => '1',
-					'order'       => 'DESC',
-					'post_status' => 'publish',
+				'numberposts' => '1',
+				'order'       => 'DESC',
+				'post_status' => 'publish',
 				);
 				$recent_posts = wp_get_recent_posts( $args );
 
@@ -1560,10 +1574,12 @@ class Email_Subscribers_Admin {
 				$es_template_body = ES_Common::es_process_template_body( $es_template_body, $template_id );
 			}
 
-			$es_template_body = str_replace( '{{NAME}}', $username, $es_template_body );
-			$es_template_body = str_replace( '{{EMAIL}}', $useremail, $es_template_body );
-			$es_template_body = str_replace( '{{FIRSTNAME}}', $first_name, $es_template_body );
-			$es_template_body = str_replace( '{{LASTNAME}}', $last_name, $es_template_body );
+			$es_template_body = ES_Common::replace_keywords_with_fallback( $es_template_body, array(
+			'FIRSTNAME' => $first_name,
+			'NAME'      => $username,
+			'LASTNAME'  => $last_name,
+			'EMAIL'     => $useremail
+			) );
 			$allowedtags      = ig_es_allowed_html_tags_in_esc();
 			add_filter( 'safe_style_css', 'ig_es_allowed_css_style' );
 
@@ -1603,5 +1619,55 @@ class Email_Subscribers_Admin {
 		}
 	}
 
-}
+	/**
+	 * Method to send email for authentication headers test
+	 *
+	 * @since 5.x
+	 */
+	
+	public function send_authentication_header_test_email() {
 
+		check_ajax_referer( 'ig-es-admin-ajax-nonce', 'security' );
+
+		$response = array(
+		'status'        => 'error',
+		'error_message' => __( 'Something went wrong', 'email-subscribers' ),
+		);
+
+		$mailbox = ES_Common::get_email_verify_test_email();
+			
+		if ( ! empty( $_REQUEST['action'] ) && 'es_send_auth_test_email' == $_REQUEST['action'] ) {
+
+			$test_email = new ES_Send_Test_Email();
+			$params     = array('email' => $mailbox );
+			$response   = $test_email->send_test_email($params);
+
+			wp_send_json($response);
+		}
+		wp_send_json($response);
+
+	}
+
+	public function get_email_authentication_headers() {
+
+		check_ajax_referer( 'ig-es-admin-ajax-nonce', 'security' );
+
+		$response = array(
+			'status'        => 'error',
+			'error_message' => __( 'Something went wrong', 'email-subscribers' ),
+		);
+
+		$header_check = new ES_Service_Auth_Header_Check();
+		$response     = $header_check->get_email_authentication_headers();
+
+		if ( 'error' !== $response['status'] && ! empty( $response['data']) ) {
+
+			$email_auth_headers = json_decode( $response['data'], true );
+			update_option('ig_es_email_auth_headers', $email_auth_headers);
+
+			wp_send_json( $response );
+		}
+		wp_send_json( $response );
+	}
+
+}

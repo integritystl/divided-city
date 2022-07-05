@@ -212,10 +212,8 @@ if ( ! class_exists( 'ES_Campaign' ) ) {
 			if ( ! $campaign_id ) {
 				return false;
 			}
-	
 
 			$_campaign = ES()->campaigns_db->get( $campaign_id, 'object' );
-
 			if ( ! $_campaign ) {
 				return false;
 			}
@@ -431,29 +429,6 @@ if ( ! class_exists( 'ES_Campaign' ) ) {
 		 */
 		public function get_meta( $key ) {
 			return isset( $this->meta[ $key ] ) ? $this->meta[ $key ] : '';
-		}
-	
-		/**
-		 * Method to get edit url of a workflow
-		 *
-		 * @since 4.7.6
-		 *
-		 * @return string  $edit_url Workflow edit URL
-		 */
-		public function get_edit_url() {
-	
-			$id       = $this->get_id();
-			$edit_url = admin_url( 'admin.php?page=es_workflows' );
-	
-			$edit_url = add_query_arg(
-				array(
-					'id'     => $id,
-					'action' => 'edit',
-				),
-				$edit_url
-			);
-	
-			return $edit_url;
 		}
 	}
 }

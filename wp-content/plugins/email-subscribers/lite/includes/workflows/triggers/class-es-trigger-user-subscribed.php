@@ -21,7 +21,7 @@ class ES_Trigger_User_Subscribed extends ES_Workflow_Trigger {
 	 *
 	 * @var array
 	 */
-	public $supplied_data_items = array( 'subscriber' );
+	public $supplied_data_items = array( 'subscriber', 'coupon' );
 
 	/**
 	 * Load trigger admin props.

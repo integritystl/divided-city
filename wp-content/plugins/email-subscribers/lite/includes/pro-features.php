@@ -20,7 +20,7 @@ add_filter( 'ig_es_display_hidden_workflow_metabox', 'ig_es_show_hidden_workflow
 
 add_action( 'edit_form_advanced', 'add_spam_score_utm_link' );
 
-add_action( 'ig_es_add_additional_options', 'ig_es_add_captcha_option', 10, 1 );
+add_action( 'ig_es_additional_form_options', 'ig_es_add_captcha_option', 10, 1 );
 add_action( 'ig_es_campaign_preview_tab_options', 'ig_es_upsale_send_campaign_preview_email_option' );
 add_action( 'ig_es_after_campaign_tracking_options_settings', 'ig_es_upsale_campaign_tracking_options', 11 );
 // add_action( 'ig_es_broadcast_scheduling_options_settings', 'ig_es_additional_schedule_option');
@@ -41,6 +41,8 @@ add_filter( 'ig_es_contacts_bulk_action', 'ig_es_upsell_contacts_bulk_action' );
 
 add_action( 'ig_es_after_form_buttons', 'ig_es_upsell_cf_button');
 add_action( 'ig_es_additional_form_fields', 'ig_es_upsell_cf_form_field');
+
+
 /**
  * Promote SMTP mailer for free
  *
@@ -59,8 +61,10 @@ function ig_es_mailers_promo( $mailers ) {
 			'logo'       => ES_PLUGIN_URL . 'lite/admin/images/smtp.png',
 			'is_premium' => true,
 			'url'        => ES_Common::get_utm_tracking_url(
-				array( 'utm_medium' => 'smtp_mailer' )
-			),
+			array( 
+				'url'=>'https://www.icegram.com/documentation/how-to-configure-smtp-to-send-emails-in-email-subscribers-plugin/',
+				'utm_medium' => 'smtp_mailer' 
+			)),
 		);
 
 	}
@@ -164,8 +168,11 @@ function render_user_permissions_settings_fields_premium() {
 	$wp_roles   = new WP_Roles();
 	$roles      = $wp_roles->get_names();
 	$user_roles = array();
-
-	$url = ES_Common::get_utm_tracking_url( array( 'utm_medium' => 'user_roles' ) );
+ 
+	$url = ES_Common::get_utm_tracking_url( array( 
+		'url'=>'https://www.icegram.com/documentation/how-to-set-custom-permissions-for-user-roles-for-menu-in-email-susbcribers/',
+		'utm_medium' => 'user_roles' ) 
+	);
 
 	ob_start();
 	?>
@@ -270,7 +277,8 @@ function ig_es_add_upsale( $fields ) {
 		);
 
 		$general_fields = $fields['general'];
-		$premium_url    = ES_Common::get_utm_tracking_url( $utm_args );
+
+		$premium_url = ES_Common::get_utm_tracking_url( $utm_args );
 		// General Settings
 		$general_settings_field = array(
 			'ig_es_track_link_click'              => array(
@@ -294,7 +302,9 @@ function ig_es_add_upsale( $fields ) {
 				'type'       => 'checkbox',
 				'default'    => 'no',
 				'is_premium' => true,
-				'link'       => ES_Common::get_utm_tracking_url( array( 'utm_medium' => 'intermediate_unsubscribe_page' ) ),
+				'link'       => ES_Common::get_utm_tracking_url( array( 
+					'url' => 'https://www.icegram.com/documentation/how-to-allow-user-to-select-list-while-unsubscribe/',
+					'utm_medium' => 'intermediate_unsubscribe_page' ) ),
 				'disabled'   => true,
 			),
 
@@ -340,7 +350,9 @@ function ig_es_add_upsale( $fields ) {
 					'type'       => 'checkbox',
 					'default'    => 'no',
 					'is_premium' => true,
-					'link'       => ES_Common::get_utm_tracking_url( array( 'utm_medium' => 'utm_tracking' ) ),
+					'link'       => ES_Common::get_utm_tracking_url( array( 
+						'url'=>'https://www.icegram.com/documentation/how-to-add-utm-parameters-to-email/',
+						'utm_medium' => 'utm_tracking' ) ),
 					'disabled'   => true,
 				),
 				'ig_es_summary_automation' => array(
@@ -366,6 +378,7 @@ function ig_es_add_upsale( $fields ) {
 	if ( ES()->can_upsell_features( array( 'lite', 'trial' ) ) ) {
 
 		$utm_args = array(
+			'url' => 'https://www.icegram.com/documentation/how-do-i-enable-captcha/',
 			'utm_medium' => 'enable_captcha',
 		);
 
@@ -379,7 +392,9 @@ function ig_es_add_upsale( $fields ) {
 			'type'          => 'checkbox',
 			'default'       => 'no',
 			'is_premium'    => true,
-			'link'          => ES_Common::get_utm_tracking_url( array( 'utm_medium' => 'known_attackers' ) ),
+			'link'          => ES_Common::get_utm_tracking_url( array( 
+				'url'=>'https://www.icegram.com/documentation/preventing-spammers/',
+				'utm_medium' => 'known_attackers' ) ),
 			'disabled'      => true,
 			/* translators: %s: Icegram Pricing page url with utm tracking */
 			'upgrade_title' => __( 'Prevent spam attacks with PRO', 'email-subscribers' ),
@@ -393,7 +408,9 @@ function ig_es_add_upsale( $fields ) {
 			'type'       => 'checkbox',
 			'default'    => 'no',
 			'is_premium' => true,
-			'link'       => ES_Common::get_utm_tracking_url( array( 'utm_medium' => 'disposable_domains' ) ),
+			'link'       => ES_Common::get_utm_tracking_url( array( 
+				'url'=>'https://www.icegram.com/documentation/preventing-spammers/',
+				'utm_medium' => 'disposable_domains' ) ),
 			'disabled'   => true,
 		);
 
@@ -542,14 +559,11 @@ function ig_es_add_comments_tab_settings( $tab_options ) {
 		<p><?php esc_html_e( 'Quickly add to your mailing list when someone post a comment on your website.', 'email-subscribers' ); ?></p>
 		<h2><?php esc_html_e( 'How to setup?', 'email-subscribers' ); ?></h2>
 		<p><?php esc_html_e( 'Once you upgrade to ', 'email-subscribers' ); ?><a href="https://www.icegram.com/email-subscribers-starter/?utm_source=in_app&utm_medium=comment_sync&utm_campaign=es_upsell#sync_comment_users"><?php esc_html_e( 'Email Subscribers Starter', 'email-subscribers' ); ?></a>, 
-					 <?php
-						esc_html_e(
-							'you will have settings panel where you need to enable Comment user sync and select the list in which you want to add people whenever someone post a
-		comment.',
-							'email-subscribers'
-						)
-						?>
-																																																																								</p>
+		<?php
+			esc_html_e('you will have settings panel where you need to enable Comment user sync and select the list in which you want to add people whenever someone post a
+		comment.', 'email-subscribers') 
+		?>
+		</p>
 		<hr>
 		<p class="help"><?php esc_html_e( 'Checkout ', 'email-subscribers' ); ?><a href="https://www.icegram.com/email-subscribers-pricing/?utm_source=in_app&utm_medium=comment_sync&utm_campaign=es_upsell#sync_comment_users"><?php esc_html_e( 'Email Subscribers Starter', 'email-subscribers' ); ?></a> <?php esc_html_e( 'now', 'email-subscribers' ); ?></p>
 	</div>
@@ -814,6 +828,7 @@ function ig_es_show_hidden_workflow_metabox( $es_workflow_metaboxes ) {
 function ig_es_workflows_integration_upsell() {
 
 	$utm_args = array(
+		'url'	=> 'https://www.icegram.com/documentation/available-triggers/',
 		'utm_medium' => 'es_workflow_integration',
 	);
 
@@ -876,9 +891,14 @@ function add_spam_score_utm_link() {
  */
 function ig_es_add_captcha_option( $form_data ) {
 
+	if ( ES_Drag_And_Drop_Editor::is_dnd_editor_page() ) {
+		return;
+	}
+
 	if ( ES()->can_upsell_features( array( 'lite', 'trial' ) ) ) {
 
 		$utm_args = array(
+			'url'=> 'https://www.icegram.com/documentation/how-do-i-enable-captcha/',
 			'utm_medium' => 'es_form_captcha',
 		);
 
@@ -897,8 +917,9 @@ function ig_es_add_captcha_option( $form_data ) {
 				<div class="flex flex-row w-full">
 					<div class="flex w-2/4">
 						<div class="ml-4 mr-8 mr-4 pt-4 mb-2">
-							<label for="tag-link" class="ml-4 text-sm font-medium text-gray-500 pb-2 cursor-default"><?php echo esc_html__( 'Enable Captcha' ); ?>
-								<span class="premium-icon"></span>
+							<label for="tag-link" class="ml-4 text-sm font-medium text-gray-500 pb-2 cursor-default"><?php echo esc_html__( 'Enable Captcha', 'email-subscribers' ); ?>
+							<a href="<?php echo esc_url( $pricing_url ); ?>" target="_blank"  >
+								<span class="premium-icon"></span></a>
 							</label>
 							<p class="italic text-xs text-gray-400 mt-2 ml-4 leading-snug pb-4 cursor-default"><?php esc_html_e( 'Show a captcha to protect from bot signups.', 'email-subscribers' ); ?></p>
 						</div>
@@ -1004,12 +1025,19 @@ function ig_es_additional_multilist_and_post_digest() {
 
 function ig_es_upsale_post_digest() {
 	if ( ES()->can_upsell_features( array( 'lite', 'starter', 'trial' ) ) ) {
+		$utm_args = array(
+			'url'=>'https://www.icegram.com/documentation/post-digest/',
+			'utm_medium' => 'is_a_post_digest',
+		);
+		$pricing_url = ES_Common::get_utm_tracking_url( $utm_args );
 		?>
 		<div class="ig-es-campaign-is-post-digest-wrapper pt-4 pb-4 mx-4 border-b border-gray-200">
 			<div class="flex w-full">
 				<div class="w-11/12 text-sm font-normal text-gray-600">
 					<?php echo esc_html__( 'Is a post digest?', 'email-subscribers' ); ?>
-					<span class="premium-icon"></span>
+					<a href="<?php echo esc_url( $pricing_url ); ?>" target="_blank"  >
+						<span class="premium-icon"></span>
+					</a>
 				</div>
 				<div>
 					<label for="is_post_digest" class="inline-flex items-center cursor-pointer ">
@@ -1066,7 +1094,8 @@ function ig_es_upsale_campaign_tracking_options( $campaign_data ) {
 		<div class="flex w-full pt-2">
 			<div class="w-11/12 text-sm font-normal text-gray-600">
 				<label class="pt-3 text-sm leading-5 text-gray-500 cursor-default"><?php echo esc_html__( 'Link tracking', 'email-subscribers' ); ?></label>
-				<span class="premium-icon"></span>
+				<a href="<?php echo esc_url( $pricing_url ); ?>" target="_blank">
+				<span class="premium-icon"></span></a>
 			</div>
 
 			<div>
@@ -1084,12 +1113,24 @@ function ig_es_upsale_campaign_tracking_options( $campaign_data ) {
 	}
 
 	if ( ES()->can_upsell_features( array( 'lite', 'starter' ) ) ) {
-		?>
+		$utm_tracking_feature_args = array(
+			'url' => 'https://www.icegram.com/documentation/how-to-add-utm-parameters-to-email/',
+			'utm_medium' => 'campaign_summary',
+		);
 
+		$spam_score_args = array(
+			'url' => 'https://www.icegram.com/documentation/how-to-get-spam-score-of-the-content/',
+			'utm_medium' => 'campaign_summary',
+		);
+
+		$utm_feature_url = ES_Common::get_utm_tracking_url( $utm_tracking_feature_args );
+		$spam_score_url = ES_Common::get_utm_tracking_url( $spam_score_args );
+		?>
 		<div class="flex w-full pt-3 pb-3 border-b border-gray-200">
 			<div class="w-11/12 text-sm font-normal text-gray-600">
 				<label class="pt-3 text-sm leading-5 text-gray-500 cursor-default"><?php echo esc_html__( 'UTM tracking', 'email-subscribers' ); ?></label>
-				<span class="premium-icon"></span>
+				<a href="<?php echo esc_url( $utm_feature_url ); ?>" target="_blank">
+				<span class="premium-icon"></span></a>
 			</div>
 
 			<div>
@@ -1104,7 +1145,8 @@ function ig_es_upsale_campaign_tracking_options( $campaign_data ) {
 
 		<div class="block my-3">
 			<label class="pt-3 text-sm leading-5 font-medium text-gray-500 cursor-default"><?php echo esc_html__( 'Get spam score', 'email-subscribers' ); ?></label>
-			<span class="premium-icon"></span>
+			<a href="<?php echo esc_url( $spam_score_url ); ?>" target="_blank">
+			<span class="premium-icon"></span></a>
 			<button type="button" id="spam_score" disabled class="float-right es_spam rounded-md border text-indigo-400 border-indigo-300 text-sm leading-5 font-medium inline-flex justify-center px-3 py-1 cursor-default"><?php echo esc_html__( 'Check', 'email-subscribers' ); ?>
 			</button>
 		</div>
@@ -1124,7 +1166,8 @@ function ig_es_upsale_campaign_tracking_options( $campaign_data ) {
 				<input type="radio" class="form-radio" id="schedule_later" checked disabled>
 				<label for="schedule_later" class="text-sm font-normal text-gray-500 cursor-default"><?php echo esc_html__( 'Schedule for later', 'email-subscribers' ); ?>
 				</label>
-			<span class="premium-icon"></span>
+				<a href="<?php echo esc_url( $pricing_url ); ?>" target="_blank">
+			<span class="premium-icon"></span></a>
 			<br>
 			<div id="schedule_later" class="px-6">
 				<div class="flex pt-4" >
@@ -1185,6 +1228,7 @@ function ig_es_upsale_campaign_tracking_options( $campaign_data ) {
 function ig_es_view_additional_reports_data() {
 	if ( ES()->can_upsell_features( array( 'lite', 'starter', 'trial' ) ) ) {
 		 $utm_args = array(
+			 'url'=>'https://www.icegram.com/documentation/what-analytics-does-email-subscribers-track/',
 			 'utm_medium' => 'campaign_insight',
 		 );
 
@@ -1678,18 +1722,28 @@ function ig_es_view_additional_reports_data() {
  * @since 4.6.7
  */
 function ig_es_upsell_add_attachment_feature( $editor_id ) {
+	
+	// fetch page info to restrict upsell to es_newsletters
+	$editor_page = ig_es_get_request_data('page');
 
-	if ( 'edit-es-broadcast-body' === $editor_id ) {
+	$utm_args = array(
+		'utm_medium' => 'add_attachments',
+	);
+
+	$url = ES_Common::get_utm_tracking_url($utm_args);
+
+	if ( 'edit-es-campaign-body' === $editor_id && 'es_newsletters' === $editor_page) {
 		if ( ES()->can_upsell_features( array( 'lite', 'starter', 'trial' ) ) ) {
 			?>
 			<div class="ig-es-attachments-wrapper bg-white inline-block">
-				<button type="button" class="ig-es-add-attachment button" disabled="disabled">
+			<a href = "<?php echo esc_url( $url ); ?>" target = "_blank" >
+				<button type="button" class="ig-es-add-attachment button" >
 					<svg class="flex-shrink-0 h-5 text-gray-400 inline-block" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
 						<path fill-rule="evenodd" d="M8 4a3 3 0 00-3 3v4a5 5 0 0010 0V7a1 1 0 112 0v4a7 7 0 11-14 0V7a5 5 0 0110 0v4a3 3 0 11-6 0V7a1 1 0 012 0v4a1 1 0 102 0V7a3 3 0 00-3-3z" clip-rule="evenodd"></path>
 					</svg>
 					<?php echo esc_html__( 'Add Attachments', 'email-subscribers' ); ?>
-				</button>
-				<span class="premium-icon"></span>
+					<span class="premium-icon"></span>
+				</button></a>
 			</div>
 			<?php
 		}
@@ -1705,6 +1759,7 @@ function ig_es_upsell_pro_import_features() {
 
 	if ( ES()->can_upsell_features( array( 'lite', 'starter', 'trial' ) ) ) {
 		$utm_args = array(
+			'url'=>'https://www.icegram.com/documentation/how-to-import-wordpress-users-to-an-email-subscribers-list/',
 			'utm_medium' => 'import_existing_wp_users',
 		);
 
@@ -1830,6 +1885,7 @@ function ig_es_upsell_campaign_rules_message() {
 
 	if ( ES()->can_upsell_features( array( 'lite', 'starter', 'trial' ) ) ) {
 		$utm_args = array(
+			'url'=>'https://www.icegram.com/documentation/how-to-send-broadcast-post-notification-post-digest-to-multiple-lists-in-one-campaign/',
 			'utm_medium' => 'campaign_rules',
 		);
 

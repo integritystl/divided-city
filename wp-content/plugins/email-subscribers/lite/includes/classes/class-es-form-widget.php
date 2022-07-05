@@ -29,8 +29,9 @@ class ES_Form_Widget extends WP_Widget {
 		if ( ! empty( $form_id ) ) {
 
 			$form = ES()->forms_db->get_form_by_id( $form_id );
-
-			$form_data = ES_Forms_Table::get_form_data_from_body( $form );
+			if ( $form ) {
+				$form_data = ES_Forms_Table::get_form_data_from_body( $form );
+			}
 		}
 
 		$data = array();

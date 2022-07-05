@@ -10,10 +10,7 @@ class ES_Post_Notifications_Table {
 	public static $instance;
 
 	public function __construct() {
-		add_action( 'ig_es_' . IG_CAMPAIGN_TYPE_POST_NOTIFICATION . '_content_settings', array( $this, 'show_post_notification_content_settings' ) );
-		add_action( 'ig_es_' . IG_CAMPAIGN_TYPE_POST_DIGEST . '_content_settings', array( $this, 'show_post_notification_content_settings' ) );
-		add_action( 'ig_es_show_' . IG_CAMPAIGN_TYPE_POST_NOTIFICATION . '_campaign_summary_action_buttons', array( $this, 'show_summary_actions_buttons' ) );
-		add_action( 'ig_es_show_' . IG_CAMPAIGN_TYPE_POST_DIGEST . '_campaign_summary_action_buttons', array( $this, 'show_summary_actions_buttons' ) );
+		$this->init();
 	}
 
 	public static function get_instance() {
@@ -22,6 +19,19 @@ class ES_Post_Notifications_Table {
 		}
 
 		return self::$instance;
+	}
+
+	public function init() {
+		$this->register_hooks();
+	}
+
+	public function register_hooks() {
+		add_action( 'ig_es_' . IG_CAMPAIGN_TYPE_POST_NOTIFICATION . '_content_settings', array( $this, 'show_post_notification_content_settings' ) );
+		add_action( 'ig_es_' . IG_CAMPAIGN_TYPE_POST_DIGEST . '_content_settings', array( $this, 'show_post_notification_content_settings' ) );
+		add_action( 'ig_es_show_' . IG_CAMPAIGN_TYPE_POST_NOTIFICATION . '_campaign_summary_action_buttons', array( $this, 'show_summary_actions_buttons' ) );
+		add_action( 'ig_es_show_' . IG_CAMPAIGN_TYPE_POST_DIGEST . '_campaign_summary_action_buttons', array( $this, 'show_summary_actions_buttons' ) );
+		add_action( 'ig_es_' . IG_CAMPAIGN_TYPE_POST_NOTIFICATION . '_default_subject', array( $this, 'get_post_notification_default_subject' ), 10, 2 );
+		add_action( 'ig_es_' . IG_CAMPAIGN_TYPE_POST_NOTIFICATION . '_default_content', array( $this, 'get_post_notification_default_content' ), 10, 2 );
 	}
 
 	public function es_notifications_callback() {
@@ -311,7 +321,7 @@ class ES_Post_Notifications_Table {
 							<?php echo esc_html( $heading ); ?>
 						</h2>
 					</div>
-					
+
 					<div class="flex md:mt-0">
 						<?php if ( 'edit' === $action ) { ?>
 							<a href="admin.php?page=es_notifications&action=new" class="ig-es-title-button py-1.5 mx-2"><?php esc_html_e( 'Add New', 'email-subscribers' ); ?></a>
@@ -335,7 +345,7 @@ class ES_Post_Notifications_Table {
 									<label for="tag-link"><span class="block ml-6 pr-4 pt-2 text-sm font-medium text-gray-600 pb-2">
 												<?php esc_html_e( 'Enable/Disable campaign', 'email-subscribers' ); ?>
 									</label>
-									
+
 								</th>
 								<td class="w-9/12 py-3">
 									<label for="status" class="ml-12 inline-flex items-center cursor-pointer"><span class="relative">
@@ -343,7 +353,7 @@ class ES_Post_Notifications_Table {
 													   name="status" value="1" <?php checked( $status, '1' ); ?> />
 
 												<span class="es-mail-toggle-line"></span>
-												<span class="es-mail-toggle-dot"></span>	
+												<span class="es-mail-toggle-dot"></span>
 											</span></label>
 								</td>
 							</tr>
@@ -482,7 +492,7 @@ class ES_Post_Notifications_Table {
 		$campaign_status = ! empty( $campaign_data['status'] ) ? (int) $campaign_data['status'] : IG_ES_CAMPAIGN_STATUS_IN_ACTIVE;
 
 		$is_campaign_inactive = IG_ES_CAMPAIGN_STATUS_IN_ACTIVE === $campaign_status;
-		
+
 		if ( $is_campaign_inactive ) {
 			?>
 			<button type="submit" name="ig_es_campaign_action" class="w-24 inline-flex justify-center py-1.5 text-sm font-medium leading-5 text-white transition duration-150 ease-in-out bg-indigo-600 border border-transparent rounded-md md:px-2 lg:px-3 xl:px-4 md:ml-2 hover:bg-indigo-500 hover:text-white"
@@ -499,7 +509,7 @@ class ES_Post_Notifications_Table {
 		$campaign_id   = ! empty( $campaign_data['id'] ) ? $campaign_data['id'] : 0;
 		$campaign_type = ! empty( $campaign_data['type'] ) ? $campaign_data['type'] : '';
 		$editor_type   = ! empty( $campaign_data['meta']['editor_type'] ) ? $campaign_data['meta']['editor_type'] : IG_ES_DRAG_AND_DROP_EDITOR;
-		
+
 		if ( IG_ES_DRAG_AND_DROP_EDITOR === $editor_type  ) {
 			$sidebar_id = 'sidebar_campaign_settings_' . $campaign_id;
 			?>
@@ -559,13 +569,24 @@ class ES_Post_Notifications_Table {
 		}
 	}
 
+	/**
+	 * Show post notification related fields
+	 *
+	 * Post categories etc.
+	 *
+	 * @since 5.1.0
+	 *
+	 * @param array $campaign_data
+	 */
 	public function show_post_notification_fields( $campaign_data ) {
-		$categories  = isset( $campaign_data['categories'] ) ? $campaign_data['categories'] : '';
-		$cat         = ES_Common::convert_categories_string_to_array( $categories, true );
-		$allowedtags = ig_es_allowed_html_tags_in_esc();
+		// We are storing both post categories and CPTs in one column 'categories'.
+		$categories    = isset( $campaign_data['categories'] ) ? $campaign_data['categories'] : '';
+		$cat_cpts      = ES_Common::convert_categories_string_to_array( $categories, true );
+		$allowedtags   = ig_es_allowed_html_tags_in_esc();
 		$campaign_type = ! empty( $campaign_data['type'] ) ? $campaign_data['type'] : '';
-		$editor_type = ! empty( $campaign_data['meta']['editor_type'] ) ? $campaign_data['meta']['editor_type'] : IG_ES_DRAG_AND_DROP_EDITOR;
+		$editor_type   = ! empty( $campaign_data['meta']['editor_type'] ) ? $campaign_data['meta']['editor_type'] : IG_ES_DRAG_AND_DROP_EDITOR;
 		?>
+
 		<div class="ig-es-campaign-categories-wrapper block mx-4 border-b border-gray-200 pt-4 pb-4">
 			<div scope="row" class="pb-1 text-left">
 				<label for="tag-link"><span class="block text-sm font-medium text-gray-600"><?php esc_html_e( 'Select post category', 'email-subscribers' ); ?></span></label>
@@ -574,37 +595,182 @@ class ES_Post_Notifications_Table {
 				<table border="0" cellspacing="0" class="pt-3">
 					<tbody>
 					<?php
-					$categories_lists = ES_Common::prepare_categories_html( $cat );
+					$categories_lists = ES_Common::prepare_categories_html( $cat_cpts );
 					echo wp_kses( $categories_lists, $allowedtags );
 					?>
 					</tbody>
 				</table>
 			</div>
 		</div>
+
+
 		<div class="ig-es-campaign-custom-post-type-wrapper border-b border-gray-100 mx-4 pt-4 pb-2">
+
 			<div scope="row" class="text-left">
 				<label for="tag-link"><span class="block pb-1 text-sm font-medium text-gray-600 pb-2">
-								<?php esc_html_e( 'Select custom post type(s)', 'email-subscribers' ); ?></span>
+								<?php esc_html_e( 'Select post type(s)', 'email-subscribers' ); ?></span>
 				</label>
 			</div>
-			<div class="">
+
+
+
+
+			<div class="ig-es-cpt-filters">
 				<table border="0" cellspacing="0">
 					<tbody>
 					<?php
-					$custom_post_type_list = ES_Common::prepare_custom_post_type_checkbox( $cat );
-					echo wp_kses( $custom_post_type_list, $allowedtags );
+
+					$selected_post_types = array();
+
+					if ( ! empty( $cat_cpts ) ) {
+						foreach ( $cat_cpts as $cat_cpt ) {
+							// CPTs are stored in the 'categories' column with {T} prefix/suffix.
+							$is_post_type = strpos( $cat_cpt, '{T}' ) !== false;
+							if ( $is_post_type ) {
+								$selected_post_types[] = str_replace( '{T}', '', $cat_cpt );
+							}
+						}
+					}
+
+					$custom_post_types = ES_Common::get_custom_post_types();
+					$default_post_types = ES_Common::get_default_post_types();
+					$post_types = array_merge( $custom_post_types, $default_post_types );
+					if ( ! empty( $post_types ) ) {
+						foreach ( $post_types as $post_type ) {
+							$is_cpt_selected = in_array( $post_type, $selected_post_types, true );
+							if ( $is_cpt_selected ) {
+								$checked = 'checked="checked"';
+							} else {
+								$checked = '';
+							}
+							$post_type_object = get_post_type_object( $post_type );
+							$post_type__name  = $post_type_object->labels->singular_name;
+							?>
+							<tr class="es-post-types-row<?php echo $is_cpt_selected ? ' checked' : ''; ?>">
+								<td style="padding-top:4px;padding-bottom:4px;padding-right:10px;">
+									<span class="block pr-4 text-sm font-medium text-gray-600 pb-2">
+										<input
+											type="checkbox"
+											id="es_custom_post_type_<?php echo esc_attr( $post_type ); ?>" name="campaign_data[es_note_cpt][]"
+											value="<?php echo '{T}' . esc_html( $post_type ) . '{T}'; ?>"
+											<?php echo esc_attr( $checked ); ?>
+											class="es_custom_post_type form-checkbox"
+											>
+										<label for="es_custom_post_type_<?php echo esc_attr( $post_type ); ?>">
+											<?php echo esc_html( $post_type__name ); ?>
+										</label>
+									</span>
+									<?php
+										do_action( 'ig_es_after_post_type_checkbox', $post_type, $campaign_data );
+									?>
+								</td>
+							</tr>
+							<?php
+						}
+					} else {
+						?>
+						<tr>
+							<span class="block pr-4 text-sm font-normal text-gray-600 pb-2">
+								<?php echo esc_html__( 'No Custom Post Types Available', 'email-subscribers' ); ?>
+							</span>
+						</tr>
+						<?php
+					}
 					?>
 					</tbody>
 				</table>
 			</div>
+
+
+
 		</div>
+
+
+
+
+
+
 		<?php
 		if ( IG_ES_DRAG_AND_DROP_EDITOR === $editor_type ) {
 			do_action( 'ig_es_show_' . $campaign_type . '_fields', $campaign_data );
 		}
 	}
 
+	/**
+	 * Get default subject for post notification campaign
+	 *
+	 * @param string $subject
+	 * @return string $subject
+	 *
+	 * @since 5.3.2
+	 */
+	public function get_post_notification_default_subject( $subject, $campaign_data ) {
+		if ( empty( $subject ) ) {
+			$subject = __( 'New Post Published - {{POSTTITLE}}', 'email-subscribers' );
+		}
+		return $subject;
+	}
+
+	public function get_post_notification_default_content( $content, $campaign_data ) {
+
+		if ( empty( $content ) ) {
+			$editor_type   = ! empty( $campaign_data['meta']['editor_type'] ) ? $campaign_data['meta']['editor_type'] : IG_ES_DRAG_AND_DROP_EDITOR;
+			$is_dnd_editor = IG_ES_DRAG_AND_DROP_EDITOR === $editor_type;
+
+			if ( $is_dnd_editor ) {
+				$content = $this->get_dnd_editor_default_content();
+			} else {
+				$content = $this->get_classic_editor_default_content();
+			}
+		}
+
+		return $content;
+	}
+
+	public function get_classic_editor_default_content() {
+		$default_content  = __( 'Hello {{NAME}},', 'email-subscribers' ) . "\r\n\r\n";
+		$default_content .= __( 'We have published a new blog article on our website', 'email-subscribers' ) . " : {{POSTTITLE}}\r\n";
+		$default_content .= "{{POSTIMAGE}}\r\n\r\n";
+		$default_content .= __( 'You can view it from this link', 'email-subscribers' ) . " : {{POSTLINK}}\r\n\r\n";
+		$default_content .= __( 'Thanks & Regards', 'email-subscribers' ) . ",\r\n";
+		$default_content .= __( 'Admin', 'email-subscribers' ) . "\r\n\r\n";
+		$default_content .= __( 'You received this email because in the past you have provided us your email address : {{EMAIL}} to receive notifications when new updates are posted.', 'email-subscribers' );
+		return $default_content;
+	}
+
+	public function get_dnd_editor_default_content() {
+
+		$default_content = '<mjml>
+			<mj-body>
+				<mj-section background-color="#FFFFFF">
+					<mj-column width="100%">
+						<mj-image src="https://webstockreview.net/images/sample-png-images-14.png" height="70px"
+								width="140px"/>
+					</mj-column>
+				</mj-section>
+				<mj-section background-color="#FFFFFF">
+					<mj-column width="100%">
+						<mj-text line-height="26px">' . __( 'Hello {{NAME}},', 'email-subscribers' ) . '</mj-text>
+						<mj-text line-height="26px">' . __( 'We have published a new blog article on our website', 'email-subscribers' ) . ' : {{POSTTITLE}}</mj-text>
+						<mj-text line-height="26px">{{POSTIMAGE}}</mj-text>
+						<mj-text line-height="26px">' . __( 'You can view it from this link', 'email-subscribers' ) . ' : {{POSTLINK}}</mj-text>
+					</mj-column>
+				</mj-section>
+				<mj-section background-color="#f3f3f3">
+					<mj-column width="100%">
+						<mj-text align="center" line-height="26px">@2022,' . __( 'Your Brand Name', 'email-subscribers' ) . '.</mj-text>
+						<mj-text align="center" line-height="26px">' . __( 'You received this email because in the past you have provided us your email address : {{EMAIL}} to receive notifications when new updates are posted.', 'email-subscribers' ) . __( 'If you wish to unsubscribe from our newsletter, click', 'email-subscribers' ) . ' <a data-gjs-type="link" href="{{UNSUBSCRIBE-LINK}}" >' . __( 'here', 'email-subscribers' ) . '</a>
+						</mj-text>
+					</mj-column>
+				</mj-section>
+			</mj-body>
+		</mjml> ';
+
+		return $default_content;
+	}
+
 }
 
 
 ES_Post_Notifications_Table::get_instance();
+

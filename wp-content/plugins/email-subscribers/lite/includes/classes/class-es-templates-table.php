@@ -18,9 +18,11 @@ class ES_Templates_Table {
 		add_action( 'admin_footer', array( $this, 'add_custom_button' ) );
 		add_action( 'edit_form_after_title', array( $this, 'add_template_type' ) );
 		// duplicate template
-		add_filter( 'post_row_actions', array( &$this, 'add_message_action' ), 10, 2 );
-		add_action( 'admin_init', array( &$this, 'duplicate_message' ), 10, 1 );
+		add_filter( 'post_row_actions', array( &$this, 'add_template_action' ), 10, 2 );
+		add_action( 'admin_init', array( &$this, 'duplicate_template' ), 10, 1 );
 		add_action( 'admin_footer', array( $this, 'es_template_preview_callback' ), 10 );
+
+		add_action( 'parse_query', array( $this, 'exclude_dnd_templates' ) );
 	}
 
 	public function add_template_type() {
@@ -65,7 +67,7 @@ class ES_Templates_Table {
 			<a href="https://www.icegram.com/documentation/es-what-are-the-available-keywords-in-the-post-notifications/?utm_source=es&amp;utm_medium=in_app&amp;utm_campaign=view_docs_help_page" target="_blank"><?php esc_html_e( 'Available Keywords', 'email-subscribers' ); ?></a> <?php esc_html_e( 'for Post Notification: ', 'email-subsribers' ); ?> {{FIRSTNAME}},
 			{{LASTNAME}}, {{NAME}}, {{EMAIL}},
 			{{DATE}}, {{POSTTITLE}}, {{POSTIMAGE}}, {{POSTEXCERPT}}, {{POSTDESC}},
-		{{POSTAUTHOR}}, {{POSTLINK}}, {{POSTLINK-WITHTITLE}}, {{POSTLINK-ONLY}}, {{POSTFULL}} </p>
+		{{POSTAUTHOR}}, {{POSTAUTHORAVATAR}}, {{POSTAUTHORAVATARLINK-ONLY}}, {{POSTLINK}}, {{POSTLINK-WITHTITLE}}, {{POSTLINK-ONLY}}, {{POSTFULL}} </p>
 		<!-- End-IG-Code -->
 		<p id="newsletter">
 			<a href="https://www.icegram.com/documentation/es-what-are-the-available-keywords-in-the-newsletters/?utm_source=es&amp;utm_medium=in_app&amp;utm_campaign=view_docs_help_page" target="_blank"><?php esc_html_e( 'Available Keywords', 'email-subscribers' ); ?></a> <?php esc_html_e( 'for Broadcast:', 'email-subscribers' ); ?> {{FIRSTNAME}}, {{LASTNAME}}, {{NAME}},
@@ -196,19 +198,27 @@ class ES_Templates_Table {
 		return $column;
 	}
 
-	public function add_message_action( $actions, $post ) {
-		if ( 'es_template' != $post->post_type ) {
+	public function add_template_action( $actions, $post ) {
+		
+		if ( 'es_template' !== $post->post_type ) {
 			return $actions;
 		}
-		$actions['duplicate_template'] = '<a class="es-duplicate-template"  href="post.php?template_id=' . $post->ID . '&action=duplicate-template" >' . __( 'Duplicate', 'email-subscribers' ) . '</a>';
+
+		$nonce = wp_create_nonce( 'ig_es_duplicate_template_nonce' );
+
+		$actions['duplicate_template'] = '<a class="es-duplicate-template"  href="post.php?template_id=' . $post->ID . '&action=duplicate-template&_wpnonce=' . $nonce . '" >' . __( 'Duplicate', 'email-subscribers' ) . '</a>';
 
 		return $actions;
 	}
 
-	public function duplicate_message() {
+	public function duplicate_template() {
 		$action      = ig_es_get_request_data( 'action' );
 		$template_id = ig_es_get_request_data( 'template_id' );
 		if ( ! empty( $template_id ) && 'duplicate-template' === $action ) {
+
+			
+			check_admin_referer( 'ig_es_duplicate_template_nonce' );
+
 			// duplicate tempalte
 			$this->duplicate_in_db( $template_id );
 			// $location = admin_url( 'post.php?post='.$duplicate_template_id.'&action=edit');
@@ -260,6 +270,33 @@ class ES_Templates_Table {
 		}
 
 		return $duplicate_id;
+	}
+
+	/**
+	 * Exclude DND Templates from template list
+	 * 
+	 * @since 4.5.3
+	 */
+	public static function exclude_dnd_templates( $wp_query ) {
+
+		global $pagenow;
+
+		if ( 'edit.php' !== $pagenow || empty( $wp_query->query_vars['post_type'] ) ||'es_template' !== $wp_query->query_vars['post_type'] ) {
+			return;
+		}
+		
+		$wp_query->query_vars['meta_query'] = array(
+			'relation' => 'OR',
+			array(
+				'key'     => 'es_editor_type',
+				'value'   => IG_ES_CLASSIC_EDITOR,
+				'compare' => '=',
+			),
+			array(
+				'key'     => 'es_editor_type',
+				'compare' => 'NOT EXISTS', // if key doesn't exists, then template is created using Classic editor
+			),
+		);
 	}
 
 	public static function get_instance() {

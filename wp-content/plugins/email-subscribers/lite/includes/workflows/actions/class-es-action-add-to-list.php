@@ -46,6 +46,7 @@ if ( ! class_exists( 'ES_Action_Add_To_List' ) ) {
 			$list_field->set_options( $lists );
 			$list_field->set_required();
 			$this->add_field( $list_field );
+		
 		}
 
 		/**
@@ -56,6 +57,9 @@ if ( ! class_exists( 'ES_Action_Add_To_List' ) ) {
 		public function run() {
 
 			$list_id = $this->get_option( 'ig-es-list' );
+
+			$user_list_status = $this->get_option( 'ig-es-user-list-status' );
+
 
 			if ( ! $list_id ) {
 				return;
@@ -73,7 +77,7 @@ if ( ! class_exists( 'ES_Action_Add_To_List' ) ) {
 						$data = $data_type->get_data( $data_item );
 					}
 					if ( ! empty( $data['email'] ) ) {
-						$this->add_contact( $list_id, $data );
+						$this->add_contact( $list_id, $data, $user_list_status );
 					}
 				}
 			}
@@ -86,7 +90,7 @@ if ( ! class_exists( 'ES_Action_Add_To_List' ) ) {
 		 * @param int   $list_id List id to add the contact's data.
 		 * @param array $data Contact's data.
 		 */
-		public function add_contact( $list_id = 0, $data = array() ) {
+		public function add_contact( $list_id = 0, $data = array(), $user_list_status = '' ) {
 
 			// Don't know where to add contact? please find it first.
 			if ( empty( $list_id ) ) {
@@ -128,18 +132,23 @@ if ( ! class_exists( 'ES_Action_Add_To_List' ) ) {
 			$guid = ES_Common::generate_guid();
 
 			$contact_data = array(
-				'first_name' => $first_name,
-				'last_name'  => $last_name,
-				'email'      => $email,
-				'source'     => $source,
-				'status'     => $status,
-				'hash'       => $guid,
-				'created_at' => ig_get_current_date_time(),
-				'wp_user_id' => $wp_user_id,
+				'first_name' 			 => $first_name,
+				'last_name'  			 => $last_name,
+				'email'      			 => $email,
+				'source'     			 => $source,
+				'status'     			 => $status,
+				'user_list_status' 		 => $user_list_status,
+				'hash'       			 => $guid,
+				'created_at' 			 => ig_get_current_date_time(),
+				'wp_user_id' 			 => $wp_user_id,
 			);
 
 			do_action( 'ig_es_add_contact', $contact_data, $list_id );
 		}
+
+
+
+
 
 		/**
 		 * Create contact list from product

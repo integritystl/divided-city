@@ -232,15 +232,6 @@ if ( ! class_exists( 'IG_ES_Onboarding' ) ) {
 		 *
 		 * @since 4.6.0
 		 */
-		public function ajax_checking_spam_score_delivery_metrics() {
-			return $this->perform_onboarding_tasks( 'email_delivery_check_tasks', 'checking_spam_score_delivery_metrics' );
-		}
-
-		/**
-		 * Method to perform email delivery tasks.
-		 *
-		 * @since 4.6.0
-		 */
 		public function ajax_evaluate_email_delivery() {
 			return $this->perform_onboarding_tasks( 'email_delivery_check_tasks', 'evaluate_email_delivery' );
 		}
@@ -250,7 +241,7 @@ if ( ! class_exists( 'IG_ES_Onboarding' ) ) {
 		 *
 		 * @since 4.6.0
 		 */
-		public function ajax_finishing_onboarding() {
+		public function ajax_complete_onboarding() {
 
 			$response = $this->perform_onboarding_tasks( 'completion_tasks' );
 
@@ -400,13 +391,7 @@ if ( ! class_exists( 'IG_ES_Onboarding' ) ) {
 			$from_email          = ig_es_get_request_data( 'es_from_email', '' );
 			$enable_double_optin = ig_es_get_request_data( 'enable_double_optin', 'yes' );
 			$optin_type          = 'yes' === $enable_double_optin ? 'double_opt_in' : 'single_opt_in';
-			$is_trial            = ig_es_get_request_data( 'is_trial', '' );
 			$allow_tracking      = ig_es_get_request_data( 'allow_tracking', '' );
-
-			if ( ! empty( $is_trial ) ) {
-				// Add trial preferences.
-				ES()->add_trial_data( $is_trial, time() );
-			}
 
 			update_option( 'ig_es_optin_type', $optin_type );
 
@@ -625,6 +610,7 @@ if ( ! class_exists( 'IG_ES_Onboarding' ) ) {
 					$workflow_meta                = array();
 					$workflow_meta['when_to_run'] = 'immediately';
 					$workflow_status              = $workflow['status'];
+					$workflow_type                = isset( $workflow['type'] ) ? $workflow['type'] : IG_ES_WORKFLOW_TYPE_USER;
 	
 					$workflow_actions = $workflow['actions'];
 	
@@ -636,6 +622,7 @@ if ( ! class_exists( 'IG_ES_Onboarding' ) ) {
 						'meta'         => maybe_serialize( $workflow_meta ),
 						'priority'     => 0,
 						'status'       => $workflow_status,
+						'type'		   => $workflow_type,
 					);
 	
 					$workflow_id = ES()->workflows_db->insert_workflow( $workflow_data );
@@ -984,13 +971,6 @@ if ( ! class_exists( 'IG_ES_Onboarding' ) ) {
 				'status' => 'error',
 			);
 
-			// Send test email to Icegram API only if trial is valid or user is premium user.
-			if ( ES()->is_trial_valid() || ES()->is_premium() ) {
-
-				$service = new ES_Send_Test_Email();
-				$res     = $service->send_test_email();
-			}
-
 			$onboarding_tasks_data = get_option( self::$onboarding_tasks_data_option, array() );
 			$campaign_id           = ! empty( $onboarding_tasks_data['create_default_newsletter_broadcast']['broadcast_id'] ) ? $onboarding_tasks_data['create_default_newsletter_broadcast']['broadcast_id'] : 0;
 			$report_id             = ! empty( $onboarding_tasks_data['queue_default_broadcast_newsletter']['report_id'] ) ? $onboarding_tasks_data['queue_default_broadcast_newsletter']['report_id'] : 0;
@@ -1040,11 +1020,17 @@ if ( ! class_exists( 'IG_ES_Onboarding' ) ) {
 				}
 			}
 
+			// Send a test email to our ETP service.
+			if ( 'success' === $response['status'] ) {
+				$service = new ES_Send_Test_Email();
+				$service->send_test_email();
+			}
+
 			return $response;
 		}
 
 		/**
-		 * Method to check test email on Icegram servers.
+		 * Method to check if test email is received on Icegram servers.
 		 *
 		 * @since 4.6.0
 		 */
@@ -1054,48 +1040,17 @@ if ( ! class_exists( 'IG_ES_Onboarding' ) ) {
 				'status' => 'error',
 			);
 
-			// Check test email only if user has valid trial or is a premium user.
-			if ( ES()->is_trial_valid() || ES()->is_premium() ) {
-				$onboarding_tasks_failed           = get_option( self::$onboarding_tasks_failed_option, array() );
-				$email_delivery_check_tasks_failed = ! empty( $onboarding_tasks_failed['email_delivery_check_tasks'] ) ? $onboarding_tasks_failed['email_delivery_check_tasks'] : array();
+			$onboarding_tasks_failed           = get_option( self::$onboarding_tasks_failed_option, array() );
+			$email_delivery_check_tasks_failed = ! empty( $onboarding_tasks_failed['email_delivery_check_tasks'] ) ? $onboarding_tasks_failed['email_delivery_check_tasks'] : array();
 
-				// Peform test email checking if dispatch_emails_from_server task hasn't failed.
-				if ( ! in_array( 'dispatch_emails_from_server', $email_delivery_check_tasks_failed, true ) ) {
-					$service = new ES_Email_Delivery_Check();
-					return $service->test_email_delivery();
-				} else {
-					$response['status'] = 'skipped';
-				}
-			}
+			$task_failed = in_array( 'dispatch_emails_from_server', $email_delivery_check_tasks_failed, true );
 
-			return $response;
-		}
-
-		/**
-		 * Method to check spam score of test email recieved on Icegram servers.
-		 *
-		 * @since 4.6.0
-		 */
-		public function checking_spam_score_delivery_metrics() {
-
-			$response = array(
-				'status' => 'error',
-			);
-
-			// Check spam score only if user has valid trial or is a premium user.
-			if ( ES()->is_trial_valid() || ES()->is_premium() ) {
-				$onboarding_tasks_failed           = get_option( self::$onboarding_tasks_failed_option, array() );
-				$email_delivery_check_tasks_failed = ! empty( $onboarding_tasks_failed['email_delivery_check_tasks'] ) ? $onboarding_tasks_failed['email_delivery_check_tasks'] : array();
-
-				$onboarding_tasks_skipped           = get_option( self::$onboarding_tasks_skipped_option, array() );
-				$email_delivery_check_tasks_skipped = ! empty( $onboarding_tasks_skipped['email_delivery_check_tasks'] ) ? $onboarding_tasks_skipped['email_delivery_check_tasks'] : array();
-
-				// Peform test email spam score only if check_test_email_on_server task hasn't failed or skipped.
-				if ( ! in_array( 'check_test_email_on_server', $email_delivery_check_tasks_failed, true ) && ! in_array( 'check_test_email_on_server', $email_delivery_check_tasks_skipped, true ) ) {
-					$response['status'] = 'success';
-				} else {
-					$response['status'] = 'skipped';
-				}
+			// Peform test email checking if dispatch_emails_from_server task hasn't failed.
+			if ( ! $task_failed ) {
+				$service  = new ES_Email_Delivery_Check();
+				$response = $service->test_email_delivery();
+			} else {
+				$response['status'] = 'failed';
 			}
 
 			return $response;
@@ -1111,22 +1066,24 @@ if ( ! class_exists( 'IG_ES_Onboarding' ) ) {
 			$response = array(
 				'status' => 'error',
 			);
+			
+			$onboarding_tasks_failed           = get_option( self::$onboarding_tasks_failed_option, array() );
+			$email_delivery_check_tasks_failed = ! empty( $onboarding_tasks_failed['email_delivery_check_tasks'] ) ? $onboarding_tasks_failed['email_delivery_check_tasks'] : array();
 
-			// Evaluate email delivery only if user has valid trial or is a premium user.
-			if ( ES()->is_trial_valid() || ES()->is_premium() ) {
-				$onboarding_tasks_failed           = get_option( self::$onboarding_tasks_failed_option, array() );
-				$email_delivery_check_tasks_failed = ! empty( $onboarding_tasks_failed['email_delivery_check_tasks'] ) ? $onboarding_tasks_failed['email_delivery_check_tasks'] : array();
+			$onboarding_tasks_skipped           = get_option( self::$onboarding_tasks_skipped_option, array() );
+			$email_delivery_check_tasks_skipped = ! empty( $onboarding_tasks_skipped['email_delivery_check_tasks'] ) ? $onboarding_tasks_skipped['email_delivery_check_tasks'] : array();
 
-				$onboarding_tasks_skipped           = get_option( self::$onboarding_tasks_skipped_option, array() );
-				$email_delivery_check_tasks_skipped = ! empty( $onboarding_tasks_skipped['email_delivery_check_tasks'] ) ? $onboarding_tasks_skipped['email_delivery_check_tasks'] : array();
+			$task_failed  = in_array( 'check_test_email_on_server', $email_delivery_check_tasks_failed, true );
+			$task_skipped = in_array( 'check_test_email_on_server', $email_delivery_check_tasks_skipped, true );
 
-				// Peform email delivery evaulation only if check_test_email_on_server task hasn't failed or skipped.
-				if ( ! in_array( 'check_test_email_on_server', $email_delivery_check_tasks_failed, true ) && ! in_array( 'check_test_email_on_server', $email_delivery_check_tasks_skipped, true ) ) {
-					$response['status'] = 'success';
-				} else {
-					$response['status'] = 'skipped';
-				}
+			if ( $task_failed ) {
+				$response['status'] = 'failed';
+			} elseif ( $task_skipped ) {
+				$response['status'] = 'skipped';
+			} else {
+				$response['status'] = 'success';
 			}
+				
 			return $response;
 		}
 
@@ -1237,7 +1194,7 @@ if ( ! class_exists( 'IG_ES_Onboarding' ) ) {
 		}
 
 		/**
-		 * Method to subscribe to klawoo in the onboarding process.
+		 * Method to subscribe to ES list installed on the IG site
 		 *
 		 * @since 4.6.0
 		 */
@@ -1251,35 +1208,13 @@ if ( ! class_exists( 'IG_ES_Onboarding' ) ) {
 			$email = ig_es_get_request_data( 'email', '' );
 			$list  = ig_es_get_request_data( 'list', '' );
 
-			if ( ! empty( $list ) && is_email( $email ) ) {
+			$sign_up_data = array(
+				'name'  => $name,
+				'email' => $email,
+				'list'  => $list,
+			);
 
-				$url_params = array(
-					'ig_es_external_action' => 'subscribe',
-					'name'                  => $name,
-					'email'                 => $email,
-					'list'                  => $list,
-				);
-
-				$ip_address = ig_es_get_ip();
-				if ( ! empty( $ip_address ) && 'UNKNOWN' !== $ip_address ) {
-					$url_params['ip_address'] = $ip_address;
-				}
-
-				$ig_es_url = 'https://www.icegram.com/';
-				$ig_es_url = add_query_arg( $url_params, $ig_es_url );
-
-				// Make a get request.
-				$api_response = wp_remote_get( $ig_es_url );
-				if ( ! is_wp_error( $api_response ) ) {
-					$body = ! empty( $api_response['body'] ) && ES_Common::is_valid_json( $api_response['body'] ) ? json_decode( $api_response['body'], true ) : '';
-					if ( ! empty( $body ) ) {
-						// If we have received an id in response then email is successfully queued at mailgun server.
-						if ( ! empty( $body['status'] ) && 'SUCCESS' === $body['status'] ) {
-							$response['status'] = 'success';
-						}
-					}
-				}
-			}
+			$response = ES()->trial->send_ig_sign_up_request( $sign_up_data );
 
 			return $response;
 		}
@@ -1297,7 +1232,7 @@ if ( ! class_exists( 'IG_ES_Onboarding' ) ) {
 
 			if ( ! empty( $is_trial ) ) {
 				// Add trial preferences.
-				ES()->add_trial_data( $is_trial, time() );
+				ES()->trial->add_trial_data( $is_trial, time() );
 			}
 
 			// Set flag for onboarding completion.

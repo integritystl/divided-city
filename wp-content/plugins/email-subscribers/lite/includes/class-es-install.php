@@ -293,6 +293,14 @@ if ( ! class_exists( 'ES_Install' ) ) {
 				'ig_es_migrate_post_campaigns_list_settings_into_campaign_rules',
 				'ig_es_update_510_db_version',
 			),
+			'5.3.8'  => array(
+				'ig_es_mark_system_workflows',
+				'ig_es_update_538_db_version',
+			),
+			'5.4.0'  => array(
+				'ig_es_update_540_alter_contacts_table',
+				'ig_es_update_540_db_version',
+			),
 		);
 
 		/**
@@ -970,6 +978,7 @@ if ( ! class_exists( 'ES_Install' ) ) {
 				'ig_es_disable_wp_cron'                           => array( 'default' => 'no' ),
 				'ig_es_enable_sending_mails_in_customer_timezone' => array( 'default' => 'no' ),
 				'ig_es_track_email_opens'                         => array( 'default' => 'yes' ),
+				'ig_es_enable_ajax_form_submission'               => array( 'default' => 'no' ),
 				'ig_es_show_opt_in_consent'                       => array( 'default' => 'yes' ),
 				'ig_es_opt_in_consent_text'                       => array( 'default' => 'Subscribe to our email updates as well.' ),
 				'ig_es_installed_on'                              => array(
@@ -997,7 +1006,7 @@ if ( ! class_exists( 'ES_Install' ) ) {
 				'ig_es_max_email_send_at_once'                    => array(
 					'default'    => IG_ES_MAX_EMAIL_SEND_AT_ONCE,
 					'old_option' => '',
-				),
+				),				
 				'ig_es_test_mailbox_user'                         => array(
 					'default'    => ES_Common::generate_test_mailbox_user(),
 					'old_option' => '',
@@ -1083,6 +1092,7 @@ if ( ! class_exists( 'ES_Install' ) ) {
 				`timezone` varchar(255) NULL DEFAULT NULL,
 				`form_id` int(10) NOT NULL DEFAULT '0',
 				`status` varchar(10) DEFAULT NULL,
+				`reference_site` varchar(255) NULL DEFAULT NULL,
 				`unsubscribed` tinyint(1) NOT NULL DEFAULT '0',
 				`hash` varchar(50) DEFAULT NULL,
 				`engagement_score` float DEFAULT NULL,
