@@ -49,7 +49,11 @@ if ( ! class_exists( 'ES_Wpmail_Mailer' ) ) {
 			if ( ! $send_mail ) {
 				global $phpmailer;
 
-				$message = wp_strip_all_tags( $phpmailer->ErrorInfo );
+				if ( is_object( $phpmailer ) && $phpmailer->ErrorInfo ) {
+					$message = wp_strip_all_tags( $phpmailer->ErrorInfo );
+				} else {
+					$message = __( 'WP Mail Error: Unknown', 'email-subscribers' );
+				}
 
 				return $this->do_response( 'error', $message );
 			}

@@ -354,7 +354,10 @@ class ES_Cron {
 			parse_str( $cron_url, $result );
 		}
 
-		$cron_url = add_query_arg( 'es', 'cron', site_url() );
+		// Adding site url with a trailing slash
+		$site_url = trailingslashit( site_url() );
+
+		$cron_url = add_query_arg( 'es', 'cron', $site_url );
 		if ( empty( $result['guid'] ) ) {
 			$guid = ES_Common::generate_guid();
 		} else {

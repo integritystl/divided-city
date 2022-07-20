@@ -6,7 +6,7 @@ Tags: email marketing, subscription, autoresponder, post notification, welcome e
 Requires at least: 3.9
 Tested up to: 6.0
 Requires PHP: 5.6
-Stable tag: 5.4.1
+Stable tag: 5.4.4.1
 License: GPLv3
 License URI: http://www.gnu.org/licenses
 
@@ -310,15 +310,28 @@ Refer [here](https://www.icegram.com/documentation/es-faq/).
 
 == Upgrade Notice ==
 
-= 5.4.1 =
+= 5.4.4.1 =
 
-* Update: Better spam score checking
-* Fix: Custom HTML block in drag and drop editor not working properly 
-* Fix: Workflow not running on some setup
-* Fix: Optional parameter warning in PHP 8.1
-* Fix: Issue while creating a new campaign on some setup 
+* Fix: {{POSTTITLE}} keyword not working in subject
 
 == Changelog ==
+
+**5.4.4.1 (19.07.2022)**
+
+* Fix: {{POSTTITLE}} keyword not working in subject
+
+**5.4.4 (19.07.2022)**
+
+* Update: New keyword structure for campaigns
+
+**5.4.3 (13.07.2022)**
+
+* New: Send emails using Gmail API [Starter]
+
+**5.4.2 (06.07.2022)**
+
+* New: Send different welcome/confirmation emails to subscribers based on their list
+* Fix: Some subscribers's emails getting excluded while sending emails[PRO]
 
 **5.4.1 (29.06.2022)**
 

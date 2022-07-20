@@ -704,11 +704,16 @@ if ( ! class_exists( 'ES_Mailer' ) ) {
 					if ( $this->add_unsubscribe_link ) {
 						$unsubscribe_message = get_option( 'ig_es_unsubscribe_link_content', '' );
 						$unsubscribe_message = stripslashes( $unsubscribe_message );
-						if ( false === strpos( $content, '<html' ) ) {
+						if ( false === strpos( $content, '</html>' ) ) {
 							$content = $content . $unsubscribe_message;
 						} else {
-							// If content is HTML then we need to place unsubscribe message and tracking image inside body tag.
-							$content = str_replace( '</body>', $unsubscribe_message . '</body>', $content );
+							if ( strpos( $content, '</body>' ) > 0 ) {
+								// Insert unsubscribe message inside body tag.
+								$content = str_replace( '</body>', $unsubscribe_message . '</body>', $content );
+							} else {
+								// Insert unsubscribe message inside html tag.
+								$content = str_replace( '</html>', $unsubscribe_message . '</html>', $content );
+							}
 						}
 					}
 
@@ -723,11 +728,16 @@ if ( ! class_exists( 'ES_Mailer' ) ) {
 					if ( $this->can_track_open() ) {
 						$tracking_pixel_variable_name = $this->mailer->get_variable_prefix() . $this->mailer->get_variable_string( 'tracking_pixel_url' ) . $this->mailer->get_variable_suffix();
 						$tracking_image               = '<img src="' . $tracking_pixel_variable_name . '" width="1" height="1" alt=""/>';
-						if ( false === strpos( $content, '<html' ) ) {
+						if ( false === strpos( $content, '</html>' ) ) {
 							$content = $content . $tracking_image;
 						} else {
-							// If content is HTML then we need to place unsubscribe message and tracking image inside body tag.
-							$content = str_replace( '</body>', $tracking_image . '</body>', $content );
+							// Insert tracking pixel inside body tag.
+							if ( strpos( $content, '</body>' ) > 0 ) {
+								$content = str_replace( '</body>', $tracking_image . '</body>', $content );
+							} else {
+								// Insert tracking pixel inside html tag.
+								$content = str_replace( '</html>', $tracking_image . '</html>', $content );
+							}
 						}
 					}
 
@@ -1156,6 +1166,13 @@ if ( ! class_exists( 'ES_Mailer' ) ) {
 				'EMAIL'     => $email
 			) );
 
+			$content = ES_Common::replace_keywords_with_fallback( $content, array(
+				'subscriber.first_name' => $first_name,
+				'subscriber.name'      => $name,
+				'subscriber.last_name'  => $last_name,
+				'subscriber.email'     => $email
+			) );
+
 			// TODO: This is a quick workaround to handle <a href="{{LINK}}?utm_source=abc" >
 			// TODO: Implement some good solution
 
@@ -1169,10 +1186,13 @@ if ( ! class_exists( 'ES_Mailer' ) ) {
 			$content = str_replace( '{{UNSUBSCRIBE-LINK}}', $unsubscribe_link, $content );
 
 			$content = str_replace( '{{TOTAL-CONTACTS}}', $total_contacts, $content );
+			$content = str_replace( '{{site.total_contacts}}', $total_contacts, $content );
 			$content = str_replace( '{{GROUP}}', $list_name, $content );
 			$content = str_replace( '{{LIST}}', $list_name, $content );
 			$content = str_replace( '{{SITENAME}}', $blog_name, $content );
 			$content = str_replace( '{{SITEURL}}', $site_url, $content );
+			$content = str_replace( '{{site.name}}', $blog_name, $content );
+			$content = str_replace( '{{site.url}}', $site_url, $content );
 
 			return $content;
 		}
@@ -1203,6 +1223,8 @@ if ( ! class_exists( 'ES_Mailer' ) ) {
 			$content = str_replace( '{{LIST}}', $list_name, $content );
 			$content = str_replace( '{{SITENAME}}', $blog_name, $content );
 			$content = str_replace( '{{SITEURL}}', $site_url, $content );
+			$content = str_replace( '{{site.name}}', $blog_name, $content );
+			$content = str_replace( '{{site.url}}', $site_url, $content );
 
 			return $content;
 		}

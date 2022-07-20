@@ -208,12 +208,15 @@ class ES_Common {
 		// total contacts
 		$total_contacts = ES()->contacts_db->count_active_contacts_by_list_id();
 		$content        = str_replace( '{{TOTAL-CONTACTS}}', $total_contacts, $content );
+		$content        = str_replace( '{{site.total_contacts}}', $total_contacts, $content );
 		// blog title
 		$blog_name = get_option( 'blogname' );
 		$content   = str_replace( '{{SITENAME}}', $blog_name, $content );
+		$content   = str_replace( '{{site.name}}', $blog_name, $content );
 		// site url
 		$site_url = home_url( '/' );
 		$content  = str_replace( '{{SITEURL}}', $site_url, $content );
+		$content  = str_replace( '{{site.url}}', $site_url, $content );
 
 		/*
 		TODO: Enable it once Pre header issue fix
