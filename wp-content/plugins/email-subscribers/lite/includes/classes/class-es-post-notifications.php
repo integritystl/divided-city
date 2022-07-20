@@ -706,7 +706,7 @@ class ES_Post_Notifications_Table {
 	 */
 	public function get_post_notification_default_subject( $subject, $campaign_data ) {
 		if ( empty( $subject ) ) {
-			$subject = __( 'New Post Published - {{POSTTITLE}}', 'email-subscribers' );
+			$subject = __( 'New Post Published - {{post.title}}', 'email-subscribers' );
 		}
 		return $subject;
 	}
@@ -728,13 +728,13 @@ class ES_Post_Notifications_Table {
 	}
 
 	public function get_classic_editor_default_content() {
-		$default_content  = __( 'Hello {{NAME}},', 'email-subscribers' ) . "\r\n\r\n";
-		$default_content .= __( 'We have published a new blog article on our website', 'email-subscribers' ) . " : {{POSTTITLE}}\r\n";
-		$default_content .= "{{POSTIMAGE}}\r\n\r\n";
-		$default_content .= __( 'You can view it from this link', 'email-subscribers' ) . " : {{POSTLINK}}\r\n\r\n";
+		$default_content  = __( "Hello {{subscriber.name | fallback='there'}},", 'email-subscribers' ) . "\r\n\r\n";
+		$default_content .= __( 'We have published a new blog article on our website', 'email-subscribers' ) . " : {{post.title}}\r\n";
+		$default_content .= "{{post.image}}\r\n\r\n";
+		$default_content .= __( 'You can view it from this link', 'email-subscribers' ) . " : {{post.link}}\r\n\r\n";
 		$default_content .= __( 'Thanks & Regards', 'email-subscribers' ) . ",\r\n";
 		$default_content .= __( 'Admin', 'email-subscribers' ) . "\r\n\r\n";
-		$default_content .= __( 'You received this email because in the past you have provided us your email address : {{EMAIL}} to receive notifications when new updates are posted.', 'email-subscribers' );
+		$default_content .= __( 'You received this email because in the past you have provided us your email address : {{subscriber.email}} to receive notifications when new updates are posted.', 'email-subscribers' );
 		return $default_content;
 	}
 
@@ -750,16 +750,16 @@ class ES_Post_Notifications_Table {
 				</mj-section>
 				<mj-section background-color="#FFFFFF">
 					<mj-column width="100%">
-						<mj-text line-height="26px">' . __( 'Hello {{NAME}},', 'email-subscribers' ) . '</mj-text>
-						<mj-text line-height="26px">' . __( 'We have published a new blog article on our website', 'email-subscribers' ) . ' : {{POSTTITLE}}</mj-text>
-						<mj-text line-height="26px">{{POSTIMAGE}}</mj-text>
-						<mj-text line-height="26px">' . __( 'You can view it from this link', 'email-subscribers' ) . ' : {{POSTLINK}}</mj-text>
+						<mj-text line-height="26px">' . __( "Hello {{subscriber.name | fallback='there'}},", 'email-subscribers' ) . '</mj-text>
+						<mj-text line-height="26px">' . __( 'We have published a new blog article on our website', 'email-subscribers' ) . ' : {{post.title}}</mj-text>
+						<mj-text line-height="26px">{{post.image}}</mj-text>
+						<mj-text line-height="26px">' . __( 'You can view it from this link', 'email-subscribers' ) . ' : {{post.link}}</mj-text>
 					</mj-column>
 				</mj-section>
 				<mj-section background-color="#f3f3f3">
 					<mj-column width="100%">
 						<mj-text align="center" line-height="26px">@2022,' . __( 'Your Brand Name', 'email-subscribers' ) . '.</mj-text>
-						<mj-text align="center" line-height="26px">' . __( 'You received this email because in the past you have provided us your email address : {{EMAIL}} to receive notifications when new updates are posted.', 'email-subscribers' ) . __( 'If you wish to unsubscribe from our newsletter, click', 'email-subscribers' ) . ' <a data-gjs-type="link" href="{{UNSUBSCRIBE-LINK}}" >' . __( 'here', 'email-subscribers' ) . '</a>
+						<mj-text align="center" line-height="26px">' . __( 'You received this email because in the past you have provided us your email address : {{subscriber.email}} to receive notifications when new updates are posted.', 'email-subscribers' ) . __( 'If you wish to unsubscribe from our newsletter, click', 'email-subscribers' ) . ' <a data-gjs-type="link" href="{{UNSUBSCRIBE-LINK}}" >' . __( 'here', 'email-subscribers' ) . '</a>
 						</mj-text>
 					</mj-column>
 				</mj-section>

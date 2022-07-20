@@ -64,19 +64,19 @@ class ES_Templates_Table {
 		?>
 		<!-- Start-IG-Code -->
 		<p id="post_notification">
-			<a href="https://www.icegram.com/documentation/es-what-are-the-available-keywords-in-the-post-notifications/?utm_source=es&amp;utm_medium=in_app&amp;utm_campaign=view_docs_help_page" target="_blank"><?php esc_html_e( 'Available Keywords', 'email-subscribers' ); ?></a> <?php esc_html_e( 'for Post Notification: ', 'email-subsribers' ); ?> {{FIRSTNAME}},
-			{{LASTNAME}}, {{NAME}}, {{EMAIL}},
-			{{DATE}}, {{POSTTITLE}}, {{POSTIMAGE}}, {{POSTEXCERPT}}, {{POSTDESC}},
-		{{POSTAUTHOR}}, {{POSTAUTHORAVATAR}}, {{POSTAUTHORAVATARLINK-ONLY}}, {{POSTLINK}}, {{POSTLINK-WITHTITLE}}, {{POSTLINK-ONLY}}, {{POSTFULL}} </p>
+			<a href="https://www.icegram.com/documentation/what-keywords-can-be-used-while-designing-the-campaign/?utm_source=es&amp;utm_medium=in_app&amp;utm_campaign=view_docs_help_page" target="_blank"><?php esc_html_e( 'Available Keywords', 'email-subscribers' ); ?></a> <?php esc_html_e( 'for Post Notification: ', 'email-subsribers' ); ?> {{subscriber.first_name | fallback:'there'}},
+			{{subscriber.last_name}}, {{subscriber.name}}, {{subscriber.email}},
+			{{post.date}}, {{post.title}}, {{post.image}}, {{post.excerpt}}, {{post.description}},
+			{{post.author}}, {{post.author_avatar}}, {{post.author_avatar_url}}, {{post.link}}, {{post.link_with_title}}, {{post.link_only}}, {{post.full}} </p>
 		<!-- End-IG-Code -->
 		<p id="newsletter">
-			<a href="https://www.icegram.com/documentation/es-what-are-the-available-keywords-in-the-newsletters/?utm_source=es&amp;utm_medium=in_app&amp;utm_campaign=view_docs_help_page" target="_blank"><?php esc_html_e( 'Available Keywords', 'email-subscribers' ); ?></a> <?php esc_html_e( 'for Broadcast:', 'email-subscribers' ); ?> {{FIRSTNAME}}, {{LASTNAME}}, {{NAME}},
-		{{EMAIL}} </p>
+			<a href="https://www.icegram.com/documentation/what-keywords-can-be-used-while-designing-the-campaign/?utm_source=es&amp;utm_medium=in_app&amp;utm_campaign=view_docs_help_page" target="_blank"><?php esc_html_e( 'Available Keywords', 'email-subscribers' ); ?></a> <?php esc_html_e( 'for Broadcast:', 'email-subscribers' ); ?> {{subscriber.first_name | fallback:'there'}}, {{subscriber.last_name}}, {{subscriber.name}},
+			{{subscriber.email}} </p>
 		<!-- Start-IG-Code -->
 		<div id="post_digest">
 			<span style="font-size: 0.8em; margin-left: 0.3em; padding: 2px; background: #e66060; color: #fff; border-radius: 2px; ">Pro</span>&nbsp;
 			<a href="https://www.icegram.com/send-post-digest-using-email-subscribers-plugin/?utm_source=es&amp;utm_medium=in_app&amp;utm_campaign=view_post_digest_post" target="_blank"><?php esc_html_e( 'Available Keywords', 'email-subscribers' ); ?></a> <?php esc_html_e( 'for Post Digest:', 'email-subscribers' ); ?>
-			{{FIRSTNAME}}, {{LASTNAME}}, {{NAME}}<div class="post_digest_block"> {{POSTDIGEST}} <br/><?php esc_html_e( 'Any keywords related Post Notification', 'email-subscribers' ); ?> <br/>{{/POSTDIGEST}} </div>
+			{{subscriber.first_name | fallback:'there'}}, {{subscriber.last_name}}, {{subscriber.name}}<div class="post_digest_block"> {{post.digest}} <br/><?php esc_html_e( 'Any keywords related Post Notification', 'email-subscribers' ); ?> <br/>{{/post.digest}} </div>
 		</div>
 		<!-- End-IG-Code -->
 		<?php

@@ -67,6 +67,8 @@ if ( ! class_exists( 'ES_Campaign_Admin' ) ) {
 			add_action( 'wp_ajax_ig_es_draft_campaign', array( $this, 'draft_campaign' ) );
 			add_action( 'wp_ajax_ig_es_get_campaign_preview', array( $this, 'get_campaign_preview' ) );
 			add_action( 'wp_ajax_ig_es_save_as_template', array( $this, 'save_as_template' ) );
+
+			add_action( 'admin_notices', array( $this, 'show_new_keyword_notice' ) );
 		}
 
 		public function setup_campaign() {
@@ -493,7 +495,7 @@ if ( ! class_exists( 'ES_Campaign_Admin' ) ) {
 
 						<div class="mt-7 hidden mx-auto es_campaign_second max-w-7xl">
 							<span class="ig-es-ajax-loader">
-								<img src=".\images\spinner-2x.gif">
+								<img src="<?php echo esc_url(ES_PLUGIN_URL); ?>lite/admin/images/spinner-2x.gif">
 							</span>
 							<?php
 							$inline_preview_data = $this->get_campaign_inline_preview_data( $campaign_data );
@@ -816,6 +818,14 @@ if ( ! class_exists( 'ES_Campaign_Admin' ) ) {
 					'NAME'      => $username,
 					'LASTNAME'  => $last_name,
 					'EMAIL'     => $useremail
+				) );
+
+
+				$campaign_body = ES_Common::replace_keywords_with_fallback( $campaign_body, array(
+					'subscriber.first_name' => $first_name,
+					'subscriber.name'      => $username,
+					'subscriber.last_name'  => $last_name,
+					'subscriber.email'     => $useremail
 				) );
 
 				$campaign_type = $campaign_data['type'];
@@ -1155,40 +1165,40 @@ if ( ! class_exists( 'ES_Campaign_Admin' ) ) {
 			<div class="campaign-keyword-wrapper mt-1 p-4 w-full border border-gray-300">
 				<!-- Start-IG-Code -->
 				<p id="post_notification" class="pb-2 border-b border-gray-300">
-					<a href="https://www.icegram.com/documentation/es-what-are-the-available-keywords-in-the-post-notifications/?utm_source=es&amp;utm_medium=in_app&amp;utm_campaign=view_docs_help_page" target="_blank"><?php esc_html_e( 'Available Keywords', 'email-subscribers' ); ?></a> <?php esc_html_e( 'for Post Notification: ', 'email-subsribers' ); ?>
-					<span class="ig-es-workflow-variable-outer inline-block px-2 py-2 mr-2 mb-2 text-xs font-bold bg-gray-100 hover:bg-gray-300 rounded-md ">{{FIRSTNAME | fallback:'there'}}</span>
-					<span class="ig-es-workflow-variable-outer inline-block px-2 py-2 mr-2 mb-2 text-xs font-bold bg-gray-100 hover:bg-gray-300 rounded-md ">{{LASTNAME}}</span>
-					<span class="ig-es-workflow-variable-outer inline-block px-2 py-2 mr-2 mb-2 text-xs font-bold bg-gray-100 hover:bg-gray-300 rounded-md ">{{NAME | fallback:'there'}}</span>
-					<span class="ig-es-workflow-variable-outer inline-block px-2 py-2 mr-2 mb-2 text-xs font-bold bg-gray-100 hover:bg-gray-300 rounded-md ">{{EMAIL}}</span>
+					<a href="https://www.icegram.com/documentation/what-keywords-can-be-used-while-designing-the-campaign/?utm_source=es&amp;utm_medium=in_app&amp;utm_campaign=view_docs_help_page" target="_blank"><?php esc_html_e( 'Available Keywords', 'email-subscribers' ); ?></a> <?php esc_html_e( 'for Post Notification: ', 'email-subsribers' ); ?>
+					<span class="ig-es-workflow-variable-outer inline-block px-2 py-2 mr-2 mb-2 text-xs font-bold bg-gray-100 hover:bg-gray-300 rounded-md ">{{subscriber.first_name | fallback:'there'}}</span>
+					<span class="ig-es-workflow-variable-outer inline-block px-2 py-2 mr-2 mb-2 text-xs font-bold bg-gray-100 hover:bg-gray-300 rounded-md ">{{subscriber.last_name}}</span>
+					<span class="ig-es-workflow-variable-outer inline-block px-2 py-2 mr-2 mb-2 text-xs font-bold bg-gray-100 hover:bg-gray-300 rounded-md ">{{subscriber.name | fallback:'there'}}</span>
+					<span class="ig-es-workflow-variable-outer inline-block px-2 py-2 mr-2 mb-2 text-xs font-bold bg-gray-100 hover:bg-gray-300 rounded-md ">{{subscriber.email}}</span>
 					<span class="ig-es-workflow-variable-outer inline-block px-2 py-2 mr-2 mb-2 text-xs font-bold bg-gray-100 hover:bg-gray-300 rounded-md ">{{DATE}}</span>
-					<span class="ig-es-workflow-variable-outer inline-block px-2 py-2 mr-2 mb-2 text-xs font-bold bg-gray-100 hover:bg-gray-300 rounded-md ">{{POSTTITLE}}</span>
-					<span class="ig-es-workflow-variable-outer inline-block px-2 py-2 mr-2 mb-2 text-xs font-bold bg-gray-100 hover:bg-gray-300 rounded-md ">{{POSTIMAGE}}</span>
-					<span class="ig-es-workflow-variable-outer inline-block px-2 py-2 mr-2 mb-2 text-xs font-bold bg-gray-100 hover:bg-gray-300 rounded-md ">{{POSTEXCERPT}}</span>
-					<span class="ig-es-workflow-variable-outer inline-block px-2 py-2 mr-2 mb-2 text-xs font-bold bg-gray-100 hover:bg-gray-300 rounded-md ">{{POSTDESC}}</span>
-					<span class="ig-es-workflow-variable-outer inline-block px-2 py-2 mr-2 mb-2 text-xs font-bold bg-gray-100 hover:bg-gray-300 rounded-md ">{{POSTAUTHOR}}</span>
-					<span class="ig-es-workflow-variable-outer inline-block px-2 py-2 mr-2 mb-2 text-xs font-bold bg-gray-100 hover:bg-gray-300 rounded-md ">{{POSTAUTHORAVATAR}}</span>
-					<span class="ig-es-workflow-variable-outer inline-block px-2 py-2 mr-2 mb-2 text-xs font-bold bg-gray-100 hover:bg-gray-300 rounded-md ">{{POSTAUTHORAVATARLINK-ONLY}}</span>
-					<span class="ig-es-workflow-variable-outer inline-block px-2 py-2 mr-2 mb-2 text-xs font-bold bg-gray-100 hover:bg-gray-300 rounded-md ">{{POSTLINK}}</span>
-					<span class="ig-es-workflow-variable-outer inline-block px-2 py-2 mr-2 mb-2 text-xs font-bold bg-gray-100 hover:bg-gray-300 rounded-md ">{{POSTLINK-WITHTITLE}}</span>
-					<span class="ig-es-workflow-variable-outer inline-block px-2 py-2 mr-2 mb-2 text-xs font-bold bg-gray-100 hover:bg-gray-300 rounded-md ">{{POSTLINK-ONLY}}</span>
-					<span class="ig-es-workflow-variable-outer inline-block px-2 py-2 mr-2 mb-2 text-xs font-bold bg-gray-100 hover:bg-gray-300 rounded-md ">{{POSTFULL}}</span>
+					<span class="ig-es-workflow-variable-outer inline-block px-2 py-2 mr-2 mb-2 text-xs font-bold bg-gray-100 hover:bg-gray-300 rounded-md ">{{post.title}}</span>
+					<span class="ig-es-workflow-variable-outer inline-block px-2 py-2 mr-2 mb-2 text-xs font-bold bg-gray-100 hover:bg-gray-300 rounded-md ">{{post.image}}</span>
+					<span class="ig-es-workflow-variable-outer inline-block px-2 py-2 mr-2 mb-2 text-xs font-bold bg-gray-100 hover:bg-gray-300 rounded-md ">{{post.excerpt}}</span>
+					<span class="ig-es-workflow-variable-outer inline-block px-2 py-2 mr-2 mb-2 text-xs font-bold bg-gray-100 hover:bg-gray-300 rounded-md ">{{post.description}}</span>
+					<span class="ig-es-workflow-variable-outer inline-block px-2 py-2 mr-2 mb-2 text-xs font-bold bg-gray-100 hover:bg-gray-300 rounded-md ">{{post.author}}</span>
+					<span class="ig-es-workflow-variable-outer inline-block px-2 py-2 mr-2 mb-2 text-xs font-bold bg-gray-100 hover:bg-gray-300 rounded-md ">{{post.author_avatar}}</span>
+					<span class="ig-es-workflow-variable-outer inline-block px-2 py-2 mr-2 mb-2 text-xs font-bold bg-gray-100 hover:bg-gray-300 rounded-md ">{{post.author_avatar_link}}</span>
+					<span class="ig-es-workflow-variable-outer inline-block px-2 py-2 mr-2 mb-2 text-xs font-bold bg-gray-100 hover:bg-gray-300 rounded-md ">{{post.link}}</span>
+					<span class="ig-es-workflow-variable-outer inline-block px-2 py-2 mr-2 mb-2 text-xs font-bold bg-gray-100 hover:bg-gray-300 rounded-md ">{{post.link_with_title}}</span>
+					<span class="ig-es-workflow-variable-outer inline-block px-2 py-2 mr-2 mb-2 text-xs font-bold bg-gray-100 hover:bg-gray-300 rounded-md ">{{post.link_only}}</span>
+					<span class="ig-es-workflow-variable-outer inline-block px-2 py-2 mr-2 mb-2 text-xs font-bold bg-gray-100 hover:bg-gray-300 rounded-md ">{{post.full}}</span>
 				</p>
 				<!-- End-IG-Code -->
 				<p id="newsletter" class="py-2 border-b border-gray-300">
-					<a href="https://www.icegram.com/documentation/es-what-are-the-available-keywords-in-the-newsletters/?utm_source=es&amp;utm_medium=in_app&amp;utm_campaign=view_docs_help_page" target="_blank"><?php esc_html_e( 'Available Keywords', 'email-subscribers' ); ?></a> <?php esc_html_e( 'for Broadcast:', 'email-subscribers' ); ?>
-					<span class="ig-es-workflow-variable-outer inline-block px-2 py-2 mr-2 mb-2 text-xs font-bold bg-gray-100 hover:bg-gray-300 rounded-md ">{{FIRSTNAME | fallback:'there'}}</span>
-					<span class="ig-es-workflow-variable-outer inline-block px-2 py-2 mr-2 mb-2 text-xs font-bold bg-gray-100 hover:bg-gray-300 rounded-md ">{{LASTNAME}}</span>
-					<span class="ig-es-workflow-variable-outer inline-block px-2 py-2 mr-2 mb-2 text-xs font-bold bg-gray-100 hover:bg-gray-300 rounded-md ">{{NAME | fallback:'there'}}</span>
-					<span class="ig-es-workflow-variable-outer inline-block px-2 py-2 mr-2 mb-2 text-xs font-bold bg-gray-100 hover:bg-gray-300 rounded-md ">{{EMAIL}}</span>
+					<a href="https://www.icegram.com/documentation/what-keywords-can-be-used-while-designing-the-campaign/?utm_source=es&amp;utm_medium=in_app&amp;utm_campaign=view_docs_help_page" target="_blank"><?php esc_html_e( 'Available Keywords', 'email-subscribers' ); ?></a> <?php esc_html_e( 'for Broadcast:', 'email-subscribers' ); ?>
+					<span class="ig-es-workflow-variable-outer inline-block px-2 py-2 mr-2 mb-2 text-xs font-bold bg-gray-100 hover:bg-gray-300 rounded-md ">{{subscriber.first_name | fallback:'there'}}</span>
+					<span class="ig-es-workflow-variable-outer inline-block px-2 py-2 mr-2 mb-2 text-xs font-bold bg-gray-100 hover:bg-gray-300 rounded-md ">{{subscriber.last_name}}</span>
+					<span class="ig-es-workflow-variable-outer inline-block px-2 py-2 mr-2 mb-2 text-xs font-bold bg-gray-100 hover:bg-gray-300 rounded-md ">{{subscriber.name | fallback:'there'}}</span>
+					<span class="ig-es-workflow-variable-outer inline-block px-2 py-2 mr-2 mb-2 text-xs font-bold bg-gray-100 hover:bg-gray-300 rounded-md ">{{subscriber.email}}</span>
 				</p>
 				<!-- Start-IG-Code -->
 				<div id="post_digest" class="pt-2 pb-0">
 					<span style="font-size: 0.8em; margin-left: 0.3em; padding: 2px; background: #e66060; color: #fff; border-radius: 2px; ">Pro</span>&nbsp;
 					<a href="https://www.icegram.com/send-post-digest-using-email-subscribers-plugin/?utm_source=es&amp;utm_medium=in_app&amp;utm_campaign=view_post_digest_post" target="_blank"><?php esc_html_e( 'Available Keywords', 'email-subscribers' ); ?></a> <?php esc_html_e( 'for Post Digest:', 'email-subscribers' ); ?>
-					<span class="ig-es-workflow-variable-outer inline-block px-2 py-2 mr-2 mb-2 text-xs font-bold bg-gray-100 hover:bg-gray-300 rounded-md ">{{FIRSTNAME | fallback:'there'}}</span>
-					<span class="ig-es-workflow-variable-outer inline-block px-2 py-2 mr-2 mb-2 text-xs font-bold bg-gray-100 hover:bg-gray-300 rounded-md ">{{LASTNAME}}</span>
-					<span class="ig-es-workflow-variable-outer inline-block px-2 py-2 mr-2 mb-2 text-xs font-bold bg-gray-100 hover:bg-gray-300 rounded-md ">{{NAME | fallback:'there'}}</span>
-					<div class="post_digest_block"> {{POSTDIGEST}} <br/><?php esc_html_e( 'Any keywords related Post Notification', 'email-subscribers' ); ?> <br/>{{/POSTDIGEST}} </div>
+					<span class="ig-es-workflow-variable-outer inline-block px-2 py-2 mr-2 mb-2 text-xs font-bold bg-gray-100 hover:bg-gray-300 rounded-md ">{{subscriber.first_name | fallback:'there'}}</span>
+					<span class="ig-es-workflow-variable-outer inline-block px-2 py-2 mr-2 mb-2 text-xs font-bold bg-gray-100 hover:bg-gray-300 rounded-md ">{{subscriber.last_name}}</span>
+					<span class="ig-es-workflow-variable-outer inline-block px-2 py-2 mr-2 mb-2 text-xs font-bold bg-gray-100 hover:bg-gray-300 rounded-md ">{{subscriber.name | fallback:'there'}}</span>
+					<div class="post_digest_block"> {{post.digest}} <br/><?php esc_html_e( 'Any keywords related Post Notification', 'email-subscribers' ); ?> <br/>{{/post.digest}} </div>
 				</div>
 			</div>
 			<!-- End-IG-Code -->
@@ -1252,6 +1262,38 @@ if ( ! class_exists( 'ES_Campaign_Admin' ) ) {
 			}
 
 			return $response;
+		}
+
+		public function show_new_keyword_notice() {
+			$notice_pages = array( 'es_notifications', 'es_templates', 'es_newsletters', 'es_sequence' );
+			$current_page = ig_es_get_request_data( 'page' );
+			$is_notice_page = in_array( $current_page, $notice_pages, true );
+			if ( ! $is_notice_page ) {
+				return;
+			}
+
+			$action = ig_es_get_request_data( 'action' );
+			$campaign_actions = array( 'new', 'edit' );
+			$allowed_action = in_array( $action, $campaign_actions, true );
+			if ( ! $allowed_action ) {
+				return;
+			}
+			
+			$new_keyword_notice_shown = get_option( 'ig_es_new_keyword_notice_shown', 'no' );
+			if ( 'no' === $new_keyword_notice_shown ) {
+				$new_keyword_doc_url = 'https://www.icegram.com/documentation/what-keywords-can-be-used-while-designing-the-campaign/?utm_source=es&utm_medium=in_app&utm_campaign=new_keyword_notice';
+				?>
+				<div class="notice notice-success is-dismissible">
+					<p>
+					<?php
+						/* translators: %s: link to new keyword doc */
+						echo sprintf( esc_html__( '%1$s[Update]%2$s: Improved keyword structure. Made it easy to use in campaign. Checkout %3$shere%4$s.', 'email-subscribers' ),'<strong>','</strong>', '<a href="' . esc_url( $new_keyword_doc_url ) . '" target="_blank">', '</a>');
+					?>
+					</p>
+				</div>
+				<?php
+				update_option( 'ig_es_new_keyword_notice_shown', 'yes', false );
+			}
 		}
 	}
 

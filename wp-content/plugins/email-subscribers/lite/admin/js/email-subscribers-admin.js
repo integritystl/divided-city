@@ -1157,7 +1157,6 @@
 			jQuery('#ig-es-verify-auth-headers').click(function(e){
 				e.preventDefault();
 
-				let err_msg = 'SMTP Error : Unable to send test email';
 				var params = {
 					type:'POST',
 					url:ajaxurl,
@@ -1180,12 +1179,12 @@
 						}
 						else{
 							jQuery('#ig-es-verify-auth-headers').next('#spinner-image').hide();
-							jQuery('#ig-es-verify-auth-message').addClass('text-red-500').html(err_msg);
+							jQuery('#ig-es-verify-auth-message').addClass('text-red-500').html(ig_es_js_data.i18n_data.error_send_test_email);
 						}
 					},
 					error:function(err){
 						jQuery('#ig-es-verify-auth-headers').next('#spinner-image').hide();
-						jQuery('#ig-es-verify-auth-message').addClass('text-red-500').html(err_msg);
+						jQuery('#ig-es-verify-auth-message').addClass('text-red-500').html(ig_es_js_data.i18n_data.error_send_test_email);
 					},
 				}
 				jQuery.ajax(params);
@@ -1193,8 +1192,6 @@
 			});
 
 			function getEmailAuthHeaders(){
-
-				let err_msg = 'Server Busy : Please try again later';
 
 				var params = {
 					type:'POST',
@@ -1212,18 +1209,18 @@
 
 							if( 'undefined' !== table_elem && Array.isArray(headerData) && headerData.length > 0 ){
 								populateTableData( table_elem, headerData, false );
-								jQuery('#ig-es-verify-auth-message').addClass('text-green-500').html('Headers verified successfully');	
+								jQuery('#ig-es-verify-auth-message').addClass('text-green-500').html(ig_es_js_data.i18n_data.success_verify_email_headers);	
 							}
 							else{
-								jQuery('#ig-es-verify-auth-message').addClass('text-red-500').html(err_msg);	
+								jQuery('#ig-es-verify-auth-message').addClass('text-red-500').html(ig_es_js_data.i18n_data.error_server_busy);	
 							}
 						}
 						catch(err){
-							jQuery('#ig-es-verify-auth-message').addClass('text-red-500').html(err_msg);	
+							jQuery('#ig-es-verify-auth-message').addClass('text-red-500').html(ig_es_js_data.i18n_data.error_server_busy);	
 						}
 					},
 					error:function(err){
-						jQuery('#ig-es-verify-auth-message').addClass('text-red-500').html(err_msg);	
+						jQuery('#ig-es-verify-auth-message').addClass('text-red-500').html(ig_es_js_data.i18n_data.error_server_busy);	
 					},
 					complete:function(){
 						jQuery('#ig-es-verify-auth-headers').next('#spinner-image').hide();

@@ -61,9 +61,20 @@ function ig_es_mailers_promo( $mailers ) {
 			'logo'       => ES_PLUGIN_URL . 'lite/admin/images/smtp.png',
 			'is_premium' => true,
 			'url'        => ES_Common::get_utm_tracking_url(
-			array( 
+			array(
 				'url'=>'https://www.icegram.com/documentation/how-to-configure-smtp-to-send-emails-in-email-subscribers-plugin/',
-				'utm_medium' => 'smtp_mailer' 
+				'utm_medium' => 'smtp_mailer'
+			)),
+		);
+
+		$mailers['gmail'] = array(
+			'name'       => 'Gmail',
+			'logo'       => ES_PLUGIN_URL . 'lite/admin/images/gmail.png',
+			'is_premium' => true,
+			'url'        => ES_Common::get_utm_tracking_url(
+			array(
+				'url'=>'https://www.icegram.com/documentation/how-to-configure-gmail-to-send-emails-in-email-subscribers/',
+				'utm_medium' => 'gmail_mailer'
 			)),
 		);
 
@@ -168,10 +179,10 @@ function render_user_permissions_settings_fields_premium() {
 	$wp_roles   = new WP_Roles();
 	$roles      = $wp_roles->get_names();
 	$user_roles = array();
- 
-	$url = ES_Common::get_utm_tracking_url( array( 
+
+	$url = ES_Common::get_utm_tracking_url( array(
 		'url'=>'https://www.icegram.com/documentation/how-to-set-custom-permissions-for-user-roles-for-menu-in-email-susbcribers/',
-		'utm_medium' => 'user_roles' ) 
+		'utm_medium' => 'user_roles' )
 	);
 
 	ob_start();
@@ -302,7 +313,7 @@ function ig_es_add_upsale( $fields ) {
 				'type'       => 'checkbox',
 				'default'    => 'no',
 				'is_premium' => true,
-				'link'       => ES_Common::get_utm_tracking_url( array( 
+				'link'       => ES_Common::get_utm_tracking_url( array(
 					'url' => 'https://www.icegram.com/documentation/how-to-allow-user-to-select-list-while-unsubscribe/',
 					'utm_medium' => 'intermediate_unsubscribe_page' ) ),
 				'disabled'   => true,
@@ -350,7 +361,7 @@ function ig_es_add_upsale( $fields ) {
 					'type'       => 'checkbox',
 					'default'    => 'no',
 					'is_premium' => true,
-					'link'       => ES_Common::get_utm_tracking_url( array( 
+					'link'       => ES_Common::get_utm_tracking_url( array(
 						'url'=>'https://www.icegram.com/documentation/how-to-add-utm-parameters-to-email/',
 						'utm_medium' => 'utm_tracking' ) ),
 					'disabled'   => true,
@@ -362,7 +373,7 @@ function ig_es_add_upsale( $fields ) {
 					'type'       => 'checkbox',
 					'default'    => 'no',
 					'is_premium' => true,
-					'link'       => ES_Common::get_utm_tracking_url( array( 
+					'link'       => ES_Common::get_utm_tracking_url( array(
 						'url'		 => 'https://www.icegram.com/documentation/enabling-and-understanding-the-weekly-summary-report-in-the-email-subscribers/',
 						'utm_medium' => 'summary_automation' ) ),
 					'disabled'   => true,
@@ -392,7 +403,7 @@ function ig_es_add_upsale( $fields ) {
 			'type'          => 'checkbox',
 			'default'       => 'no',
 			'is_premium'    => true,
-			'link'          => ES_Common::get_utm_tracking_url( array( 
+			'link'          => ES_Common::get_utm_tracking_url( array(
 				'url'=>'https://www.icegram.com/documentation/preventing-spammers/',
 				'utm_medium' => 'known_attackers' ) ),
 			'disabled'      => true,
@@ -408,7 +419,7 @@ function ig_es_add_upsale( $fields ) {
 			'type'       => 'checkbox',
 			'default'    => 'no',
 			'is_premium' => true,
-			'link'       => ES_Common::get_utm_tracking_url( array( 
+			'link'       => ES_Common::get_utm_tracking_url( array(
 				'url'=>'https://www.icegram.com/documentation/preventing-spammers/',
 				'utm_medium' => 'disposable_domains' ) ),
 			'disabled'   => true,
@@ -558,10 +569,10 @@ function ig_es_add_comments_tab_settings( $tab_options ) {
 		<h2><?php esc_html_e( 'Sync Comment Users', 'email-subscribers' ); ?></h2>
 		<p><?php esc_html_e( 'Quickly add to your mailing list when someone post a comment on your website.', 'email-subscribers' ); ?></p>
 		<h2><?php esc_html_e( 'How to setup?', 'email-subscribers' ); ?></h2>
-		<p><?php esc_html_e( 'Once you upgrade to ', 'email-subscribers' ); ?><a href="https://www.icegram.com/email-subscribers-starter/?utm_source=in_app&utm_medium=comment_sync&utm_campaign=es_upsell#sync_comment_users"><?php esc_html_e( 'Email Subscribers Starter', 'email-subscribers' ); ?></a>, 
+		<p><?php esc_html_e( 'Once you upgrade to ', 'email-subscribers' ); ?><a href="https://www.icegram.com/email-subscribers-starter/?utm_source=in_app&utm_medium=comment_sync&utm_campaign=es_upsell#sync_comment_users"><?php esc_html_e( 'Email Subscribers Starter', 'email-subscribers' ); ?></a>,
 		<?php
 			esc_html_e('you will have settings panel where you need to enable Comment user sync and select the list in which you want to add people whenever someone post a
-		comment.', 'email-subscribers') 
+		comment.', 'email-subscribers')
 		?>
 		</p>
 		<hr>
@@ -591,7 +602,7 @@ function ig_es_add_woocommerce_tab_settings( $tab_options ) {
 		<h2><?php esc_html_e( 'Sync WooCommerce Customers', 'email-subscribers' ); ?></h2>
 		<p><?php esc_html_e( 'Are you using WooCommerce for your online business? You can use this integration to add to a specific list whenever someone make a purchase from you', 'email-subscribers' ); ?></p>
 		<h2><?php esc_html_e( 'How to setup?', 'email-subscribers' ); ?></h2>
-		<p><?php esc_html_e( 'Once you upgrade to ', 'email-subscribers' ); ?><a href="https://www.icegram.com/email-subscribers-starter/?utm_source=in_app&utm_medium=woocommerce_sync&utm_campaign=es_upsell#sync_woocommerce_customers"><?php esc_html_e( 'Email Subscribers Starter', 'email-subscribers' ); ?></a>, 
+		<p><?php esc_html_e( 'Once you upgrade to ', 'email-subscribers' ); ?><a href="https://www.icegram.com/email-subscribers-starter/?utm_source=in_app&utm_medium=woocommerce_sync&utm_campaign=es_upsell#sync_woocommerce_customers"><?php esc_html_e( 'Email Subscribers Starter', 'email-subscribers' ); ?></a>,
 					 <?php
 						esc_html_e(
 							'you will have settings panel where you need to enable WooCommerce sync and select the list in which you want to add people whenever they
@@ -963,7 +974,7 @@ function ig_es_additional_multilist_and_post_digest() {
 			            </div>
 			            <p class="text-sm leading-5 py-0.5 text-gray-500 group-hover:text-gray-900 group-focus:text-gray-900 transition ease-in-out duration-150">' . esc_html__( 'Want to send notification emails to more than one list? You can select multiple list with', 'email-subscribers' ) . '<b class="font-medium text-teal-800">' . esc_html__( 'Email Subscribers PRO.', 'email-subscribers' ) . '</b></p>
 			    </div>
-			  
+
 			    <div class="flex items-start space-x-3 -ml-8">
 			            <div class="flex-shrink-0 h-5 w-5 relative flex justify-center">
 			              <span class="block h-1.5 w-1.5 mt-2.5 bg-gray-300 rounded-full group-hover:bg-gray-400 group-focus:bg-gray-400 transition ease-in-out duration-150"></span>
@@ -986,7 +997,7 @@ function ig_es_additional_multilist_and_post_digest() {
 				<td class="w-4/12">
 					<label for="is_post_digest" class="ml-14 inline-flex items-center cursor-default"><span class="relative">
 						<span class="es-mail-toggle-line"></span>
-						<span class="es-mail-toggle-dot"></span>	
+						<span class="es-mail-toggle-dot"></span>
 					</span></label>
 				</td>
 				<td rowspan="2" colspan="2" class="w-5/12 border-b border-gray-100">
@@ -1004,7 +1015,7 @@ function ig_es_additional_multilist_and_post_digest() {
 						<td>
 							<div class="flex">
 									<div class="inline-flex ml-12 relative">
-							<label class="ml-2"> 
+							<label class="ml-2">
 								<select class="form-select" disabled="disabled">
 									<option><?php echo esc_html__( 'Once a day at', 'email-subscribers' ); ?></option>
 								</select>
@@ -1043,7 +1054,7 @@ function ig_es_upsale_post_digest() {
 					<label for="is_post_digest" class="inline-flex items-center cursor-pointer ">
 						<span class="relative">
 							<span class="es-mail-toggle-line"></span>
-							<span class="es-mail-toggle-dot"></span>	
+							<span class="es-mail-toggle-dot"></span>
 						</span>
 					</label>
 				</div>
@@ -1076,7 +1087,7 @@ function ig_es_upsale_send_campaign_preview_email_option() {
 function ig_es_upsale_campaign_tracking_options( $campaign_data ) {
 	$campaign_type = ! empty( $campaign_data['type'] ) ? $campaign_data['type'] : '';
 	?>
-		
+
 	<?php
 	if ( ES()->can_upsell_features( array( 'lite', 'starter', 'trial' ) ) ) {
 		$utm_args = array(
@@ -1108,7 +1119,7 @@ function ig_es_upsale_campaign_tracking_options( $campaign_data ) {
 			</div>
 		</div>
 
-		
+
 		<?php
 	}
 
@@ -1243,8 +1254,8 @@ function ig_es_view_additional_reports_data() {
 			?>
 <div>
 	<div class="campaign_open_overlay lg:w-3/5 xl:w-2/5 h-0 z-40 sticky">
-			<div class="tracking-wide campaign-report"> 
-				<?php ES_Common::upsell_description_message_box( $upsell_info ); ?>       
+			<div class="tracking-wide campaign-report">
+				<?php ES_Common::upsell_description_message_box( $upsell_info ); ?>
 			</div>
 		</div>
 	<div class="wrap max-w-7xl cursor-default campaign_open_blur font-sans">
@@ -1320,7 +1331,7 @@ function ig_es_view_additional_reports_data() {
 						</div>
 					</div>
 				</div>
-			
+
 				<div class="mt-6 mb-4">
 					<div class="pt-3">
 						<span class="text-left text-lg font-medium leading-7 tracking-wide text-gray-600"><?php esc_html_e( 'Open and click activity', 'email-subscribers' ); ?></span>
@@ -1432,7 +1443,7 @@ function ig_es_view_additional_reports_data() {
 							</td>
 						</tr>
 						<?php } ?>
-						
+
 					</tbody>
 				</table>
 
@@ -1456,7 +1467,7 @@ function ig_es_view_additional_reports_data() {
 				),
 			);
 			?>
-				
+
 				<div class="mt-6 mb-4 grid w-full gap-8 grid-cols-3">
 					<?php foreach ( $graph_open_data as $data ) { ?>
 						<div class="w-full">
@@ -1467,8 +1478,8 @@ function ig_es_view_additional_reports_data() {
 					</div>
 				<?php } ?>
 				</div>
-		   
-				
+
+
 				<div class="mt-6 mb-2">
 						<span class="text-left text-lg font-medium leading-7 tracking-wide text-gray-600"><?php esc_html_e( 'Link Activity', 'email-subscribers' ); ?></span>
 					</div>
@@ -1614,7 +1625,7 @@ function ig_es_view_additional_reports_data() {
 
 				);
 				?>
-				<div class="mt-8 mb-2">	
+				<div class="mt-8 mb-2">
 					<span class="text-left text-lg font-medium leading-7 tracking-wide text-gray-600"><?php esc_html_e( 'Last 10 Open Activity', 'email-subscribers' ); ?></span>
 				</div>
 				<div class="mt-2 mb-2 flex">
@@ -1705,10 +1716,10 @@ function ig_es_view_additional_reports_data() {
 					</table>
 
 				</div>
-		</div>	
+		</div>
 	</div>
 </div>
-	
+
 		<?php
 	}
 }
@@ -1722,7 +1733,7 @@ function ig_es_view_additional_reports_data() {
  * @since 4.6.7
  */
 function ig_es_upsell_add_attachment_feature( $editor_id ) {
-	
+
 	// fetch page info to restrict upsell to es_newsletters
 	$editor_page = ig_es_get_request_data('page');
 
@@ -1845,7 +1856,7 @@ function ig_es_upsell_pro_campaign_rules( $campaign_rules = array() ) {
 				array(
 					'name'     => esc_html__( 'Bounce status [PRO]', 'email-subscribers' ),
 					'disabled' => true,
-				),	
+				),
 			),
 			'Campaign'   => array(
 				array(
@@ -1927,7 +1938,7 @@ function ig_es_upsell_cf_button() {
 			<?php esc_html_e( 'Manage Custom Fields', 'email-subscribers' ); ?>
 			<span class = "premium-icon ml-2"></span>
 		</a>
-		
+
 		<?php
 	}
 }

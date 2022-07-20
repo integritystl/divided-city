@@ -117,6 +117,13 @@ if ( ! class_exists( 'ES_Action_Send_Email' ) ) {
 			$email_content = $this->add_template_styling( $email_content, $email_heading, $email_template );
 			$current_user  = wp_get_current_user();
 
+			$email_content = ES_Common::replace_keywords_with_fallback( $email_content, array(
+				'subscriber.first_name' => $current_user->first_name,
+				'subscriber.name'      => $current_user->display_name,
+				'subscriber.last_name'  => $current_user->last_name,
+				'subscriber.email'     => $current_user->user_email
+			) );
+
 			return ES_Common::replace_keywords_with_fallback( $email_content, array(
 				'EMAIL'     => $current_user->user_email,
 				'NAME'      => $current_user->display_name,

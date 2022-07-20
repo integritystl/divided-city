@@ -189,9 +189,11 @@ class ES_Handle_Post_Notification {
 
 		$post_title   = html_entity_decode( $post_title, ENT_QUOTES, $blog_charset );
 		$post_subject = str_replace( '{{POSTTITLE}}', $post_title, $notification_subject );
+		$post_subject = str_replace( '{{post.title}}', $post_title, $post_subject );
 
 		$post_link    = get_permalink( $post );
 		$post_subject = str_replace( '{{POSTLINK}}', $post_link, $post_subject );
+		$post_subject = str_replace( '{{post.link}}', $post_link, $post_subject );
 
 		return $post_subject;
 
@@ -203,11 +205,15 @@ class ES_Handle_Post_Notification {
 		// Making $post as global using $GLOBALS['post'] key. Can't use 'post' key directly into $GLOBALS since PHPCS throws global variable assignment warning for 'post'.
 		$GLOBALS[ $post_key ] = $post;
 
+		//$es_templ_body = $this->workflow->variable_processor()->process_field( $value, $allow_html );
+
 		$post_date     = ES_Common::convert_date_to_wp_date( $post->post_modified );
 		$es_templ_body = str_replace( '{{DATE}}', $post_date, $es_templ_body );
+		$es_templ_body = str_replace( '{{post.date}}', $post_date, $es_templ_body );
 
 		$post_title    = get_the_title( $post );
 		$es_templ_body = str_replace( '{{POSTTITLE}}', $post_title, $es_templ_body );
+		$es_templ_body = str_replace( '{{post.title}}', $post_title, $es_templ_body );
 		$post_link     = get_permalink( $post_id );
 
 		// Size of {{POSTIMAGE}}
@@ -235,6 +241,7 @@ class ES_Handle_Post_Notification {
 		}
 
 		$es_templ_body 		= str_replace( '{{POSTIMAGE}}', $post_thumbnail_link, $es_templ_body );
+		$es_templ_body 		= str_replace( '{{post.image}}', $post_thumbnail_link, $es_templ_body );
 
 		$post_thumbnail_id = get_post_thumbnail_id( $post_id );
 
@@ -243,6 +250,7 @@ class ES_Handle_Post_Notification {
 		}
 
 		$es_templ_body 		= str_replace( '{{POSTIMAGE-URL}}', $post_thumbnail_url, $es_templ_body );
+		$es_templ_body 		= str_replace( '{{post.image_url}}', $post_thumbnail_url, $es_templ_body );
 		
 		// Get post description
 		$post_description_length = 50;
@@ -255,12 +263,14 @@ class ES_Handle_Post_Notification {
 			$post_description = implode( ' ', $words );
 		}
 		$es_templ_body = str_replace( '{{POSTDESC}}', $post_description, $es_templ_body );
+		$es_templ_body = str_replace( '{{post.description}}', $post_description, $es_templ_body );
 
 		// Get post excerpt
 		$post_excerpt  = get_the_excerpt( $post );
 		$post_excerpt  = wpautop( $post_excerpt );
 		$post_excerpt  = wptexturize( $post_excerpt );
 		$es_templ_body = str_replace( '{{POSTEXCERPT}}', $post_excerpt, $es_templ_body );
+		$es_templ_body = str_replace( '{{post.excerpt}}', $post_excerpt, $es_templ_body );
 
 		$more_tag_data = get_extended( $post->post_content );
 
@@ -269,6 +279,7 @@ class ES_Handle_Post_Notification {
 		$strip_excluded_tags  = ig_es_get_strip_excluded_tags();
 		$text_before_more_tag = strip_tags( strip_shortcodes( $text_before_more_tag ), implode( '', $strip_excluded_tags ) );
 		$es_templ_body        = str_replace( '{{POSTMORETAG}}', $text_before_more_tag, $es_templ_body );
+		$es_templ_body        = str_replace( '{{post.more_tag}}', $text_before_more_tag, $es_templ_body );
 
 		// get post author
 		$post_author_id         = $post->post_author;
@@ -276,9 +287,13 @@ class ES_Handle_Post_Notification {
 		$post_author_avatar_url = get_avatar_url( $post_author_id );
 		$author_avatar          = '<img src="' . esc_attr( $post_author_avatar_url ) . '" alt="' . esc_attr( $post_author ) . '" width="auto" height="auto" />';
 		$es_templ_body          = str_replace( '{{POSTAUTHOR}}', $post_author, $es_templ_body );
+		$es_templ_body          = str_replace( '{{post.author}}', $post_author, $es_templ_body );
 		$es_templ_body          = str_replace( '{{POSTLINK-ONLY}}', $post_link, $es_templ_body );
+		$es_templ_body          = str_replace( '{{post.link_only}}', $post_link, $es_templ_body );
 		$es_templ_body          = str_replace( '{{POSTAUTHORAVATAR}}', $author_avatar, $es_templ_body );
+		$es_templ_body          = str_replace( '{{post.author_avatar}}', $author_avatar, $es_templ_body );
 		$es_templ_body          = str_replace( '{{POSTAUTHORAVATARLINK-ONLY}}', $post_author_avatar_url, $es_templ_body );
+		$es_templ_body          = str_replace( '{{post.author_avatar_url}}', $post_author_avatar_url, $es_templ_body );
 
 		// Check if template has {{POSTCATS}} placeholder.
 		if ( strpos( $es_templ_body, '{{POSTCATS}}' ) >= 0 ) {
@@ -302,19 +317,23 @@ class ES_Handle_Post_Notification {
 			}
 
 			$es_templ_body = str_replace( '{{POSTCATS}}', implode( ', ', $post_cats ), $es_templ_body );
+			$es_templ_body = str_replace( '{{post.cats}}', implode( ', ', $post_cats ), $es_templ_body );
 		}
 
 		if ( '' != $post_link ) {
 			$post_link_with_title = "<a href='" . $post_link . "' target='_blank'>" . $post_title . '</a>';
 			$es_templ_body        = str_replace( '{{POSTLINK-WITHTITLE}}', $post_link_with_title, $es_templ_body );
+			$es_templ_body        = str_replace( '{{post.link_with_title}}', $post_link_with_title, $es_templ_body );
 			$post_link            = "<a href='" . $post_link . "' target='_blank'>" . $post_link . '</a>';
 		}
 		$es_templ_body = str_replace( '{{POSTLINK}}', $post_link, $es_templ_body );
+		$es_templ_body = str_replace( '{{post.link}}', $post_link, $es_templ_body );
 
 		// Get full post
 		$post_full     = $post->post_content;
 		$post_full     = wpautop( $post_full );
 		$es_templ_body = str_replace( '{{POSTFULL}}', $post_full, $es_templ_body );
+		$es_templ_body = str_replace( '{{post.full}}', $post_full, $es_templ_body );
 
 		// add pre header as post excerpt
 		/*
