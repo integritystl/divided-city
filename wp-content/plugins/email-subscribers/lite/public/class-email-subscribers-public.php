@@ -184,7 +184,8 @@ class Email_Subscribers_Public {
 								'last_name'  => ! empty( $contact[ $email ] ) ? $contact[ $email ]['last_name'] : '',
 								'email'      => $email,
 								'contact_id' => $db_id,
-								'guid'       => $guid
+								'guid'       => $guid,
+								'list_ids'   => $list_ids,
 							);
 
 							$lists     = ES()->lists_db->get_all_lists_name_by_contact( $db_id );
@@ -288,7 +289,7 @@ class Email_Subscribers_Public {
 						// Track Link Click
 						do_action( 'ig_es_message_click', $link_id, $contact_id, $message_id, $campaign_id );
 
-						$redirect_link = htmlspecialchars_decode( $link['link'] );	
+						$redirect_link = htmlspecialchars_decode( $link['link'] );
 						// Now, redirect to target
 						wp_redirect( $redirect_link );
 						exit;
@@ -305,7 +306,7 @@ class Email_Subscribers_Public {
 
 		$email = $contact_data['email'];
 
-		
+
 		$user_list_status = isset( $contact_data['user_list_status'] ) ? $contact_data['user_list_status'] : 'subscribed' ;
 
 		$default_data = array(

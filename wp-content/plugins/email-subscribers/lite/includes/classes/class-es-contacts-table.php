@@ -433,6 +433,7 @@ class ES_Contacts_Table extends ES_List_Table {
 								'first_name' => $first_name,
 								'last_name'  => $last_name,
 								'email'      => $email,
+								'status'     => 'verified',
 							);
 
 							$contact = apply_filters( 'es_set_additional_contact_data', $contact, $contact_data );

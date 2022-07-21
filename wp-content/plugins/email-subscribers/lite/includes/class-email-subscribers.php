@@ -1590,6 +1590,18 @@ if ( ! class_exists( 'Email_Subscribers' ) ) {
 
 					break;
 
+				case 'gmail':
+					switch ( $key ) {
+						case 'client_id':
+							$return = defined( 'IG_ES_GMAIL_CLIENT_ID' ) && IG_ES_GMAIL_CLIENT_ID;
+							break;
+						case 'client_secret':
+							$return = defined( 'IG_ES_GMAIL_CLIENT_SECRET' ) && IG_ES_GMAIL_CLIENT_SECRET;
+							break;
+					}
+
+					break;
+
 				case 'Amazon_SES':
 					switch ( $key ) {
 						case 'access_key_id':
@@ -1795,6 +1807,18 @@ if ( ! class_exists( 'Email_Subscribers' ) ) {
 					switch ( $key ) {
 						case 'api_token':
 							$return = $this->is_const_defined( $group, $key ) ? IG_ES_SENDINBLUE_API_TOKEN : $value;
+							break;
+					}
+
+					break;
+
+				case 'gmail':
+					switch ( $key ) {
+						case 'client_id':
+							$return = $this->is_const_defined( $group, $key ) ? IG_ES_GMAIL_CLIENT_ID : $value;
+							break;
+						case 'client_secret':
+							$return = $this->is_const_defined( $group, $key ) ? IG_ES_GMAIL_CLIENT_SECRET : $value;
 							break;
 					}
 

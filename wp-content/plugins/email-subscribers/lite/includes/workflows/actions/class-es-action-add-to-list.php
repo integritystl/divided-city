@@ -46,7 +46,7 @@ if ( ! class_exists( 'ES_Action_Add_To_List' ) ) {
 			$list_field->set_options( $lists );
 			$list_field->set_required();
 			$this->add_field( $list_field );
-		
+
 		}
 
 		/**
@@ -60,6 +60,7 @@ if ( ! class_exists( 'ES_Action_Add_To_List' ) ) {
 
 			$user_list_status = $this->get_option( 'ig-es-user-list-status' );
 
+			$user_list_status = empty( $user_list_status ) ? 'subscribed' : $user_list_status;
 
 			if ( ! $list_id ) {
 				return;
@@ -137,7 +138,7 @@ if ( ! class_exists( 'ES_Action_Add_To_List' ) ) {
 				'email'      			 => $email,
 				'source'     			 => $source,
 				'status'     			 => $status,
-				'user_list_status' 		 => $user_list_status,
+				'user_list_status' => $user_list_status,
 				'hash'       			 => $guid,
 				'created_at' 			 => ig_get_current_date_time(),
 				'wp_user_id' 			 => $wp_user_id,

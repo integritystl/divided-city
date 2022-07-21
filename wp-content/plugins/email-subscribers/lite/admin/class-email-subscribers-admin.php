@@ -217,6 +217,11 @@ class Email_Subscribers_Admin {
 			'onbeforeunloadimport'            => esc_html__( 'You are currently importing subscribers! If you leave the page all pending subscribers don\'t get imported!', 'email-subscribers' ),
 			'api_verification_success'        => esc_html__( 'API is valid. Fetching lists...', 'email-subscribers' ),
 			'mailchimp_notice_nowindow_close' => esc_html__( 'Fetching contacts from MailChimp...Please do not close this window', 'email-subscribers' ),
+
+			// verify Email authentication header messages
+			'error_send_test_email'        => esc_html__('SMTP Error : Unable to send test email', 'email-subscribers'),
+			'error_server_busy'				=> esc_html__('Server Busy : Please try again later', 'email-subscribers'),
+			'success_verify_email_headers'  => esc_html__('Headers verified successfully', 'email-subscribers'),
 		),
 		'is_pro'    => ES()->is_pro() ? true : false,
 		);
@@ -806,13 +811,14 @@ class Email_Subscribers_Admin {
 		} else {
 
 			$es_display_notices = array(
-			'connect_icegram_notification',
-			'show_review_notice',
-			'custom_admin_notice',
-			'output_custom_notices',
-			'ig_es_fail_php_version_notice',
-			'show_reconnect_notification',
-			'show_tracker_notice',
+				'connect_icegram_notification',
+				'show_review_notice',
+				'custom_admin_notice',
+				'output_custom_notices',
+				'ig_es_fail_php_version_notice',
+				'show_reconnect_notification',
+				'show_tracker_notice',
+				'show_new_keyword_notice'
 			);
 		}
 
@@ -1580,6 +1586,14 @@ class Email_Subscribers_Admin {
 			'LASTNAME'  => $last_name,
 			'EMAIL'     => $useremail
 			) );
+
+			$es_template_body = ES_Common::replace_keywords_with_fallback( $es_template_body, array(
+				'subscriber.first_name' => $first_name,
+				'subscriber.name'      => $username,
+				'subscriber.last_name'  => $last_name,
+				'subscriber.email'     => $useremail
+			) );
+
 			$allowedtags      = ig_es_allowed_html_tags_in_esc();
 			add_filter( 'safe_style_css', 'ig_es_allowed_css_style' );
 
